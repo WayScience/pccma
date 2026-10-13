@@ -1,0 +1,12 @@
+name: pccma_atlas_platemaps_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pandas
+  - openpyxl
+  - numpy
+  - matplotlib
+  - ipykernel
+  - nbconvert
+  - jupyter
