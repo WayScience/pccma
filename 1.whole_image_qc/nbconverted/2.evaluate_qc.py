@@ -137,7 +137,8 @@ g = sns.FacetGrid(
     df,
     col="Channel",
     col_wrap=3,  # adjust to your channel count
-    height=4,
+    height=6,
+    aspect=1.2,
     sharey=True,
 )
 g.map_dataframe(
@@ -148,11 +149,15 @@ g.map_dataframe(
     palette="Set2",
     legend=False,  # Disable the legend in the boxplot
 )
-g.set_axis_labels("Plate", "PowerLogLogSlope")
-g.set_titles(col_template="{col_name}")
+g.set_axis_labels("Plate", "PowerLogLogSlope", fontsize=20)
+g.set_titles(col_template="{col_name}", size=22)
+g.tick_params(labelsize=16)
+# Rotate plate names so they do not overlap
+for ax in g.axes.flatten():
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
 g.add_legend()
 plt.tight_layout()
-plt.savefig(figure_dir / "powerloglogslope_distribution.png", dpi=150)
+plt.savefig(figure_dir / "powerloglogslope_distribution.png", dpi=300, bbox_inches="tight")
 plt.show()
 
 
@@ -171,7 +176,8 @@ g = sns.FacetGrid(
     df,
     col="Channel",
     col_wrap=3,
-    height=4,
+    height=6,
+    aspect=1.2,
     sharey=True,
 )
 g.map_dataframe(
@@ -188,11 +194,15 @@ for ax in g.axes.flatten():
 # Add red line at z = -1.5
 for ax in g.axes.flatten():
     ax.axhline(-1.5, color="orange", linestyle="--")
-g.set_axis_labels("Plate", "PowerLogLogSlope (z-score)")
-g.set_titles(col_template="{col_name}")
+g.set_axis_labels("Plate", "PowerLogLogSlope (z-score)", fontsize=20)
+g.set_titles(col_template="{col_name}", size=22)
+g.tick_params(labelsize=16)
+# Rotate plate names so they do not overlap
+for ax in g.axes.flatten():
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
 g.add_legend()
 plt.tight_layout()
-plt.savefig(figure_dir / "powerloglogslope_zscore_distribution.png", dpi=150)
+plt.savefig(figure_dir / "powerloglogslope_zscore_distribution.png", dpi=300, bbox_inches="tight")
 plt.show()
 
 
