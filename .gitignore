@@ -1,0 +1,21 @@
+# Ignore folders with logs
+logs/
+
+# Ignore folders with whole qc results
+whole_img_qc_output/
+
+# Ignore pycache folders
+__pycache__/
+
+# Ignore in-progress work that is not needed for repo
+in_progress/*
+
+# Ignore vscode settings
+.vscode/
+
+# Ignore CellProfiler SQLite outputs and SLURM job logs
+sqlite_outputs/
+*.out
+
+# Ignore LoadData CSVs as it is created per run with specific paths
+loaddata_csvs
