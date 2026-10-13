@@ -4,10 +4,10 @@ In this module, we calculate an illumination correction function per channel for
 
 The notebook first updates the pipeline (`pipeline/illum.cppipe`) to match the whole image QC results before running CellProfiler:
 
-- The blur thresholds are set to the values in `1.whole_image_qc/blur_thresholds.txt`.
-- The saturation threshold is set to 1 for all channels.
+- It sets the blur thresholds to the values in `1.whole_image_qc/blur_thresholds.txt`.
+- It sets the saturation threshold to 1 for all channels.
 
-FOVs that are flagged for blur or saturation are skipped, so that poor quality FOVs are not used to calculate the functions.
+The pipeline skips FOVs flagged for blur or saturation, so that poor quality FOVs do not contribute to the functions.
 
 ## Contents
 
@@ -18,8 +18,8 @@ FOVs that are flagged for blur or saturation are skipped, so that poor quality F
 | `illum_directory/` | One folder per plate with an illumination correction function (`npy` file) per channel (e.g., `BR00150695/BR00150695_IllumDNA.npy`). |
 | `logs/` | CellProfiler log per plate (not tracked in the repository). |
 
-The LoadData CSVs from `1.whole_image_qc/loaddata_csvs/` are used as the input, so the whole image QC module must be run first.
-The illumination correction functions are applied to the images in `3.cp_analysis`.
+We use the LoadData CSVs from `1.whole_image_qc/loaddata_csvs/` as the input, so you must run the whole image QC module first.
+The `3.cp_analysis` module applies the illumination correction functions to the images.
 
 ## Run the module
 
