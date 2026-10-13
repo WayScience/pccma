@@ -15,7 +15,7 @@ All files are in the `metadata` folder.
 | `generate_platemaps_from_xlsx.ipynb` | Converts the metadata sheet for each plate in the layout file into a platemap CSV. |
 | `generate_platemap_figures.ipynb` | Creates a figure of the 384-well layout for each plate. |
 | `platemaps/` | One platemap CSV per plate (e.g., `BR00150695_platemap.csv`). |
-| `platemap_figures/` | One PNG per plate and a PDF with all plates. |
+| `platemap_figures/` | One PNG per plate. |
 
 ## Platemap columns
 
