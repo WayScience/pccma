@@ -43,6 +43,7 @@ The exclusions are set in the `excluded_time_points` dictionary in `0.create_loa
 | `0.create_loaddata_csvs.ipynb` | Creates a LoadData CSV per plate with the paths to the images and illumination correction functions, then splits each CSV by cell line using the platemaps (excluded cell lines and time points are skipped). |
 | `1.cp_analysis_hpc.ipynb` | Runs CellProfiler for one LoadData CSV (one cell line from one plate), which is passed with `--input_csv`. |
 | `1.cp_analysis_local.ipynb` | Runs CellProfiler for all LoadData CSVs in batches on a local machine. |
+| `2.validate_cp_outputs.ipynb` | Confirms that every job completed properly by comparing the SQLite file and outline images of each job to the LoadData CSV used to run it. |
 
 All notebooks use the `pccma_atlas_cp_env` environment (`environments/cellprofiler_env.yml`).
 
