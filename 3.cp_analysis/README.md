@@ -11,7 +11,7 @@ In each pipeline, we:
 
 > **Note:** We do not filter out poor quality FOVs (blurry or over-saturated) in these pipelines.
 > We only filter out these FOVs when calculating the illumination correction functions.
-> We process all FOVs here and apply QC later on to salvage any good cells from the poor quality FOVs.
+> We process all FOVs here and apply coSMicQC later on to salvage any good cells from the poor quality FOVs while removing segmentation errors due to technical artifacts.
 
 ## One job per cell line per plate
 

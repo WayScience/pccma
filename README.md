@@ -7,7 +7,7 @@ Image analysis and image-based profiling workflows to extract morphology profile
 The Atlas is a Cell Painting dataset of 56 cell lines imaged at three time points (24, 48, and 72 hours).
 
 - **Plates:** Nine 384-well plates, where each plate is one time point.
-- **Cell lines:** 55 cell lines are each on one set of three plates (one plate per time point) with four wells per plate.
+- **Cell lines:** 56 cell lines are each on one set of three plates (one plate per time point) with four wells per plate.
 U2-OS is included on all nine plates as a control cell line.
 - **Conditions:** Seeding density (1,000 to 12,000 cells/well) and plate coating (Standard, Synthemax, or Laminin) are set per cell line and are recorded in the platemaps.
 - **Imaging:** Nine fields of view (FOVs) per well at 20x magnification.
@@ -55,10 +55,10 @@ The modules are numbered in the order that they are run.
 
 ## Quality control (QC) of poor quality images
 
-Poor quality FOVs (blurry or over-saturated) are handled differently depending on the module:
+We handle poor quality FOVs (blurry or over-saturated) differently depending on the module:
 
-- **Illumination correction:** Poor quality FOVs are filtered out and are not used to calculate the illumination correction functions to avoid issues in the output.
-- **Segmentation and feature extraction:** Poor quality FOVs are still processed.
+- **Illumination correction:** We filtered out poor quality FOVs prior to calculation of the illumination correction functions to avoid issues in the output.
+- **Segmentation and feature extraction:** We do process poor quality FOVs.
 QC is applied later on, which allows us to salvage any good cells from these FOVs.
 
 ## Running the analysis
