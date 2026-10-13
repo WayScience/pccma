@@ -2,6 +2,8 @@
 
 In this module, we extract whole image quality metrics with CellProfiler and determine thresholds to identify poor quality fields of view (FOVs).
 
+We do not evaluate each cell line individually as we expect that image quality metrics are universal and not impacted by the cell lines like morphology features are.
+
 We evaluate two metrics per channel:
 
 - **Blur** (`PowerLogLogSlope`): Detects out-of-focus FOVs.
