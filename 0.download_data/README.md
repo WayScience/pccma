@@ -7,11 +7,13 @@ In this module, we generate the platemap for each plate in the Atlas dataset and
 
 ## Contents
 
-All files are in the `metadata` folder.
+The platemaps come from the experimental layout file, `Rambutan_Atlasv2_April2026.xlsx`, which includes a metadata sheet per plate.
+The layout file lives in [`cell_lines/raw_data/`](../cell_lines/raw_data/) with the other raw cell line data, and the notebook reads it from there.
+
+The other files are in the `metadata` folder.
 
 | File or folder | Description |
 | --- | --- |
-| `Rambutan_Atlasv2_April2026.xlsx` | Experimental layout file, which includes a metadata sheet per plate. |
 | `generate_platemaps_from_xlsx.ipynb` | Converts the metadata sheet for each plate in the layout file into a platemap CSV. |
 | `generate_platemap_figures.ipynb` | Creates a figure of the 384-well layout for each plate. |
 | `platemaps/` | One platemap CSV per plate (e.g., `BR00150695_platemap.csv`). |

@@ -14,8 +14,8 @@ import openpyxl
 # In[2]:
 
 
-# Path to the Excel file
-file_path = pathlib.Path("./Rambutan_Atlasv2_April2026.xlsx")
+# Path to the experimental layout file, which lives with the cell line raw data
+file_path = pathlib.Path("../../cell_lines/raw_data/Rambutan_Atlasv2_April2026.xlsx")
 
 # Output for platemap CSVs
 output_dir = pathlib.Path("./platemaps")
