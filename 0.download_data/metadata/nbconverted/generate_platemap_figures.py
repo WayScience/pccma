@@ -15,7 +15,7 @@
 # The Excel file labels every well without cells as "media", so it can not be used to separate media only wells from empty wells.
 # Instead, the wells that were imaged are taken from the LoadData CSVs (generated in `1.whole_image_qc`).
 # 
-# Each figure is saved as a PNG and all figures are also saved to one PDF (one page per plate).
+# Each figure is saved as a PNG.
 
 # In[1]:
 
@@ -25,7 +25,6 @@ import string
 
 import matplotlib.pyplot as plt
 import pandas as pd
-from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.lines import Line2D
 
 
@@ -69,15 +68,13 @@ def plot_platemap(
     platemap: pd.DataFrame,
     media_only_wells: list[str],
     output_file: pathlib.Path,
-    pdf: PdfPages,
 ) -> None:
-    """Plot a 384-well platemap figure for one plate, save it as a PNG, and add it as a page to the PDF.
+    """Plot a 384-well platemap figure for one plate and save it as a PNG.
 
     Args:
         platemap (pd.DataFrame): platemap for one plate (one row per well)
         media_only_wells (list[str]): well positions (e.g., C09) that were imaged but have no cells
         output_file (pathlib.Path): path to save the PNG figure to
-        pdf (PdfPages): open PDF to add the figure to as a new page
     """
     platemap = platemap.copy()
 
@@ -112,13 +109,15 @@ def plot_platemap(
     )
 
     # Draw the wells in the platemap (fill = seeding density, shape = plate coating)
+    # The shapes are drawn smaller than the well outline (s=1100) so they sit inside the well
     for coating, marker in coating_markers.items():
         wells = platemap[platemap["plate_coating"] == coating]
         ax.scatter(
             wells["x"],
             wells["y"],
-            # Squares fill more of the well than the other shapes, so draw them smaller
-            s=800 if marker == "s" else 1100,
+            # The corners of the squares and triangles reach further out than a circle of
+            # the same size, so draw them smaller
+            s=700 if marker == "o" else 400,
             marker=marker,
             c=wells["seeding_density"].map(density_colors),
             edgecolors="white",
@@ -241,7 +240,6 @@ def plot_platemap(
     )
 
     fig.savefig(output_file, dpi=600, bbox_inches="tight", pad_inches=0.3, facecolor="white")
-    pdf.savefig(fig, bbox_inches="tight", pad_inches=0.3, facecolor="white")
     plt.show()
     plt.close(fig)
 
@@ -249,10 +247,7 @@ def plot_platemap(
 # In[4]:
 
 
-# Generate one figure per platemap and collect all figures into one PDF (one page per plate)
-pdf_file = output_dir / "all_platemap_figures.pdf"
-pdf = PdfPages(pdf_file)
-
+# Generate one figure per platemap
 for platemap_file in sorted(platemap_dir.glob("*_platemap.csv")):
     platemap = pd.read_csv(platemap_file)
 
@@ -290,13 +285,9 @@ for platemap_file in sorted(platemap_dir.glob("*_platemap.csv")):
         platemap=platemap,
         media_only_wells=media_only_wells,
         output_file=output_file,
-        pdf=pdf,
     )
 
     print(f"{plate_barcode}: {len(cell_wells)} wells with cells, {len(media_only_wells)} media only wells")
 
     print(f"Saved {output_file}")
-
-pdf.close()
-print(f"Saved {pdf_file}")
 
