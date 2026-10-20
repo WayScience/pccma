@@ -153,7 +153,7 @@ image_base_dir = bandicoot_check(
 )
 
 # directory with one folder of CellProfiler outputs per job (<plate>_<cell_line>)
-output_dir = pathlib.Path(f"{image_base_dir}/PCCMA_data/Atlas_v2_profiles/").resolve(
+output_dir = pathlib.Path(f"{image_base_dir}/PCCMA_data/Atlas_v2_profiles/sqlite_outputs/").resolve(
     strict=True
 )
 
