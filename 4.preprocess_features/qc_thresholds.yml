@@ -1,0 +1,318 @@
+# Thresholds (z-scores) for single-cell quality control with coSMicQC (1.sc_quality_control.ipynb).
+# The z-scores are calculated per cell line across all plates (time points).
+
+# Thresholds used for every cell line unless the cell line overrides a condition below
+default:
+  # clustered nuclei (high mass displacement and high intensity)
+  clustered_nuclei:
+    Nuclei_Intensity_MassDisplacement_DNA: 0.1  # Set very low as to detect all instances of clustering nuclei
+    Nuclei_Intensity_IntegratedIntensity_DNA: 1.5  # Set higher than displacement to avoid false positives
+  # very irregular shaped nuclei (low solidity), likely indicating mis-segmentation
+  low_solidity_nuclei:
+    Nuclei_AreaShape_Solidity: -2.0
+  # cells that contain multiple nuclei (high DNA intensity in the cell)
+  cells_multiple_nuclei:
+    Cells_Intensity_IntegratedIntensity_DNA: 3.0  # Set high to only remove the most extreme cells for better quality cell lines
+
+# Conditions that differ from the default per cell line (only add after reviewing the example outliers).
+# Overriding a condition replaces all of its thresholds, e.g.:
+#   COGEP280:
+#     cells_multiple_nuclei:
+#       Cells_Intensity_IntegratedIntensity_DNA: 2.5  # reason for the change
+cell_lines:
+  A673:
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.5  # stricter: very small nuclei, so more merged nuclei that were excluded from segmentation
+  CHLA10:
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -0.5  # stricter: clustered nuclei lead to more irregular nuclei segmentations
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 2.0  # stricter: clustered nuclei lead to more cells with multiple nuclei
+  CHLA113:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 1.0  # looser: default removed good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 2.0  # looser: default removed good quality nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 1.0  # stricter: one extreme cell (z = 72) inflates the standard deviation, so the default barely flags any cells
+  CHLA186:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.05
+      Nuclei_Intensity_IntegratedIntensity_DNA: 1.5  # stricter: default missed some clustered nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -0.5  # stricter: default missed some irregular nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.8  # stricter: default missed some cells with multiple nuclei
+  # NOTE: CHLA194 at 72 hours (BR00150703) might contain mycoplasma (small odd segmentations found in the outliers)
+  CHLA194:
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -0.8  # stricter: non-optimal cell line with more irregular nuclei segmentations
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 1.0  # stricter: non-optimal cell line with more cells with multiple nuclei
+  CHLA196:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.05  # stricter: poor quality cell line with many segmentation errors
+      Nuclei_Intensity_IntegratedIntensity_DNA: 1.0  # stricter: poor quality cell line with many segmentation errors
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -0.8  # stricter: poor quality cell line with many segmentation errors
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.8  # stricter: poor quality cell line with many segmentation errors
+  CHLA203:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 1.0  # looser: default removed good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 2.0  # looser: default removed good quality nuclei
+  CHLA210:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.05  # stricter: default missed some clustered nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 1.0  # stricter: default missed some clustered nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -0.8  # stricter: default missed some irregular nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.5  # stricter: one extreme cell (z = 104) inflates the standard deviation, so the default barely flags any cells
+  CHLA218:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.02  # stricter: default missed some clustered nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 1.0  # stricter: default missed some clustered nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -0.5 # stricter: default missed many irregular nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.5  # stricter: default missed many cells with multiple nuclei
+  # NOTE: CHLA25 at 72 hours (BR00150703) might contain mycoplasma
+  CHLA25:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.05  # stricter: non-optimal cell line with many segmentation errors
+      Nuclei_Intensity_IntegratedIntensity_DNA: 0.9  # stricter: non-optimal cell line with many segmentation errors
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -0.1  # stricter: non-optimal cell line with many segmentation errors
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.8  # stricter: non-optimal cell line with many segmentation errors
+  CHLA258:
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -1.2  # stricter: default missed many irregular nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.1  # stricter: default missed many cells with multiple nuclei
+  CHLA262:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.05  # slightly stricter: default missed some clustered nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 1.25  # slightly stricter: default missed some clustered nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -0.5  # stricter: non-optimal cell line with many segmentation errors
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.3  # stricter: non-optimal cell line with many segmentation errors
+  CHP134:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.5  # slightly looser: default removed some good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 2.0  # slightly looser: default removed some good quality nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.5  # stricter: two extreme cells (z = 98 and 28) inflate the standard deviation, so the default barely flags any cells
+  CHP212:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 1.2  # looser: default removed many good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 2.2  # looser: default removed many good quality nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -2.8  # looser: default removed many good quality nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 2.6  # slightly stricter: to capture more cells with multiple nuclei
+  CHP212-1020:  # same thresholds as CHP212 (parental cell line)
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 1.2  # looser: default removed many good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 2.2  # looser: default removed many good quality nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -2.8  # looser: default removed many good quality nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 2.6  # slightly stricter: to capture more cells with multiple nuclei
+  CHP212-EV:  # same thresholds as CHP212 (parental cell line), except clustered nuclei
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 2.0  # looser than CHP212: good quality nuclei still at the cutoff
+      Nuclei_Intensity_IntegratedIntensity_DNA: 3.0  # looser than CHP212: good quality nuclei still at the cutoff
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -2.8  # looser: default removed many good quality nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 2.6  # slightly stricter: to capture more cells with multiple nuclei
+  COGAR397hnb:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.05  # stricter: default missed some clustered nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 1.0  # stricter: default missed some clustered nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -1.3  # stricter: default missed some irregular nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.1  # stricter: default missed some cells with multiple nuclei
+  COGE352:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.05  # stricter: default missed some clustered nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 1.25  # stricter: default missed some clustered nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -1.25  # stricter: default missed some irregular nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 1.0  # stricter: default missed some cells with multiple nuclei
+  COGEP280:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.25  # slightly looser: default removed some good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 1.5
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -1.5  # stricter: default missed some irregular nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 1.5  # stricter: default missed some cells with multiple nuclei
+  COGR466h:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 1.8  # looser: default removed good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 2.8  # looser: default removed good quality nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -3.0  # looser: default removed good quality nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 3.8  # looser: default removed good quality cells
+  COGW408:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.01  # stricter: non-optimal cell line with many segmentation errors
+      Nuclei_Intensity_IntegratedIntensity_DNA: 0.1  # stricter: non-optimal cell line with many segmentation errors
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -0.05  # stricter: non-optimal cell line with many segmentation errors
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.05  # stricter: non-optimal cell line with many segmentation errors
+  D283:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.05  # stricter: default missed some clustered nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 1.0  # stricter: default missed some clustered nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -1.25  # stricter: default missed some irregular nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.05  # stricter: extreme cells (z = 65 and 44) inflate the standard deviation, so the default barely flags any cells
+  D425:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 1.0  # looser: default removed good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 1.5
+  DAOY:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.06  # stricter: default missed some clustered nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 1.25  # stricter: default missed some clustered nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -0.6  # stricter: default missed some irregular nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.7  # stricter: default missed some cells with multiple nuclei
+  G401:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.5  # looser: default removed good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 1.5
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.8  # stricter: extreme cells (z = 41 and 38) inflate the standard deviation, so the default barely flags any cells
+  G402:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 1.0  # slightly looser: default removed some good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 3.0  # slightly looser: default removed some good quality nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -2.75  # slightly looser: default removed some good quality nuclei
+  IMR32:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 1.0  # looser: default removed good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 2.0  # looser: default removed good quality nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -2.75  # looser: default removed good quality nuclei
+  KNS-42:
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.8  # stricter: default missed some cells with multiple nuclei
+  # NOTE: KP-N-YN is a non-optimal cell line (many segmentation errors, about 39% of single cells fail QC)
+  KP-N-YN:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.01  # stricter: non-optimal cell line with many clustered nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 0.25  # stricter: non-optimal cell line with many clustered nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -0.3  # stricter: non-optimal cell line with many irregular nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 1.0  # stricter: default missed many cells with multiple nuclei
+  NB-1:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.01  # stricter: default missed many clustered nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 0.1  # stricter: default missed many clustered nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.3  # stricter: one extreme cell (z = 77) inflates the standard deviation, so the default barely flags any cells
+  ONS-76:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 1.5  # slightly looser: default removed some good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 2.0  # slightly looser: default removed some good quality nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 3.1  # slightly looser: default removed some good quality cells
+  PBT04_FHTC:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.05  # stricter: non-optimal cell line with many segmentation errors
+      Nuclei_Intensity_IntegratedIntensity_DNA: 1.0  # stricter: non-optimal cell line with many segmentation errors
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -1.2  # stricter: non-optimal cell line with many segmentation errors
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.4  # stricter: non-optimal cell line with many segmentation errors
+  RH30:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.5  # looser: default removed good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 2.0  # looser: default removed good quality nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -2.3  # slightly looser: default removed some good quality nuclei
+  RH4:
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 1.5  # stricter: extreme cells (z = 54 and 50) inflate the standard deviation, so the default barely flags any cells
+  Saos-2:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 0.5  # looser: default removed good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 1.75  # looser: default removed good quality nuclei
+  SHSY5Y:
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -0.7  # stricter: non-optimal cell line with many irregular nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.66  # stricter: non-optimal cell line with many cells with multiple nuclei
+  SJGBM2:
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -1.25  # stricter: default missed some irregular nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 1.5  # stricter: default missed some cells with multiple nuclei
+  SJSA-1:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 1.5  # looser: default removed good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 2.5  # looser: default removed good quality nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -3.0  # looser: default removed good quality nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 6.0  # looser: default removed good quality cells
+  SK-N-AS:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 1.5  # looser: default removed good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 2.0  # looser: default removed good quality nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -2.5  # looser: default removed good quality nuclei
+  SKNAS-1020:  # same thresholds as SK-N-AS (parental cell line)
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 1.5  # looser: default removed good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 2.0  # looser: default removed good quality nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -2.5  # looser: default removed good quality nuclei
+  SKNAS-EV:  # same thresholds as SK-N-AS (parental cell line), except multiple nuclei in cells
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 1.5  # looser: default removed good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 2.0  # looser: default removed good quality nuclei
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -2.5  # looser: default removed good quality nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 0.8  # stricter: extreme cells (z = 165 and 65) inflate the standard deviation, so the default barely flags any cells
+  SK-N-MC:
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -1.5  # stricter: default missed some irregular nuclei
+  SKNDZ:
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -1.5  # stricter: default missed some irregular nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 2.0  # stricter: default missed some cells with multiple nuclei
+  TC71:
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -1.0  # stricter: default missed many irregular nuclei
+    cells_multiple_nuclei:
+      Cells_Intensity_IntegratedIntensity_DNA: 1.0  # stricter: default missed many cells with multiple nuclei
+  U2-OS:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 2.0  # much looser: default only removed good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 3.0  # much looser: default only removed good quality nuclei
+  WI38:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 1.0  # looser: default removed good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 1.5
+  WPMY1:
+    clustered_nuclei:
+      Nuclei_Intensity_MassDisplacement_DNA: 1.0  # looser: default removed good quality nuclei
+      Nuclei_Intensity_IntegratedIntensity_DNA: 1.5
+    low_solidity_nuclei:
+      Nuclei_AreaShape_Solidity: -3.0  # looser: default removed good quality nuclei
