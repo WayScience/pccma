@@ -10,7 +10,6 @@
 #                                          failed QC removed per cell line), shared input for both
 #                                          branches below
 #   3.bulk_processing.ipynb             -> aggregated/normalized/feature-selected bulk profiles
-#   3b.sphering.ipynb                   -> whole-screen spherized bulk profile (once all plates are bulk-processed)
 #   4.single_cell_normalize.ipynb       -> normalized single-cell profiles
 #   5.single_cell_feature_select.ipynb  -> feature-selected single-cell profiles
 #   6.sc_qc_report.ipynb                -> QC report per cell line and plate (qc_report/)
@@ -71,8 +70,9 @@ echo "======================================"
 if [ -d "$HOME/mnt/bandicoot/PCCMA_data/Atlas_v2_profiles/sqlite_outputs" ]; then
     python nbconverted/0.convert_cytotable.py
     if [ $? -ne 0 ]; then
-        echo "convert_cytotable FAILED"
-        failed_plates+=("convert_cytotable:all")
+        # stop here so QC does not cache annotations built from only part of the plates
+        echo "convert_cytotable FAILED; aborting pipeline."
+        exit 1
     fi
 else
     echo "⚠️ bandicoot mount not found, using the existing converted profiles in data/converted_profiles"
@@ -94,9 +94,15 @@ mapfile -t cell_lines < <(find data/converted_profiles -mindepth 1 -maxdepth 1 -
 for cell_line in "${cell_lines[@]}"; do
     qc_output="./qc_results/${cell_line}_qc_annotations.parquet"
 
+    # rerun QC when a converted plate is newer than the QC output (e.g., plates added
+    # by a later conversion), as the z-scores need to include every plate
     if [ -f "$qc_output" ] && [ -z "$overwrite" ]; then
-        echo "✅ ${cell_line} already QC'd (found ${qc_output})"
-        continue
+        newer_plates=$(find "data/converted_profiles/${cell_line}" -name "*_converted.parquet" -newer "$qc_output")
+        if [ -z "$newer_plates" ]; then
+            echo "✅ ${cell_line} already QC'd (found ${qc_output})"
+            continue
+        fi
+        echo "⚠️ ${cell_line} has converted plates newer than ${qc_output}, rerunning QC"
     fi
 
     echo ">>> Running QC for ${cell_line}"
@@ -127,14 +133,33 @@ run_step() {
 
     for plate_id in "${plate_ids[@]}"; do
         local step_output="${output_pattern//PLATE/$plate_id}"
+        local plate_overwrite="$overwrite"
 
+        # redo a plate when the QC annotations of any cell line on it are newer than the
+        # step output (e.g., QC was rerun after plates were added), so the plate does not
+        # keep outdated QC labels
         if [ -f "$step_output" ] && [ -z "$overwrite" ]; then
-            echo "✅ ${plate_id} already done (found ${step_output})"
-            continue
+            local newer_qc=""
+            for converted_file in data/converted_profiles/*/"${plate_id}"_*_converted.parquet; do
+                local plate_cell_line
+                plate_cell_line=$(basename "$(dirname "$converted_file")")
+                local qc_output="./qc_results/${plate_cell_line}_qc_annotations.parquet"
+                if [ "$qc_output" -nt "$step_output" ]; then
+                    newer_qc="$qc_output"
+                    break
+                fi
+            done
+
+            if [ -z "$newer_qc" ]; then
+                echo "✅ ${plate_id} already done (found ${step_output})"
+                continue
+            fi
+            echo "⚠️ ${newer_qc} is newer than ${step_output}, rerunning ${step_name} for ${plate_id}"
+            plate_overwrite=1
         fi
 
         echo ">>> Running ${step_name} for ${plate_id}"
-        PLATE_ID="$plate_id" OVERWRITE="$overwrite" python "$script"
+        PLATE_ID="$plate_id" OVERWRITE="$plate_overwrite" python "$script"
         local exit_code=$?
 
         if [ "$exit_code" -ne 0 ]; then
@@ -148,26 +173,6 @@ run_step() {
 
 run_step "annotate" nbconverted/2.annotate.py "./data/annotated_profiles/PLATE_annotated.parquet"
 run_step "bulk_processing" nbconverted/3.bulk_processing.py "./data/bulk_profiles/PLATE_bulk_feature_selected.parquet"
-# -----------------------------
-# Sphering (whole screen, once every plate has been bulk-processed)
-# -----------------------------
-echo "======================================"
-echo "sphering (whole screen)"
-echo "======================================"
-
-spherized_file="./data/spherized_profiles/pccma_atlas_pooled_bulk_spherized.parquet"
-
-if [ -f "$spherized_file" ] && [ -z "$overwrite" ]; then
-    echo "✅ Whole-screen spherized profile already exists (${spherized_file})"
-else
-    OVERWRITE="$overwrite" python nbconverted/3b.sphering.py
-    if [ $? -ne 0 ]; then
-        echo "Sphering FAILED"
-        failed_plates+=("sphering:whole_screen")
-    else
-        echo "Sphering done for whole screen"
-    fi
-fi
 
 run_step "single_cell_normalize" nbconverted/4.single_cell_normalize.py "./data/single_cell_profiles/PLATE_sc_normalized.parquet"
 run_step "single_cell_feature_select" nbconverted/5.single_cell_feature_select.py "./data/single_cell_profiles/PLATE_sc_feature_selected.parquet"

@@ -70,13 +70,13 @@ qc_df = pd.concat(
 outlier_columns = [col for col in qc_df.columns if col.endswith("_is_outlier")]
 qc_df["failed_qc"] = qc_df[outlier_columns].any(axis=1)
 
-# Load the platemaps of every plate to add the cell line, seeding density, and time point of each well
+# Load the platemaps of every plate to add the cell line and time point of each well
 platemap_df = pd.concat(
     [pd.read_csv(path) for path in sorted(platemap_dir.glob("*_platemap.csv"))],
     ignore_index=True,
 )
 qc_df = qc_df.merge(
-    platemap_df[["plate_barcode", "well_position", "cell_line", "seeding_density", "time_point"]],
+    platemap_df[["plate_barcode", "well_position", "cell_line", "time_point"]],
     left_on=["Image_Metadata_Plate", "Image_Metadata_Well"],
     right_on=["plate_barcode", "well_position"],
     how="left",
@@ -100,9 +100,7 @@ print(qc_df.shape)
 
 # Number of single cells, number that failed each condition and any condition, and percentage failed
 failure_stats = (
-    qc_df.groupby(
-        ["cell_line", "time_point", "seeding_density", "Image_Metadata_Plate"]
-    )
+    qc_df.groupby(["cell_line", "time_point", "Image_Metadata_Plate"])
     .agg(
         total_single_cells=("failed_qc", "size"),
         **{
