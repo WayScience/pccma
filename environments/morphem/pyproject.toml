@@ -1,0 +1,36 @@
+# uv environment for extracting the MorphEm features (5.morphem_featurization/0.extract_morphem_features.ipynb).
+#
+# Create or update the environment (from this folder): uv sync --locked
+# Activate it: source environments/morphem/.venv/bin/activate
+#
+# The torch wheels from PyPI include CUDA 13 (NVIDIA driver 580 or newer) and also run on a CPU.
+# pandas and pyarrow match the preprocessing environment, so both write and read parquet files the same way.
+[project]
+name = "pccma-atlas-morphem"
+version = "0.1.0"
+requires-python = "==3.11.*"
+dependencies = [
+    "torch==2.14.1",
+    "torchvision==0.29.1",
+    # MorphEm loads with AutoModel and trust_remote_code from Hugging Face,
+    # and its remote code does not load with transformers 5 (missing all_tied_weights_keys)
+    "transformers==4.57.6",
+    "huggingface-hub==0.36.2",
+    "safetensors==0.8.0",
+    "numpy==2.4.6",
+    "pandas==2.2.3",
+    "pyarrow==22.0.0",
+    "tifffile==2026.3.3",
+    # the Phenix TIFF files use LZW compression, which tifffile reads with imagecodecs
+    "imagecodecs==2026.3.6",
+    "matplotlib==3.11.2",
+    "tqdm==4.70.1",
+    "jupyter==1.1.1",
+    "ipykernel==7.4.0",
+    "nbconvert==7.17.2",
+]
+
+[tool.uv]
+package = false
+# use a Python that uv manages instead of one from a conda environment
+python-preference = "only-managed"
