@@ -14,7 +14,10 @@ QC_MERGE_KEYS = [
 
 
 def load_plate_passing_qc(
-    plate: str, converted_dir: pathlib.Path, qc_results_dir: pathlib.Path
+    plate: str,
+    converted_dir: pathlib.Path,
+    qc_results_dir: pathlib.Path,
+    profile_suffix: str = "converted",
 ) -> pd.DataFrame:
     """
     Load the converted profiles of every cell line on a plate, remove the single cells that failed QC
@@ -25,9 +28,12 @@ def load_plate_passing_qc(
     plate : str
         The name of the plate (e.g., BR00150695).
     converted_dir : pathlib.Path
-        Directory with one folder per cell line holding the converted profiles (<plate>_<cell_line>_converted.parquet).
+        Directory with one folder per cell line holding the profiles (<plate>_<cell_line>_<profile_suffix>.parquet).
     qc_results_dir : pathlib.Path
         Directory with the QC annotations of each cell line (<cell_line>_qc_annotations.parquet).
+    profile_suffix : str
+        Suffix of the profile files to load ("converted" for the CellProfiler profiles or "morphem"
+        for the MorphEm profiles, which have the same single cells and metadata columns).
 
     Returns
     -------
@@ -36,7 +42,7 @@ def load_plate_passing_qc(
     """
     cell_line_dfs = []
 
-    for profile_path in sorted(converted_dir.glob(f"*/{plate}_*_converted.parquet")):
+    for profile_path in sorted(converted_dir.glob(f"*/{plate}_*_{profile_suffix}.parquet")):
         # name of the cell line is the name of the folder
         cell_line = profile_path.parent.name
 
@@ -71,6 +77,6 @@ def load_plate_passing_qc(
         cell_line_dfs.append(profile_df[~failed].drop(columns=outlier_columns))
 
     if not cell_line_dfs:
-        raise FileNotFoundError(f"No converted profiles found for {plate}")
+        raise FileNotFoundError(f"No {profile_suffix} profiles found for {plate}")
 
     return pd.concat(cell_line_dfs, ignore_index=True)

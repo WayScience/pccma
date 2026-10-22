@@ -31,3 +31,9 @@ runinfo/
 
 # Ignore executed single-cell QC notebooks per cell line (created by run_pipeline.sh)
 4.preprocess_features/executed_notebooks/
+
+# Ignore MorphEm profiles (large parquet files)
+5.morphem_featurization/data/
+
+# Ignore uv virtual environments (created from the lock files in environments/)
+.venv/
