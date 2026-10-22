@@ -16,6 +16,8 @@
 # 3. Rescale each crop to 8-bit, since MorphEm was trained on 8-bit images, where only the pixels that were saturated in the camera become 255 (MorphEm replaces them with noise).
 # 4. Extract the 384 MorphEm features (CLS token) from each channel of each crop, which gives 1,920 features per single cell.
 # 
+# We name the features like the CellProfiler features (compartment, feature group, measurement, then channel), so tools that expect the channel at the end of the name also work: `Nucleocentric_MorphEm_Feature<n>_<channel>` (e.g., `Nucleocentric_MorphEm_Feature0_DNA`, with `<n>` from 0 to 383).
+# 
 # We save the features with the same metadata columns as the converted profiles (plate, well, site, image number, and object numbers), so we can remove the single cells that failed QC with the QC annotations from `4.preprocess_features/1.sc_quality_control.ipynb`.
 
 # ## Import libraries
@@ -243,7 +245,7 @@ if single_cell_df is not None:
         for channel in channels:
             # fraction of the crop that was saturated in the camera (MorphEm replaces these pixels with noise)
             saturated_fractions[
-                f"Metadata_Nucleocentric_{channel}_Saturated_Fraction"
+                f"Metadata_Nucleocentric_SaturatedFraction_{channel}"
             ] = [
                 fov_saturated[channel][y_min:y_max, x_min:x_max].mean()
                 for y_min, y_max, x_min, x_max, _ in crop_boxes
@@ -260,7 +262,7 @@ if single_cell_df is not None:
                 pd.DataFrame(
                     features,
                     columns=[
-                        f"Nucleocentric_{channel}_MorphEm_Feature{i}"
+                        f"Nucleocentric_MorphEm_Feature{i}_{channel}"
                         for i in range(features.shape[1])
                     ],
                     index=fov_df.index,
@@ -296,7 +298,7 @@ if single_cell_df is not None:
 # ## Save the MorphEm profile
 # 
 # We keep the image file names and paths so we can display the crops later (e.g., with CytoDataFrame).
-# We also keep the fraction of each crop that was saturated in the camera per channel (`Metadata_Nucleocentric_<channel>_Saturated_Fraction`), since the saturated pixels are where MorphEm adds noise, so we can find the single cells that might be too saturated.
+# We also keep the fraction of each crop that was saturated in the camera per channel (`Metadata_Nucleocentric_SaturatedFraction_<channel>`), since the saturated pixels are where MorphEm adds noise, so we can find the single cells that might be too saturated.
 
 # In[ ]:
 

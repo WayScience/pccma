@@ -37,8 +37,29 @@ We load MorphEm from a fixed revision of the Hugging Face repository (`MORPHEM_R
 | `0.extract_morphem_features.ipynb` | `environments/morphem` (uv) | Extracts the MorphEm features for one cell line from one plate (`--plate` and `--cell_line`) and saves `data/morphem_profiles/<cell_line>/<plate>_<cell_line>_morphem.parquet`. When run as a notebook, it also shows example crops. |
 | `1.process_morphem_profiles.ipynb` | `environments/preprocessing` (uv) | For each plate: removes the single cells that failed QC (using `4.preprocess_features/qc_results/`), annotates with the platemap, and creates the single-cell (standardize, feature select) and bulk (median, MAD robustize, feature select) profiles. |
 
-We set the MorphEm features (`Nucleocentric_<channel>_MorphEm_Feature<n>`) in every pycytominer function, since pycytominer only finds the CellProfiler compartments (Cells, Nuclei, and Cytoplasm) by default.
+We set the MorphEm features in every pycytominer function, since pycytominer only finds the CellProfiler compartments (Cells, Nuclei, and Cytoplasm) by default.
 We do not use the blocklist in feature selection, since it only includes CellProfiler features.
+
+## Feature names
+
+We name the MorphEm features in the same order as the CellProfiler features (compartment, feature group, measurement, then channel), so any downstream code that expects the channel at the end of the name also works:
+
+```
+Nucleocentric_MorphEm_Feature<n>_<channel>
+```
+
+| Part | CellProfiler equivalent | Values |
+| --- | --- | --- |
+| `Nucleocentric` | Compartment (e.g., `Nuclei`) | The crop centered on the nucleus (nucleus bounding box plus 25 pixels) |
+| `MorphEm` | Feature group (e.g., `Intensity`) | The model that extracted the features |
+| `Feature<n>` | Measurement (e.g., `MeanIntensity`) | Position in the 384-dimensional MorphEm embedding (0 to 383) |
+| `<channel>` | Channel (e.g., `DNA`) | `DNA`, `ER`, `RNA`, `AGP`, or `Mito` |
+
+For example, `Nucleocentric_MorphEm_Feature0_DNA` to `Nucleocentric_MorphEm_Feature383_Mito`, which gives 1,920 features per single cell.
+Every name has four parts separated by underscores, so the channel is always the last part (`name.split("_")[-1]`).
+
+We extract the features of each channel separately (Bag of Channels), so the same `Feature<n>` in two channels is the same position in the embedding of the same model, but from different images.
+They are not paired measurements like the CellProfiler intensity features of two channels, so we treat each column as its own feature.
 
 ## Inputs and outputs
 
@@ -56,7 +77,7 @@ The module depends on the outputs of the previous modules:
 | `data/single_cell_profiles/` | Normalized and feature-selected single-cell profiles per plate. |
 | `data/bulk_profiles/` | Aggregated, normalized, and feature-selected bulk profiles per plate. |
 
-Every MorphEm profile has the same metadata as the converted profiles (`Image_Metadata_Plate`, `Image_Metadata_Well`, `Image_Metadata_Site`, `Metadata_ImageNumber`, and the object numbers), along with the nucleus bounding box, the crop coordinates, and the fraction of each crop that was saturated in the camera per channel (`Metadata_Nucleocentric_<channel>_Saturated_Fraction`).
+Every MorphEm profile has the same metadata as the converted profiles (`Image_Metadata_Plate`, `Image_Metadata_Well`, `Image_Metadata_Site`, `Metadata_ImageNumber`, and the object numbers), along with the nucleus bounding box, the crop coordinates, and the fraction of each crop that was saturated in the camera per channel (`Metadata_Nucleocentric_SaturatedFraction_<channel>`).
 The saturated pixels are where MorphEm adds noise and where the features depend the most on the preprocessing, so we can use these columns to find single cells that might be too saturated (we do not remove them).
 
 ## Run the module
