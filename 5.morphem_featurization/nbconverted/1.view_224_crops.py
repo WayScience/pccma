@@ -110,7 +110,7 @@ def show_crop(
 
 
 # per single cell counts of the other nuclei in each crop (from 0.evaluate_crop_sizes.ipynb)
-counts_path = (module_dir / "data/crop_neighbor_counts_per_single_cell.parquet").resolve(strict=True)
+counts_path = (module_dir / "crop_evaluation/crop_neighbor_counts_per_single_cell.parquet").resolve(strict=True)
 
 # Directory with the converted CellProfiler profiles (one folder per cell line, one parquet file per plate)
 converted_dir = (root_dir / "4.preprocess_features/data/converted_profiles").resolve(strict=True)

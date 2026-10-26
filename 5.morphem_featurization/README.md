@@ -35,7 +35,7 @@ We expect this, and the nucleus of the single cell is always in the center of th
 
 ### Crops at the edge of the image
 
-**424,549 of the 1,420,883 crops (29.9%) are at the edge of the image** (21.2% to 37.1% per cell line, in `data/crop_size_summary.csv`).
+**424,549 of the 1,420,883 crops (29.9%) are at the edge of the image** (21.2% to 37.1% per cell line, in `crop_evaluation/crop_size_summary.csv`).
 We do not move these crops back inside the image, since that would put the nucleus off center (by up to 106 pixels).
 Instead, we keep every crop centered on its nucleus and pad the part outside the image.
 The padding is a median of 20.1% of these crops (95th percentile 41.5%, maximum 70.3% for a nucleus in the corner of the image).
@@ -72,7 +72,7 @@ We run the notebooks in order: first we check which crop holds the whole cell an
 
 | Notebook | Environment | Description |
 | --- | --- | --- |
-| `0.evaluate_crop_sizes.ipynb` | `environments/preprocessing` (uv) | Run before the extraction to choose the crop (sanity check, not run by `run_morphem_pipeline.sh`). Checks whether a 224 x 224 crop centered on the nucleus holds the whole cell (99.2% of the 1.4 million single cells before QC fit), counts the crops at the edge of the image (29.9%, padded instead of moved), and counts the other single cells in each crop. Saves `figures/crop_size_224_fit_per_cell_line.png`, a landscape version for slides (`figures/crop_size_224_fit_per_cell_line_slide.png`), `figures/crop_neighbors_per_cell_line_slide.png`, `data/crop_size_summary.csv`, and `data/crop_neighbor_summary.csv`. |
+| `0.evaluate_crop_sizes.ipynb` | `environments/preprocessing` (uv) | Run before the extraction to choose the crop (sanity check, not run by `run_morphem_pipeline.sh`). Checks whether a 224 x 224 crop centered on the nucleus holds the whole cell (99.2% of the 1.4 million single cells before QC fit), counts the crops at the edge of the image (29.9%, padded instead of moved), and counts the other single cells in each crop. Saves `figures/crop_size_224_fit_per_cell_line.png`, a landscape version for slides (`figures/crop_size_224_fit_per_cell_line_slide.png`), `figures/crop_neighbors_per_cell_line_slide.png`, `crop_evaluation/crop_size_summary.csv`, and `crop_evaluation/crop_neighbor_summary.csv`. |
 | `1.view_224_crops.ipynb` | `environments/preprocessing` (uv) | Run before the extraction to choose the crop (sanity check, not run by `run_morphem_pipeline.sh`). Shows example 224 x 224 crops centered on the nucleus for every cell line (single cells that passed QC, picked at the 25th, 50th, and 75th percentiles of the number of other nuclei in the crop), as composites of DNA, ER, and AGP. Saves `figures/example_224_crops_typical_per_cell_line.png` (one crop per cell line) and `figures/example_224_crops_per_cell_line.png` (three crops per cell line). Run `0.evaluate_crop_sizes.ipynb` first. |
 | `2.extract_morphem_features.ipynb` | `environments/morphem` (uv) | Extracts the MorphEm features for one cell line from one plate (`--plate` and `--cell_line`) and saves `data/morphem_profiles/<cell_line>/<plate>_<cell_line>_morphem.parquet`. When run as a notebook, it also shows example crops. |
 | `3.process_morphem_profiles.ipynb` | `environments/preprocessing` (uv) | For each plate: removes the single cells that failed QC from coSMicQC (using `4.preprocess_features/qc_results/`), annotates with the platemap, and creates the single-cell (standardize, feature select) and bulk (median, MAD robustize, feature select) profiles. |

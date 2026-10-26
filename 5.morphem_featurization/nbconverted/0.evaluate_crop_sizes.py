@@ -66,11 +66,11 @@ figure_path = module_dir / "figures/crop_size_224_fit_per_cell_line.png"
 slide_figure_path = module_dir / "figures/crop_size_224_fit_per_cell_line_slide.png"
 neighbor_figure_path = module_dir / "figures/crop_neighbors_per_cell_line_slide.png"
 figure_path.parent.mkdir(parents=True, exist_ok=True)
-summary_path = module_dir / "data/crop_size_summary.csv"
+summary_path = module_dir / "crop_evaluation/crop_size_summary.csv"
 summary_path.parent.mkdir(parents=True, exist_ok=True)
-neighbor_summary_path = module_dir / "data/crop_neighbor_summary.csv"
+neighbor_summary_path = module_dir / "crop_evaluation/crop_neighbor_summary.csv"
 # per single cell counts, used to pick example crops in 1.view_224_crops.ipynb
-single_cell_counts_path = module_dir / "data/crop_neighbor_counts_per_single_cell.parquet"
+single_cell_counts_path = module_dir / "crop_evaluation/crop_neighbor_counts_per_single_cell.parquet"
 
 # size of the crop to test (MORPHEM_INPUT_SIZE in utils/morphem_utils.py)
 crop_size = 224
