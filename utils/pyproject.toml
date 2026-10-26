@@ -1,0 +1,27 @@
+# Shared utility functions of the repository, installed as a package so the notebooks import them
+# directly (e.g., `from morphem_utils import featurize_crops`) instead of adding ../utils to sys.path.
+#
+# The uv environments in environments/ install this folder in editable mode (see [tool.uv.sources]
+# in their pyproject.toml), so changes to the functions are used without installing again.
+#
+# We do not list dependencies here, since each environment pins the packages that its utilities need
+# (e.g., torch for morphem_utils is only in the morphem environment).
+[project]
+name = "pccma-atlas-utils"
+version = "0.1.0"
+requires-python = ">=3.11"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = [
+    "bandicoot_utils",
+    "cp_parallel",
+    "loaddata_utils",
+    "morphem_utils",
+    "path_utils",
+    "preprocess_utils",
+]
+packages = ["errors"]

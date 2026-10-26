@@ -97,7 +97,7 @@ The module numbers follow the order in which we run them.
 | [5.morphem_featurization](./5.morphem_featurization/) | Extract nucleocentric deep learning features with MorphEm using the nuclei from CellProfiler, and process them into single-cell and bulk profiles. |
 | [cell_lines](./cell_lines/) | Build the consolidated cell line metadata table and create the descriptive figures of the cell lines. |
 | [environments](./environments/) | Conda environment files and a script to create the environments on an HPC cluster. |
-| [utils](./utils/) | Shared functions for creating LoadData CSVs, running CellProfiler in parallel, loading the single cells that passed QC, and extracting MorphEm features. |
+| [utils](./utils/) | Shared functions for creating LoadData CSVs, running CellProfiler in parallel, loading the single cells that passed QC, and extracting MorphEm features. The uv environments install it as a package in editable mode (`pccma-atlas-utils`), so notebooks import it without changing `sys.path`. |
 
 ## Quality control (QC) of poor quality images
 

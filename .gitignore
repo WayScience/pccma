@@ -37,3 +37,6 @@ runinfo/
 
 # Ignore uv virtual environments (created from the lock files in environments/)
 .venv/
+
+# Ignore build metadata from installing utils/ in editable mode
+*.egg-info/

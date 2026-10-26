@@ -1,0 +1,77 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata from this file, and cite the references below for the methods it uses."
+type: software
+title: "PCCMA Atlas image profiling"
+abstract: >-
+  Image analysis and image-based profiling workflows to extract morphology profiles from the
+  Pediatric Cancer Cell Morphology Atlas (PCCMA) dataset, a Cell Painting dataset of 56 cell lines
+  imaged at three time points. The workflows include image quality control, illumination correction,
+  CellProfiler segmentation and feature extraction, single-cell quality control with coSMicQC, profile processing
+  with pycytominer, and nucleocentric deep learning features with MorphEm.
+authors:
+  - given-names: Jenna
+    family-names: Tomkinson
+    orcid: "https://orcid.org/0000-0003-2676-5813"
+  - given-names: Gregory P.
+    family-names: Way
+    orcid: "https://orcid.org/0000-0002-0503-9348"
+repository-code: "https://github.com/WayScience/pccma_atlas_image_profiling"
+license: BSD-3-Clause
+keywords:
+  - Cell Painting
+  - image-based profiling
+  - morphology
+  - pediatric cancer
+  - CellProfiler
+  - MorphEm
+references:
+  - type: conference-paper
+    title: "CHAMMI-75: Pre-training multi-channel models with heterogeneous microscopy images"
+    abstract: "Introduces the CHAMMI-75 dataset and the MorphEm model that we use to extract the nucleocentric features in 5.morphem_featurization."
+    authors:
+      - given-names: Vidit
+        family-names: Agrawal
+      - given-names: John
+        family-names: Peters
+      - given-names: Tyler N.
+        family-names: Thompson
+      - given-names: Mohammad Vali
+        family-names: Sanian
+      - given-names: Chau
+        family-names: Pham
+      - given-names: Nikita
+        family-names: Moshkov
+      - given-names: Arshad
+        family-names: Kazi
+      - given-names: Aditya
+        family-names: Pillai
+      - given-names: Jack
+        family-names: Freeman
+      - given-names: Byunguk
+        family-names: Kang
+      - given-names: Samouil L.
+        family-names: Farhi
+      - given-names: Ernest
+        family-names: Fraenkel
+      - given-names: Ron M.
+        family-names: Stewart
+      - given-names: Lassi
+        family-names: Paavolainen
+      - given-names: Bryan A.
+        family-names: Plummer
+      - given-names: Juan C.
+        family-names: Caicedo
+    collection-title: "The Fourteenth International Conference on Learning Representations"
+    year: 2026
+    url: "https://openreview.net/forum?id=SLjqdj3LPk"
+  - type: software
+    title: "NF1 3D organoid profiling pipeline"
+    abstract: "We adapted the MorphEm featurization and the nucleocentric crops from this pipeline."
+    authors:
+      - given-names: Michael
+        family-names: Lippincott
+        orcid: "https://orcid.org/0000-0002-8637-1448"
+      - given-names: Jenna
+        family-names: Tomkinson
+        orcid: "https://orcid.org/0000-0003-2676-5813"
+    repository-code: "https://github.com/WayScience/NF1_3D_organoid_profiling_pipeline"

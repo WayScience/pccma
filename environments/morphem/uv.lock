@@ -1375,6 +1375,7 @@ dependencies = [
     { name = "nbconvert" },
     { name = "numpy" },
     { name = "pandas" },
+    { name = "pccma-atlas-utils" },
     { name = "pyarrow" },
     { name = "safetensors" },
     { name = "tifffile" },
@@ -1394,6 +1395,7 @@ requires-dist = [
     { name = "nbconvert", specifier = "==7.17.2" },
     { name = "numpy", specifier = "==2.4.6" },
     { name = "pandas", specifier = "==2.2.3" },
+    { name = "pccma-atlas-utils", editable = "../../utils" },
     { name = "pyarrow", specifier = "==22.0.0" },
     { name = "safetensors", specifier = "==0.8.0" },
     { name = "tifffile", specifier = "==2026.3.3" },
@@ -1402,6 +1404,11 @@ requires-dist = [
     { name = "tqdm", specifier = "==4.70.1" },
     { name = "transformers", specifier = "==4.57.6" },
 ]
+
+[[package]]
+name = "pccma-atlas-utils"
+version = "0.1.0"
+source = { editable = "../../utils" }
 
 [[package]]
 name = "pexpect"

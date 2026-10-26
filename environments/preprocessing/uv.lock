@@ -2707,6 +2707,7 @@ dependencies = [
     { name = "numpy" },
     { name = "pandas" },
     { name = "papermill" },
+    { name = "pccma-atlas-utils" },
     { name = "pyarrow" },
     { name = "pycytominer" },
     { name = "pyyaml" },
@@ -2732,6 +2733,7 @@ requires-dist = [
     { name = "numpy", specifier = "==2.4.6" },
     { name = "pandas", specifier = "==2.2.3" },
     { name = "papermill", specifier = "==2.7.0" },
+    { name = "pccma-atlas-utils", editable = "../../utils" },
     { name = "pyarrow", specifier = "==22.0.0" },
     { name = "pycytominer", specifier = "==1.7.1" },
     { name = "pyyaml", specifier = "==6.0.3" },
@@ -2742,6 +2744,11 @@ requires-dist = [
     { name = "tifffile", specifier = "==2026.3.3" },
     { name = "umap-learn", specifier = "==0.5.12" },
 ]
+
+[[package]]
+name = "pccma-atlas-utils"
+version = "0.1.0"
+source = { editable = "../../utils" }
 
 [[package]]
 name = "pexpect"

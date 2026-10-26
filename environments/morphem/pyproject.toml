@@ -1,4 +1,4 @@
-# uv environment for extracting the MorphEm features (5.morphem_featurization/0.extract_morphem_features.ipynb).
+# uv environment for extracting the MorphEm features (5.morphem_featurization/2.extract_morphem_features.ipynb).
 #
 # Create or update the environment (from this folder): uv sync --locked
 # Activate it: source environments/morphem/.venv/bin/activate
@@ -28,7 +28,12 @@ dependencies = [
     "jupyter==1.1.1",
     "ipykernel==7.4.0",
     "nbconvert==7.17.2",
+    # shared utilities of the repository (utils/), installed in editable mode from [tool.uv.sources]
+    "pccma-atlas-utils",
 ]
+
+[tool.uv.sources]
+pccma-atlas-utils = { path = "../../utils", editable = true }
 
 [tool.uv]
 package = false

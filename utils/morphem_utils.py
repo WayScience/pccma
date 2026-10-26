@@ -6,8 +6,8 @@ It takes one channel at a time and outputs a 384-dimensional embedding (CLS toke
 
 The preprocessing transforms (SaturationNoiseInjector and PerImageNormalize) are copied from the
 MorphEm model card: https://huggingface.co/CaicedoLab/MorphEm
-The nucleocentric approach (expand the nucleus bounding box by 25 pixels in each direction and
-square the crop) is adapted from Mike Lippincott's code in the NF1 3D organoid profiling pipeline:
+The nucleocentric approach (a crop centered on each nucleus) is adapted from Mike Lippincott's code
+in the NF1 3D organoid profiling pipeline:
 https://github.com/WayScience/NF1_3D_organoid_profiling_pipeline/blob/main/utils/src/image_analysis_3D/featurization_utils/morphem_featurization.py
 https://github.com/WayScience/NF1_3D_organoid_profiling_pipeline/blob/main/3.cellprofiling/scripts/nucleo_centric_featurization.py
 
@@ -20,6 +20,10 @@ We make the following changes for 2D images and to process many nuclei at once:
 - We convert each crop from 16-bit to 8-bit, since MorphEm was trained on 8-bit images and
   SaturationNoiseInjector finds saturated pixels by the value 255 (only the pixels that were
   saturated in the camera become 255).
+- We crop 224 x 224 pixels centered on each nucleus (the MorphEm input size) instead of the nucleus
+  bounding box plus 25 pixels, so MorphEm does not resize the crops and every single cell has the
+  same scale. We pad crops at the edge of the image instead of moving them, so the nucleus is always
+  in the center.
 """
 
 import numpy as np
@@ -100,6 +104,7 @@ class PerImageNormalize(nn.Module):
 
 
 # transforms in the same order as the MorphEm model card, applied to one crop of shape (1, H, W)
+# (our crops are already 224 x 224, so Resize does not change them)
 MORPHEM_TRANSFORM = v2.Compose(
     [
         SaturationNoiseInjector(),
@@ -147,55 +152,176 @@ def rescale_crop_to_8bit(crop: np.ndarray, saturated: np.ndarray) -> np.ndarray:
 
 
 def get_nucleocentric_crop_box(
-    center_x: float,
-    center_y: float,
-    bbox_min_x: float,
-    bbox_max_x: float,
-    bbox_min_y: float,
-    bbox_max_y: float,
-    expand_pixels: int,
-    image_shape: tuple[int, int],
-) -> tuple[int, int, int, int, bool]:
+    center_x: float, center_y: float, crop_size: int = MORPHEM_INPUT_SIZE
+) -> tuple[int, int, int, int]:
     """
-    Find a square crop centered on the nucleus that includes the nucleus bounding box plus
-    `expand_pixels` in each direction.
+    Find the square crop of `crop_size` pixels centered on the nucleus.
 
-    The side of the square is the longest side of the nucleus bounding box plus two times
-    `expand_pixels`. When the square goes past the edge of the image, we move it back inside the
-    image instead of making it smaller or padding it, so every crop is square and only holds
-    real pixels (the nucleus is then off center).
+    Every crop has the same size as the MorphEm input (224 x 224 pixels), so MorphEm does not resize
+    the crops and every single cell has the same scale. We do not move crops at the edge of the image
+    back inside the image, so the nucleus is always in the center of the crop. The part of the crop
+    outside the image is padded by crop_with_padding.
 
     Parameters
     ----------
     center_x, center_y : float
         Center of the nucleus from CellProfiler (Nuclei_Location_Center_X/Y).
-    bbox_min_x, bbox_max_x, bbox_min_y, bbox_max_y : float
-        Bounding box of the nucleus from CellProfiler (Nuclei_AreaShape_BoundingBox*).
-    expand_pixels : int
-        Number of pixels to add on each side of the bounding box.
-    image_shape : tuple[int, int]
-        Shape of the image (height, width).
+    crop_size : int
+        Side of the square crop in pixels.
 
     Returns
     -------
-    tuple[int, int, int, int, bool]
-        (y_min, y_max, x_min, x_max, shifted) of the crop, where the max values are exclusive and
-        shifted is True when the crop was moved to stay inside the image.
+    tuple[int, int, int, int]
+        (y_min, y_max, x_min, x_max) of the crop, where the max values are exclusive. The values can
+        be outside the image when the nucleus is near the edge.
+    """
+    x_min = round(center_x - crop_size / 2)
+    y_min = round(center_y - crop_size / 2)
+    return y_min, y_min + crop_size, x_min, x_min + crop_size
+
+
+def crop_with_padding(
+    image: np.ndarray,
+    crop_box: tuple[int, int, int, int],
+    pad_value: float | bool | None = None,
+) -> tuple[np.ndarray, float]:
+    """
+    Crop an image and pad the part of the crop that is outside the image.
+
+    Parameters
+    ----------
+    image : np.ndarray
+        2D image (one channel of a FOV, or a mask of the FOV).
+    crop_box : tuple[int, int, int, int]
+        (y_min, y_max, x_min, x_max) of the crop from get_nucleocentric_crop_box.
+    pad_value : float | bool | None
+        Value of the padded pixels. If None, use the minimum of the pixels inside the image, so the
+        padded pixels become 0 when we rescale the crop to 8-bit (the same as a dark background).
+
+    Returns
+    -------
+    tuple[np.ndarray, float]
+        The crop and the fraction of the crop that is padding (0 when the crop is inside the image).
+    """
+    y_min, y_max, x_min, x_max = crop_box
+    height, width = image.shape
+    inside = image[max(y_min, 0) : min(y_max, height), max(x_min, 0) : min(x_max, width)]
+    if pad_value is None:
+        pad_value = inside.min()
+    pad_widths = (
+        (max(-y_min, 0), max(y_max - height, 0)),
+        (max(-x_min, 0), max(x_max - width, 0)),
+    )
+    crop = np.pad(inside, pad_widths, mode="constant", constant_values=pad_value)
+    pad_fraction = 1 - inside.size / crop.size
+    return crop, pad_fraction
+
+
+def count_other_nuclei(
+    crop_boxes: np.ndarray, center_x: np.ndarray, center_y: np.ndarray
+) -> np.ndarray:
+    """
+    Count the other nuclei in the crop of each single cell of one FOV.
+
+    A nucleus counts when its center is inside the crop, so a neighbor only counts when a large part
+    of it is in the crop (not just the tip of a protrusion).
+
+    Parameters
+    ----------
+    crop_boxes : np.ndarray
+        (number of single cells, 4) array of (y_min, y_max, x_min, x_max) of each crop.
+    center_x, center_y : np.ndarray
+        Center of the nucleus of each single cell, in the same order as crop_boxes.
+
+    Returns
+    -------
+    np.ndarray
+        Number of other nuclei in each crop (not counting the nucleus of the single cell).
+    """
+    y_min, y_max, x_min, x_max = np.asarray(crop_boxes).T
+    inside = (
+        (center_x[None, :] >= x_min[:, None])
+        & (center_x[None, :] < x_max[:, None])
+        & (center_y[None, :] >= y_min[:, None])
+        & (center_y[None, :] < y_max[:, None])
+    )
+    np.fill_diagonal(inside, False)
+    return inside.sum(axis=1)
+
+
+def _sum_in_boxes(
+    summed: np.ndarray, y_min: np.ndarray, y_max: np.ndarray, x_min: np.ndarray, x_max: np.ndarray
+) -> np.ndarray:
+    # sum of a mask inside each box from its summed-area table (boxes are clipped to the image)
+    height, width = summed.shape[0] - 1, summed.shape[1] - 1
+    y_min, y_max = np.clip(y_min, 0, height), np.clip(y_max, 0, height)
+    x_min, x_max = np.clip(x_min, 0, width), np.clip(x_max, 0, width)
+    y_max, x_max = np.maximum(y_max, y_min), np.maximum(x_max, x_min)
+    return summed[y_max, x_max] - summed[y_min, x_max] - summed[y_max, x_min] + summed[y_min, x_min]
+
+
+def get_other_cell_overlap(
+    crop_boxes: np.ndarray, cell_boxes: np.ndarray, image_shape: tuple[int, int]
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Measure how much of each crop and each single cell overlaps the other single cells of one FOV.
+
+    We use the bounding boxes of the cells from CellProfiler, so the overlap is an upper bound of the
+    overlap of the cells themselves (a bounding box also covers the background around a cell).
+
+    Parameters
+    ----------
+    crop_boxes : np.ndarray
+        (number of single cells, 4) array of (y_min, y_max, x_min, x_max) of each crop.
+    cell_boxes : np.ndarray
+        (number of single cells, 4) array of (y_min, y_max, x_min, x_max) of the bounding box of each
+        cell (Cells_AreaShape_BoundingBox*, max values exclusive), in the same order as crop_boxes.
+    image_shape : tuple[int, int]
+        Shape of the FOV (height, width).
+
+    Returns
+    -------
+    tuple[np.ndarray, np.ndarray]
+        The fraction of each crop covered by the bounding boxes of the other cells, and the fraction
+        of the bounding box of each cell that overlaps the bounding boxes of the other cells.
     """
     height, width = image_shape
-    side = int(max(bbox_max_x - bbox_min_x, bbox_max_y - bbox_min_y)) + 2 * expand_pixels
-    side = min(side, height, width)
+    crop_boxes = np.asarray(crop_boxes, dtype=int)
+    cell_boxes = np.clip(np.asarray(cell_boxes, dtype=int), 0, [height, height, width, width])
+    cell_y_min, cell_y_max, cell_x_min, cell_x_max = cell_boxes.T
+    crop_y_min, crop_y_max, crop_x_min, crop_x_max = crop_boxes.T
 
-    # top left corner of the square centered on the nucleus
-    x_min = round(center_x - side / 2)
-    y_min = round(center_y - side / 2)
+    # number of cell bounding boxes that cover each pixel of the FOV
+    corners = np.zeros((height + 1, width + 1), dtype=np.int32)
+    np.add.at(corners, (cell_y_min, cell_x_min), 1)
+    np.add.at(corners, (cell_y_min, cell_x_max), -1)
+    np.add.at(corners, (cell_y_max, cell_x_min), -1)
+    np.add.at(corners, (cell_y_max, cell_x_max), 1)
+    coverage = corners.cumsum(axis=0).cumsum(axis=1)[:height, :width]
 
-    # move the square back inside the image if needed
-    x_min_inside = min(max(x_min, 0), width - side)
-    y_min_inside = min(max(y_min, 0), height - side)
-    shifted = (x_min_inside != x_min) or (y_min_inside != y_min)
+    # summed-area tables of the pixels covered by at least one and at least two bounding boxes
+    def summed_area(mask: np.ndarray) -> np.ndarray:
+        summed = np.zeros((height + 1, width + 1), dtype=np.int64)
+        summed[1:, 1:] = mask.cumsum(axis=0).cumsum(axis=1)
+        return summed
 
-    return y_min_inside, y_min_inside + side, x_min_inside, x_min_inside + side, shifted
+    at_least_one, at_least_two = summed_area(coverage >= 1), summed_area(coverage >= 2)
+
+    # pixels of the crop covered by another cell: outside the cell's own box, any box counts;
+    # inside its own box, only pixels covered by at least two boxes (its own and another one)
+    own_y_min, own_y_max = np.maximum(cell_y_min, crop_y_min), np.minimum(cell_y_max, crop_y_max)
+    own_x_min, own_x_max = np.maximum(cell_x_min, crop_x_min), np.minimum(cell_x_max, crop_x_max)
+    covered_in_crop = (
+        _sum_in_boxes(at_least_one, crop_y_min, crop_y_max, crop_x_min, crop_x_max)
+        - _sum_in_boxes(at_least_one, own_y_min, own_y_max, own_x_min, own_x_max)
+        + _sum_in_boxes(at_least_two, own_y_min, own_y_max, own_x_min, own_x_max)
+    )
+    crop_area = (crop_y_max - crop_y_min) * (crop_x_max - crop_x_min)
+
+    cell_area = np.maximum((cell_y_max - cell_y_min) * (cell_x_max - cell_x_min), 1)
+    overlap_in_cell = _sum_in_boxes(at_least_two, cell_y_min, cell_y_max, cell_x_min, cell_x_max)
+
+    return covered_in_crop / crop_area, overlap_in_cell / cell_area
 
 
 def preprocess_crops(crops: list[np.ndarray]) -> torch.Tensor:
@@ -205,7 +331,7 @@ def preprocess_crops(crops: list[np.ndarray]) -> torch.Tensor:
     Parameters
     ----------
     crops : list[np.ndarray]
-        8-bit 2D crops of one channel (crops can have different sizes).
+        8-bit 2D crops of one channel.
 
     Returns
     -------

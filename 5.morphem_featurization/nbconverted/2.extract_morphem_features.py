@@ -12,13 +12,17 @@
 # For each field of view (FOV), we:
 # 
 # 1. Load the five channels, find the saturated pixels, and apply the illumination correction functions (divide, the same as in the CellProfiler pipelines).
-# 2. Crop a square around the center of each nucleus that is the size of the nucleus bounding box plus 25 pixels in each direction (adapted from the NF1 3D organoid profiling pipeline).
+# 2. Crop 224 x 224 pixels centered on each nucleus (the MorphEm input size, so MorphEm does not resize the crops and every single cell has the same scale).
+# We chose this crop with `0.evaluate_crop_sizes.ipynb` and `1.view_224_crops.ipynb`: it holds the whole cell for 99.2% of single cells, and most crops also include neighboring cells.
+# When the nucleus is near the edge of the image, we do not move the crop back inside the image, so the nucleus is always in the center; we pad the part of the crop outside the image with the minimum of the crop (0 after rescaling, like the dark background).
 # 3. Rescale each crop to 8-bit, since MorphEm was trained on 8-bit images, where only the pixels that were saturated in the camera become 255 (MorphEm replaces them with noise).
 # 4. Extract the 384 MorphEm features (CLS token) from each channel of each crop, which gives 1,920 features per single cell.
 # 
 # We name the features like the CellProfiler features (compartment, feature group, measurement, then channel), so tools that expect the channel at the end of the name also work: `Nucleocentric_MorphEm_Feature<n>_<channel>` (e.g., `Nucleocentric_MorphEm_Feature0_DNA`, with `<n>` from 0 to 383).
 # 
 # We save the features with the same metadata columns as the converted profiles (plate, well, site, image number, and object numbers), so we can remove the single cells that failed QC with the QC annotations from `4.preprocess_features/1.sc_quality_control.ipynb`.
+# We also save whether each crop is at the edge of the image and the fraction of the crop that is padding (`Metadata_Nucleocentric_Crop_At_Edge` and `Metadata_Nucleocentric_Pad_Fraction`), and how crowded each crop is: the number of other nuclei in the crop, the fraction of the crop covered by the bounding boxes of other cells, and the fraction of the cell's bounding box that overlaps the bounding boxes of other cells (`Metadata_Nucleocentric_Other_Nuclei_Count`, `Metadata_Nucleocentric_Other_Cells_Fraction`, and `Metadata_Nucleocentric_Cell_Overlap_Fraction`).
+# We do not remove any single cells with these columns, but we can use them in later analyses (e.g., to remove crowded crops).
 
 # ## Import libraries
 
@@ -29,23 +33,25 @@ import argparse
 import os
 import pathlib
 import re
-import sys
 import time
 
 import numpy as np
 import pandas as pd
 import tifffile
 import torch
-
-sys.path.append("../utils")
 from bandicoot_utils import bandicoot_check
 from morphem_utils import (
+    MORPHEM_INPUT_SIZE,
     MORPHEM_REVISION,
+    count_other_nuclei,
+    crop_with_padding,
     featurize_crops,
     get_morphem_model,
     get_nucleocentric_crop_box,
+    get_other_cell_overlap,
     rescale_crop_to_8bit,
 )
+from path_utils import get_root_dir
 
 # check if in a jupyter notebook
 try:
@@ -53,6 +59,23 @@ try:
     in_notebook = True
 except NameError:
     in_notebook = False
+
+# root of the repository (found from the .git folder), so every path is built from the root
+# and the notebook gives the same paths whether we run it from this folder or from the root
+root_dir = get_root_dir()
+module_dir = root_dir / "5.morphem_featurization"
+
+
+# ## Define functions
+
+# In[ ]:
+
+
+def correct_illumination(image: np.ndarray, illum_function: np.ndarray) -> np.ndarray:
+    # the same as CorrectIlluminationApply in CellProfiler (divide, then set values below 0 to 0 and above
+    # the maximum to the maximum), but in the 16-bit range instead of 0 to 1 (CellProfiler divides the
+    # images by 65535 when loading them), which is a constant factor that the 8-bit rescaling of each crop removes
+    return np.clip(image.astype(np.float32) / illum_function, 0, np.iinfo(image.dtype).max)
 
 
 # ## Set paths and variables
@@ -78,11 +101,11 @@ else:
     batch_size = 256
     overwrite = False
 
-# number of pixels to add on each side of the nucleus bounding box (same as the NF1 pipeline as a start)
-expand_pixels = 25
+# side of the square crop centered on each nucleus (the MorphEm input size, chosen in 0.evaluate_crop_sizes.ipynb)
+crop_size = MORPHEM_INPUT_SIZE
 
 # channel names in the converted profiles (Image_FileName_Orig<channel>) and illumination functions (<plate>_Illum<channel>.npy)
-channels = ["DNA", "ER", "RNA", "AGP", "Mito"]
+channels = ["DNA", "ER", "RNA", "AGP", "Mito"] # constant list
 
 # set the seed, since MorphEm replaces the saturated pixels with random noise
 seed = 0
@@ -90,9 +113,6 @@ torch.manual_seed(seed)
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Using device: {device}")
-
-# Find root directory of the project
-root_dir = pathlib.Path().cwd()
 
 image_base_dir = bandicoot_check(
     pathlib.Path(os.path.expanduser("~/mnt/bandicoot")).resolve(), root_dir
@@ -102,19 +122,39 @@ image_base_dir = bandicoot_check(
 images_dir = pathlib.Path(f"{image_base_dir}/PCCMA_data/Atlas_v2_screen")
 
 # converted profile of the job with the center and bounding box of each nucleus from CellProfiler
-converted_path = pathlib.Path(
-    f"../4.preprocess_features/data/converted_profiles/{cell_line}/{plate}_{cell_line}_converted.parquet"
+converted_path = (
+    root_dir / "4.preprocess_features/data/converted_profiles" / cell_line / f"{plate}_{cell_line}_converted.parquet"
 ).resolve(strict=True)
 
 # illumination correction functions of the plate
-illum_dir = pathlib.Path(f"../2.illumination_correction/illum_directory/{plate}").resolve(strict=True)
+illum_dir = (root_dir / "2.illumination_correction/illum_directory" / plate).resolve(strict=True)
 
 # one folder per cell line with one parquet file per plate (time point), the same as the converted profiles
-output_dir = pathlib.Path(f"./data/morphem_profiles/{cell_line}")
+output_dir = module_dir / "data/morphem_profiles" / cell_line
 output_dir.mkdir(parents=True, exist_ok=True)
 output_path = output_dir / f"{plate}_{cell_line}_morphem.parquet"
 
-print(f"Processing {cell_line} from {plate}")
+# illumination correction function of each channel (<plate>_Illum<channel>.npy)
+illum_paths = {
+    channel: illum_dir / f"{plate}_Illum{channel}.npy"
+    for channel in channels
+}
+
+# extract the features unless the output already exists (every step below only runs when this is True)
+extract_features = overwrite or not output_path.exists()
+if not extract_features:
+    print(f"Skipping {plate} {cell_line} (found {output_path})")
+else:
+    # stop before loading the profile or the model if any illumination correction function is missing
+    missing_illum = [
+        str(path) for path in illum_paths.values() if not path.is_file()
+    ]
+    if missing_illum:
+        raise FileNotFoundError(
+            "Cannot extract MorphEm features due to missing illumination functions; "
+            f"missing illumination function(s): {missing_illum}"
+        )
+    print(f"Processing {cell_line} from {plate}")
 
 
 # ## Load the single cells from the converted profile
@@ -142,22 +182,20 @@ id_columns = [
     "Metadata_Cells_Location_Center_Y",
 ]
 
-# nucleus bounding box from CellProfiler (we add the Metadata prefix so pycytominer keeps them as metadata)
+# nucleus and cell bounding boxes from CellProfiler (we add the Metadata prefix so pycytominer keeps them as metadata)
+# the cell bounding boxes are used to measure how much each crop and cell overlaps the other cells
 bbox_columns = [
-    "Nuclei_AreaShape_BoundingBoxMinimum_X",
-    "Nuclei_AreaShape_BoundingBoxMaximum_X",
-    "Nuclei_AreaShape_BoundingBoxMinimum_Y",
-    "Nuclei_AreaShape_BoundingBoxMaximum_Y",
+    f"{compartment}_AreaShape_BoundingBox{bound}_{axis}"
+    for compartment in ("Nuclei", "Cells")
+    for bound in ("Minimum", "Maximum")
+    for axis in ("X", "Y")
 ]
 
 image_columns = [f"Image_FileName_Orig{channel}" for channel in channels] + [
     f"Image_PathName_Orig{channel}" for channel in channels
 ]
 
-if output_path.exists() and not overwrite:
-    print(f"Skipping {plate} {cell_line} (found {output_path})")
-    single_cell_df = None
-else:
+if extract_features:
     single_cell_df = pd.read_parquet(
         converted_path, columns=id_columns + bbox_columns + image_columns
     )
@@ -186,9 +224,9 @@ else:
 # In[ ]:
 
 
-if single_cell_df is not None:
+if extract_features:
     illum_functions = {
-        channel: np.load(illum_dir / f"{plate}_Illum{channel}.npy") for channel in channels
+        channel: np.load(path) for channel, path in illum_paths.items()
     }
 
     model = get_morphem_model(device)
@@ -200,9 +238,7 @@ if single_cell_df is not None:
 # In[ ]:
 
 
-feature_names = None
-
-if single_cell_df is not None:
+if extract_features:
     start_time = time.time()
     fov_dfs = []
 
@@ -221,41 +257,67 @@ if single_cell_df is not None:
             image = tifffile.imread(image_path)
             assert image.shape == illum_functions[channel].shape, f"{image_path} does not match the shape of the illumination function"
             fov_saturated[channel] = image == np.iinfo(image.dtype).max
-            fov_images[channel] = image.astype(np.float32) / illum_functions[channel]
-        image_shape = fov_images[channels[0]].shape
+            fov_images[channel] = correct_illumination(image, illum_functions[channel])
 
-        # find the nucleocentric crop of each nucleus (the same crop for every channel)
+        # find the crop centered on each nucleus (the same crop for every channel, can go past the edge of the image)
         crop_boxes = [
             get_nucleocentric_crop_box(
                 center_x=record["Metadata_Nuclei_Location_Center_X"],
                 center_y=record["Metadata_Nuclei_Location_Center_Y"],
-                bbox_min_x=record["Nuclei_AreaShape_BoundingBoxMinimum_X"],
-                bbox_max_x=record["Nuclei_AreaShape_BoundingBoxMaximum_X"],
-                bbox_min_y=record["Nuclei_AreaShape_BoundingBoxMinimum_Y"],
-                bbox_max_y=record["Nuclei_AreaShape_BoundingBoxMaximum_Y"],
-                expand_pixels=expand_pixels,
-                image_shape=image_shape,
+                crop_size=crop_size,
             )
             for record in fov_df.to_dict(orient="records")
         ]
+        # fraction of each crop that is outside the image (padding), which is the same for every channel
+        pad_fractions = [
+            crop_with_padding(fov_saturated[channels[0]], crop_box, pad_value=False)[1]
+            for crop_box in crop_boxes
+        ]
+
+        # how crowded each crop is (every single cell segmented in the FOV, before QC):
+        # the number of other nuclei in the crop, the fraction of the crop covered by the bounding boxes of
+        # other cells, and the fraction of the cell's bounding box that overlaps the bounding boxes of other cells
+        other_nuclei_counts = count_other_nuclei(
+            crop_boxes,
+            fov_df["Metadata_Nuclei_Location_Center_X"].to_numpy(),
+            fov_df["Metadata_Nuclei_Location_Center_Y"].to_numpy(),
+        )
+        cell_boxes = fov_df[
+            [
+                "Cells_AreaShape_BoundingBoxMinimum_Y",
+                "Cells_AreaShape_BoundingBoxMaximum_Y",
+                "Cells_AreaShape_BoundingBoxMinimum_X",
+                "Cells_AreaShape_BoundingBoxMaximum_X",
+            ]
+        ].to_numpy()
+        other_cells_fractions, cell_overlap_fractions = get_other_cell_overlap(
+            crop_boxes, cell_boxes, fov_saturated[channels[0]].shape
+        )
 
         # extract the features of each channel (one block of 384 features per channel)
         channel_feature_dfs = []
         saturated_fractions = {}
+        zero_fractions = {}
         for channel in channels:
+            # the padding is never saturated, and the padded pixels become 0 after rescaling to 8-bit
+            saturated_crops = [
+                crop_with_padding(fov_saturated[channel], crop_box, pad_value=False)[0]
+                for crop_box in crop_boxes
+            ]
             # fraction of the crop that was saturated in the camera (MorphEm replaces these pixels with noise)
             saturated_fractions[
                 f"Metadata_Nucleocentric_SaturatedFraction_{channel}"
-            ] = [
-                fov_saturated[channel][y_min:y_max, x_min:x_max].mean()
-                for y_min, y_max, x_min, x_max, _ in crop_boxes
-            ]
+            ] = [saturated_crop.mean() for saturated_crop in saturated_crops]
             crops = [
                 rescale_crop_to_8bit(
-                    fov_images[channel][y_min:y_max, x_min:x_max],
-                    saturated=fov_saturated[channel][y_min:y_max, x_min:x_max],
+                    crop_with_padding(fov_images[channel], crop_box)[0],
+                    saturated=saturated_crop,
                 )
-                for y_min, y_max, x_min, x_max, _ in crop_boxes
+                for crop_box, saturated_crop in zip(crop_boxes, saturated_crops)
+            ]
+            # fraction of the 8-bit crop that is 0 (the padding and the darkest pixels of the crop), which MorphEm sees as empty
+            zero_fractions[f"Metadata_Nucleocentric_ZeroFraction_{channel}"] = [
+                (crop == 0).mean() for crop in crops
             ]
             features = featurize_crops(crops, model=model, device=device, batch_size=batch_size)
             channel_feature_dfs.append(
@@ -276,12 +338,17 @@ if single_cell_df is not None:
                 "Metadata_Nucleocentric_Crop_Maximum_Y",
                 "Metadata_Nucleocentric_Crop_Minimum_X",
                 "Metadata_Nucleocentric_Crop_Maximum_X",
-                "Metadata_Nucleocentric_Crop_Shifted",
             ],
             index=fov_df.index,
         )
+        crop_df["Metadata_Nucleocentric_Pad_Fraction"] = pad_fractions
+        crop_df["Metadata_Nucleocentric_Crop_At_Edge"] = crop_df["Metadata_Nucleocentric_Pad_Fraction"] > 0
+        crop_df["Metadata_Nucleocentric_Other_Nuclei_Count"] = other_nuclei_counts
+        crop_df["Metadata_Nucleocentric_Other_Cells_Fraction"] = other_cells_fractions
+        crop_df["Metadata_Nucleocentric_Cell_Overlap_Fraction"] = cell_overlap_fractions
         saturated_df = pd.DataFrame(saturated_fractions, index=fov_df.index)
-        fov_dfs.append(pd.concat([crop_df, saturated_df] + channel_feature_dfs, axis=1))
+        zero_df = pd.DataFrame(zero_fractions, index=fov_df.index)
+        fov_dfs.append(pd.concat([crop_df, saturated_df, zero_df] + channel_feature_dfs, axis=1))
 
         if fov_number % 10 == 0:
             print(
@@ -303,7 +370,7 @@ if single_cell_df is not None:
 # In[ ]:
 
 
-if feature_names is not None:
+if extract_features:
     morphem_df = pd.concat(
         [
             single_cell_df[id_columns + image_columns],
@@ -312,7 +379,7 @@ if feature_names is not None:
         ],
         axis=1,
     )
-    morphem_df["Metadata_Nucleocentric_Expand_Pixels"] = expand_pixels
+    morphem_df["Metadata_Nucleocentric_Crop_Size"] = crop_size
 
     # every single cell from the converted profile should have features
     assert len(morphem_df) == len(single_cell_df), "Single cells were lost during featurization"
@@ -323,20 +390,27 @@ if feature_names is not None:
     morphem_df.to_parquet(temp_path, index=False)
     temp_path.replace(output_path)
 
+    at_edge = morphem_df["Metadata_Nucleocentric_Crop_At_Edge"]
+    print(f"Saved {output_path} with the shape {morphem_df.shape}")
     print(
-        f"Saved {output_path} with the shape {morphem_df.shape} "
-        f"({morphem_df['Metadata_Nucleocentric_Crop_Shifted'].sum()} crops moved inside the image at the edges)"
+        f"{at_edge.sum()} of {len(morphem_df)} crops ({at_edge.mean():.1%}) are at the edge of the image and padded "
+        f"(median padding of those crops: {morphem_df.loc[at_edge, 'Metadata_Nucleocentric_Pad_Fraction'].median():.1%})"
+    )
+    print(
+        f"Median per crop: {morphem_df['Metadata_Nucleocentric_Other_Nuclei_Count'].median():.0f} other nuclei, "
+        f"{morphem_df['Metadata_Nucleocentric_Other_Cells_Fraction'].median():.1%} of the crop covered by other cells, "
+        f"{morphem_df['Metadata_Nucleocentric_Cell_Overlap_Fraction'].median():.1%} of the cell overlapping other cells (bounding boxes)"
     )
 
 
 # ## Show example crops (notebook only)
 # 
-# We show the crops of a few single cells with the nucleus bounding box in red, to confirm that the crops are centered on the nuclei.
+# We show the crops of a few single cells with the nucleus bounding box in red, to confirm that the crops are centered on the nuclei (as a sanity check).
 
 # In[ ]:
 
 
-if in_notebook and feature_names is not None:
+if in_notebook and extract_features:
     import matplotlib.patches as patches
     import matplotlib.pyplot as plt
 
@@ -352,16 +426,22 @@ if in_notebook and feature_names is not None:
                 image_path = pathlib.Path(record[f"Image_PathName_Orig{channel}"]) / record[f"Image_FileName_Orig{channel}"]
                 image = tifffile.imread(image_path)
                 image_cache[channel] = (
-                    image.astype(np.float32) / illum_functions[channel],
+                    correct_illumination(image, illum_functions[channel]),
                     image == np.iinfo(image.dtype).max,
                 )
-            y_min, y_max = record["Metadata_Nucleocentric_Crop_Minimum_Y"], record["Metadata_Nucleocentric_Crop_Maximum_Y"]
-            x_min, x_max = record["Metadata_Nucleocentric_Crop_Minimum_X"], record["Metadata_Nucleocentric_Crop_Maximum_X"]
+            crop_box = (
+                record["Metadata_Nucleocentric_Crop_Minimum_Y"], record["Metadata_Nucleocentric_Crop_Maximum_Y"],
+                record["Metadata_Nucleocentric_Crop_Minimum_X"], record["Metadata_Nucleocentric_Crop_Maximum_X"],
+            )
+            y_min, x_min = crop_box[0], crop_box[2]
             corrected, saturated = image_cache[channel]
             ax = axes[row, col]
-            # show the same 8-bit crop that MorphEm receives (saturated pixels are 255)
+            # show the same 8-bit crop that MorphEm receives (saturated pixels are 255, padding is 0)
             ax.imshow(
-                rescale_crop_to_8bit(corrected[y_min:y_max, x_min:x_max], saturated[y_min:y_max, x_min:x_max]),
+                rescale_crop_to_8bit(
+                    crop_with_padding(corrected, crop_box)[0],
+                    crop_with_padding(saturated, crop_box, pad_value=False)[0],
+                ),
                 cmap="gray", vmin=0, vmax=255,
             )
             ax.add_patch(
@@ -375,7 +455,7 @@ if in_notebook and feature_names is not None:
             ax.set_axis_off()
             if row == 0:
                 ax.set_title(channel)
-    plt.suptitle(f"Nucleocentric crops (+{expand_pixels} pixels) for {cell_line} from {plate}")
+    plt.suptitle(f"Nucleocentric crops ({crop_size} x {crop_size} pixels) for {cell_line} from {plate}")
     plt.tight_layout()
     plt.show()
 

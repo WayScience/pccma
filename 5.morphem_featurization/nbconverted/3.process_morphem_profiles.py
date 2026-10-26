@@ -26,15 +26,19 @@ import gc
 import os
 import pathlib
 import pprint
-import sys
 import time
 
 import pandas as pd
 from pycytominer import aggregate, annotate, feature_select, normalize
 from pycytominer.cyto_utils import output
 
-sys.path.append("../utils")
+from path_utils import get_root_dir
 from preprocess_utils import load_plate_passing_qc
+
+# root of the repository (found from the .git folder), so every path is built from the root
+# and the notebook gives the same paths whether we run it from this folder or from the root
+root_dir = get_root_dir()
+module_dir = root_dir / "5.morphem_featurization"
 
 
 # ## Set paths and variables
@@ -43,7 +47,7 @@ from preprocess_utils import load_plate_passing_qc
 
 
 # Directory with the MorphEm profiles (one folder per cell line, one parquet file per plate/time point)
-morphem_dir = pathlib.Path("./data/morphem_profiles").resolve(strict=True)
+morphem_dir = (module_dir / "data/morphem_profiles").resolve(strict=True)
 
 # extract the plate names from the MorphEm profiles (<plate>_<cell_line>_morphem.parquet)
 plate_names = sorted(
@@ -51,18 +55,18 @@ plate_names = sorted(
 )
 
 # Directory with the converted CellProfiler profiles, to confirm that every job on a plate has a MorphEm profile
-converted_dir = pathlib.Path("../4.preprocess_features/data/converted_profiles").resolve(strict=True)
+converted_dir = (root_dir / "4.preprocess_features/data/converted_profiles").resolve(strict=True)
 
 # Directory with the QC annotations of the CellProfiler profiles (one file per cell line)
-qc_results_dir = pathlib.Path("../4.preprocess_features/qc_results").resolve(strict=True)
+qc_results_dir = (root_dir / "4.preprocess_features/qc_results").resolve(strict=True)
 
 # path for platemap directory (one platemap per plate)
-platemap_dir = pathlib.Path("../0.download_data/metadata/platemaps").resolve(strict=True)
+platemap_dir = (root_dir / "0.download_data/metadata/platemaps").resolve(strict=True)
 
 # output directories
-annotated_dir = pathlib.Path("./data/annotated_profiles")
-single_cell_dir = pathlib.Path("./data/single_cell_profiles")
-bulk_dir = pathlib.Path("./data/bulk_profiles")
+annotated_dir = module_dir / "data/annotated_profiles"
+single_cell_dir = module_dir / "data/single_cell_profiles"
+bulk_dir = module_dir / "data/bulk_profiles"
 for directory in (annotated_dir, single_cell_dir, bulk_dir):
     directory.mkdir(parents=True, exist_ok=True)
 
@@ -130,59 +134,68 @@ for plate_id, info in plate_info_dictionary.items():
     extracted_jobs = {path.name.replace("_morphem.parquet", "") for path in morphem_dir.glob(f"*/{plate_id}_*_morphem.parquet")}
     missing_jobs = sorted(expected_jobs - extracted_jobs)
     if missing_jobs:
-        raise ValueError(f"{plate_id}: missing MorphEm profiles for {missing_jobs} (run 0.extract_morphem_features.ipynb first)")
+        raise ValueError(f"{plate_id}: missing MorphEm profiles for {missing_jobs} (run 2.extract_morphem_features.ipynb first)")
 
     print(f"Processing {plate_id}")
     plate_start_time = time.time()
 
+    # every intermediate data frame of the plate is kept in this one dictionary, which we clear once at the
+    # end of the plate (each plate also runs as its own process in run_morphem_pipeline.sh)
+    plate_dfs = {}
+
     # Step 1: remove the single cells that failed QC (per cell line) and concatenate the cell lines
-    single_cell_df = load_plate_passing_qc(
+    plate_dfs["single_cell"] = load_plate_passing_qc(
         plate=plate_id,
         converted_dir=morphem_dir,
         qc_results_dir=qc_results_dir,
         profile_suffix="morphem",
     )
 
+    # every MorphEm profile should be from the 224 x 224 crop centered on the nucleus (MORPHEM_INPUT_SIZE in
+    # utils/morphem_utils.py), so we do not mix profiles from the previous crop, which do not have this column
+    if (
+        "Metadata_Nucleocentric_Crop_Size" not in plate_dfs["single_cell"].columns
+        or plate_dfs["single_cell"]["Metadata_Nucleocentric_Crop_Size"].ne(224).any()
+    ):
+        raise ValueError(
+            f"{plate_id}: some MorphEm profiles are not from the 224 x 224 crop "
+            "(run 2.extract_morphem_features.ipynb again with --overwrite)"
+        )
+
     # Step 2: annotate with the platemap (cell line and time point of each well)
     platemap_df = pd.read_csv(info["platemap_path"])
-    annotated_df = annotate(
-        profiles=single_cell_df,
+    plate_dfs["annotated"] = annotate(
+        profiles=plate_dfs["single_cell"],
         platemap=platemap_df,
         join_on=["Metadata_well_position", "Image_Metadata_Well"],
     )
     # use the same site column name as the CellProfiler profiles
-    annotated_df = annotated_df.rename(columns={"Image_Metadata_Site": "Metadata_Site"})
+    plate_dfs["annotated"] = plate_dfs["annotated"].rename(columns={"Image_Metadata_Site": "Metadata_Site"})
 
-    assert len(annotated_df) == len(single_cell_df), f"{plate_id}: single cells were lost when annotating"
-    assert annotated_df["Metadata_cell_line"].notna().all(), f"{plate_id}: single cells without a cell line from the platemap"
+    assert len(plate_dfs["annotated"]) == len(plate_dfs["single_cell"]), f"{plate_id}: single cells were lost when annotating"
+    assert plate_dfs["annotated"]["Metadata_cell_line"].notna().all(), f"{plate_id}: single cells without a cell line from the platemap"
 
-    output(df=annotated_df, output_filename=info["annotated_path"], output_type="parquet")
+    output(df=plate_dfs["annotated"], output_filename=info["annotated_path"], output_type="parquet")
 
-    morphem_features = [col for col in annotated_df.columns if col.startswith("Nucleocentric_")]
-    print(f"{plate_id}: {annotated_df.shape[0]} single cells and {len(morphem_features)} MorphEm features")
-
-    del single_cell_df
-    gc.collect()
+    morphem_features = [col for col in plate_dfs["annotated"].columns if col.startswith("Nucleocentric_")]
+    print(f"{plate_id}: {plate_dfs['annotated'].shape[0]} single cells and {len(morphem_features)} MorphEm features")
 
     # Step 3: single-cell profiles (standardize to the whole plate, then feature select)
-    sc_normalized_df = normalize(
-        profiles=annotated_df,
+    plate_dfs["sc_normalized"] = normalize(
+        profiles=plate_dfs["annotated"],
         features=morphem_features,
         method="standardize",
         samples="all",
     )
-    output(df=sc_normalized_df, output_filename=info["sc_normalized_path"], output_type="parquet")
-    sc_feature_selected_df = feature_select(
-        profiles=sc_normalized_df,
+    output(df=plate_dfs["sc_normalized"], output_filename=info["sc_normalized_path"], output_type="parquet")
+    plate_dfs["sc_feature_selected"] = feature_select(
+        profiles=plate_dfs["sc_normalized"],
         features=morphem_features,
         operation=feature_select_ops,
         corr_threshold=0.90,
         na_cutoff=0,
     )
-    output(df=sc_feature_selected_df, output_filename=info["sc_feature_selected_path"], output_type="parquet")
-
-    del sc_normalized_df, sc_feature_selected_df
-    gc.collect()
+    output(df=plate_dfs["sc_feature_selected"], output_filename=info["sc_feature_selected_path"], output_type="parquet")
 
     # Step 4: bulk profiles
     # include every platemap column that is constant within a well in the strata, so it is kept after aggregation
@@ -190,36 +203,37 @@ for plate_id, info in plate_info_dictionary.items():
     strata_cols = ["Metadata_Plate", "Metadata_Well"] + [
         col
         for col in platemap_cols
-        if col in annotated_df.columns
+        if col in plate_dfs["annotated"].columns
         and col not in ("Metadata_Plate", "Metadata_Well")
-        and annotated_df.groupby("Metadata_Well")[col].nunique(dropna=False).le(1).all()
+        and plate_dfs["annotated"].groupby("Metadata_Well")[col].nunique(dropna=False).le(1).all()
     ]
-    aggregated_df = aggregate(
-        population_df=annotated_df,
+    plate_dfs["bulk_aggregated"] = aggregate(
+        population_df=plate_dfs["annotated"],
         strata=strata_cols,
         features=morphem_features,
         operation="median",
     )
-    output(df=aggregated_df, output_filename=info["bulk_aggregated_path"], output_type="parquet")
+    output(df=plate_dfs["bulk_aggregated"], output_filename=info["bulk_aggregated_path"], output_type="parquet")
 
-    del annotated_df
-    gc.collect()
-
-    bulk_normalized_df = normalize(
-        profiles=aggregated_df,
+    plate_dfs["bulk_normalized"] = normalize(
+        profiles=plate_dfs["bulk_aggregated"],
         features=morphem_features,
         method="mad_robustize",
         samples="all",
     )
-    output(df=bulk_normalized_df, output_filename=info["bulk_normalized_path"], output_type="parquet")
-    bulk_feature_selected_df = feature_select(
-        profiles=bulk_normalized_df,
+    output(df=plate_dfs["bulk_normalized"], output_filename=info["bulk_normalized_path"], output_type="parquet")
+    plate_dfs["bulk_feature_selected"] = feature_select(
+        profiles=plate_dfs["bulk_normalized"],
         features=morphem_features,
         operation=feature_select_ops,
         corr_threshold=0.90,
         na_cutoff=0,
     )
-    output(df=bulk_feature_selected_df, output_filename=info["bulk_feature_selected_path"], output_type="parquet")
+    output(df=plate_dfs["bulk_feature_selected"], output_filename=info["bulk_feature_selected_path"], output_type="parquet")
+
+    # free the memory of every data frame of the plate at once
+    plate_dfs.clear()
+    gc.collect()
 
     print(f"Processing completed for {plate_id} in {time.time() - plate_start_time:.1f} seconds")
 
