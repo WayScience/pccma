@@ -19,7 +19,7 @@
 # is fully released back to the OS when its process exits.
 #
 # By default, every step skips a plate that already has output. Set OVERWRITE=1
-# (e.g. `OVERWRITE=1 ./run_pipeline.sh`) to reprocess and overwrite every plate's
+# (e.g. `OVERWRITE=1 ./run_preprocessing_pipeline.sh`) to reprocess and overwrite every plate's
 # output instead.
 
 set -uo pipefail
@@ -43,8 +43,13 @@ trap print_total_time EXIT
 # -----------------------------
 # Initialize environment
 # -----------------------------
-source "$(conda info --base)/etc/profile.d/conda.sh"
-conda activate pccma_atlas_preprocessing_env
+# create or update the uv environment from the lock file, then activate it
+env_dir="../environments/preprocessing"
+if ! uv sync --locked --project "$env_dir"; then
+    echo "uv sync FAILED for ${env_dir}; aborting."
+    exit 1
+fi
+source "${env_dir}/.venv/bin/activate"
 
 if ! python -c "import pandas, pyarrow, pycytominer, cytotable, cosmicqc" >/dev/null 2>&1; then
     echo "Active Python ($(command -v python)) is missing required packages (pandas/pyarrow/pycytominer/cytotable/cosmicqc); aborting."
@@ -192,7 +197,7 @@ else
     echo "QC report done (qc_report/)"
 fi
 
-conda deactivate
+deactivate
 
 echo "======================================"
 echo "Pipeline finished."
