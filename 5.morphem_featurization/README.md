@@ -123,7 +123,7 @@ The saturated pixels are where MorphEm adds noise and where the features depend 
 
 ## Run the module
 
-Run `4.preprocess_features/run_pipeline.sh` first, then (from any folder):
+Run `4.preprocess_features/run_preprocessing_pipeline.sh` first, then (from any folder):
 
 ```bash
 ./5.morphem_featurization/run_morphem_pipeline.sh
@@ -146,6 +146,7 @@ A job log is only written when the job runs, so skipped jobs keep the log from t
 `3.process_morphem_profiles.ipynb` stops if any cell line on a plate does not have a MorphEm profile, since we normalize to the whole plate.
 
 > **Note:** Run the extraction on a GPU.
+> The extraction stops if CUDA is not available instead of falling back to the CPU (use `--device cpu`, or `DEVICE=cpu` for `run_morphem_pipeline.sh`, only to test a small job).
 > There are about 1.4 million single cells, but MorphEm only takes one channel at a time.
 > Unlike a segmentation mask, where one mask is applied to all channels, each single cell gets a separate crop image for each of the five channels (the same crop box, cut from each channel).
 > This means there are about 1.4 million cells × 5 channels ≈ 7.1 million crops that MorphEm processes.

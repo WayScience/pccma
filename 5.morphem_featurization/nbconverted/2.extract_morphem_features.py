@@ -92,14 +92,19 @@ if not in_notebook:
     parser.add_argument("--cell_line", type=str, required=True, help="Name of the cell line folder (e.g., A673)")
     parser.add_argument("--batch_size", type=int, default=256, help="Number of crops to run through MorphEm at once")
     parser.add_argument("--overwrite", action="store_true", help="Extract the features again if the output already exists")
+    parser.add_argument(
+        "--device", type=str, default="cuda", choices=["cuda", "cpu"],
+        help="Device to run MorphEm on (cpu is only for testing small jobs, the whole screen would take days)",
+    )
     args = parser.parse_args()
-    plate, cell_line, batch_size, overwrite = args.plate, args.cell_line, args.batch_size, args.overwrite
+    plate, cell_line, batch_size, overwrite, device = args.plate, args.cell_line, args.batch_size, args.overwrite, args.device
 else:
     print("Running in a notebook")
     plate = "BR00150698"
     cell_line = "A673"
     batch_size = 256
     overwrite = False
+    device = "cuda"
 
 # side of the square crop centered on each nucleus (the MorphEm input size, chosen in 0.evaluate_crop_sizes.ipynb)
 crop_size = MORPHEM_INPUT_SIZE
@@ -111,8 +116,6 @@ channels = ["DNA", "ER", "RNA", "AGP", "Mito"] # constant list
 seed = 0
 torch.manual_seed(seed)
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
-print(f"Using device: {device}")
 
 image_base_dir = bandicoot_check(
     pathlib.Path(os.path.expanduser("~/mnt/bandicoot")).resolve(), root_dir
@@ -154,6 +157,13 @@ else:
             "Cannot extract MorphEm features due to missing illumination functions; "
             f"missing illumination function(s): {missing_illum}"
         )
+    # stop instead of falling back to the CPU, which would take days for the whole screen
+    if device == "cuda" and not torch.cuda.is_available():
+        raise RuntimeError(
+            "CUDA is not available (no GPU or the NVIDIA driver is not working). "
+            "Run on a machine with a GPU, or use --device cpu to test a small job on the CPU."
+        )
+    print(f"Using device: {device}")
     print(f"Processing {cell_line} from {plate}")
 
 

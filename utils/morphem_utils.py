@@ -39,14 +39,15 @@ MORPHEM_REVISION = "0e8d58787421f83f975634d72420d85c5dfc9c2c"
 MORPHEM_INPUT_SIZE = 224
 
 
-def get_morphem_model(device: str | None = None) -> torch.nn.Module:
+def get_morphem_model(device: str) -> torch.nn.Module:
     """
     Load the MorphEm model from Hugging Face in evaluation mode.
 
     Parameters
     ----------
-    device : str | None
-        Device to load the model on ("cuda" or "cpu"). If None, use CUDA when available.
+    device : str
+        Device to load the model on ("cuda" or "cpu"). We do not fall back to the CPU when CUDA is not
+        available, so a job without a GPU fails instead of running for days.
 
     Returns
     -------
@@ -56,8 +57,6 @@ def get_morphem_model(device: str | None = None) -> torch.nn.Module:
     # import here so the rest of the utilities do not need transformers
     from transformers import AutoModel
 
-    if device is None:
-        device = "cuda" if torch.cuda.is_available() else "cpu"
     model = AutoModel.from_pretrained(
         MORPHEM_MODEL_ID, revision=MORPHEM_REVISION, trust_remote_code=True
     )
@@ -206,6 +205,10 @@ def crop_with_padding(
     y_min, y_max, x_min, x_max = crop_box
     height, width = image.shape
     inside = image[max(y_min, 0) : min(y_max, height), max(x_min, 0) : min(x_max, width)]
+    # in theory this should never happen: the crop is centered on a nucleus inside the image, so at least
+    # about half of the crop is always inside the image (we check in case of a bad nucleus center)
+    if inside.size == 0:
+        raise ValueError(f"The crop {crop_box} is completely outside the image of shape {image.shape}")
     if pad_value is None:
         pad_value = inside.min()
     pad_widths = (

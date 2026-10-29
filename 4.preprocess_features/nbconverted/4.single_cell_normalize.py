@@ -70,7 +70,7 @@ pprint.pprint(plate_info_dictionary, indent=4)
 # In[4]:
 
 
-# Run configuration, both driven by environment variables so run_pipeline.sh
+# Run configuration, both driven by environment variables so run_preprocessing_pipeline.sh
 # can control them without papermill:
 #   PLATE_ID  - restrict to a single plate (used to run each plate as its own
 #               process so memory doesn't accumulate across plates). Leave

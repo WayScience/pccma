@@ -6,11 +6,12 @@
 # Usage, from any folder (set OVERWRITE=1 to run every job again):
 #   ./5.morphem_featurization/run_morphem_pipeline.sh
 #
-# - Run 4.preprocess_features/run_pipeline.sh first.
+# - Run 4.preprocess_features/run_preprocessing_pipeline.sh first.
 # - You only need uv installed. `uv run` creates the environments from environments/ (no need to activate them).
 # - You do not need to run 0.evaluate_crop_sizes.ipynb or 1.view_224_crops.ipynb (one-time check of the crop size).
 # - Jobs that already have output are skipped, unless their inputs are newer.
 # - Logs are saved in 5.morphem_featurization/logs/: one for the whole run and one for each job.
+# - The extraction needs a GPU (CUDA). The script stops if there is none; set DEVICE=cpu to test on a CPU.
 
 set -uo pipefail
 
@@ -25,6 +26,7 @@ run_log="${log_dir}/run_morphem_pipeline_$(date +%Y%m%d_%H%M%S).log"
 exec > >(tee -a "$run_log") 2>&1
 
 overwrite="${OVERWRITE:-}"
+device="${DEVICE:-cuda}"
 failed=()
 
 # ignore any environment that is already active, since uv run uses the ones in environments/
@@ -58,6 +60,12 @@ if ! uv run --locked --project environments/morphem jupyter nbconvert --to scrip
     exit 1
 fi
 
+# stop before any job if CUDA is not available, instead of failing every extraction job
+if [ "$device" = "cuda" ] && ! uv run --locked --project environments/morphem python -c "import torch, sys; sys.exit(not torch.cuda.is_available())"; then
+    log "ERROR: CUDA is not available (no GPU or the NVIDIA driver is not working). Set DEVICE=cpu to test on a CPU."
+    exit 1
+fi
+
 # Step 1: extract the MorphEm features (one job per converted profile from 4.preprocess_features)
 for converted_file in $(find 4.preprocess_features/data/converted_profiles -name "*_converted.parquet" | sort); do
     cell_line=$(basename "$(dirname "$converted_file")")
@@ -71,7 +79,7 @@ for converted_file in $(find 4.preprocess_features/data/converted_profiles -name
 
     log "INFO: Extracting ${plate} ${cell_line}"
     if ! run_job morphem "${log_dir}/${plate}_${cell_line}_morphem_extraction.log" \
-        python "${module}/nbconverted/2.extract_morphem_features.py" --plate "$plate" --cell_line "$cell_line" --overwrite; then
+        python "${module}/nbconverted/2.extract_morphem_features.py" --plate "$plate" --cell_line "$cell_line" --device "$device" --overwrite; then
         log "ERROR: Extraction failed for ${plate} ${cell_line}"
         failed+=("${plate} ${cell_line} (extraction)")
     fi

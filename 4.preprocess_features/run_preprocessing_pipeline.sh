@@ -19,7 +19,7 @@
 # is fully released back to the OS when its process exits.
 #
 # By default, every step skips a plate that already has output. Set OVERWRITE=1
-# (e.g. `OVERWRITE=1 ./run_pipeline.sh`) to reprocess and overwrite every plate's
+# (e.g. `OVERWRITE=1 ./run_preprocessing_pipeline.sh`) to reprocess and overwrite every plate's
 # output instead.
 
 set -uo pipefail

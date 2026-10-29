@@ -94,6 +94,7 @@ The module numbers follow the order in which we run them.
 | [1.whole_image_qc](./1.whole_image_qc/) | Extract whole image quality metrics with CellProfiler and determine the blur and saturation thresholds that identify poor quality FOVs. |
 | [2.illumination_correction](./2.illumination_correction/) | Calculate an illumination correction function per channel for each plate with CellProfiler. |
 | [3.cp_analysis](./3.cp_analysis/) | Perform illumination correction, segmentation, and feature extraction with CellProfiler, where each cell line has its own pipeline. |
+| [4.preprocess_features](./4.preprocess_features/) | Convert the CellProfiler outputs to single-cell parquet files with CytoTable, remove poor quality single cells with coSMicQC, and process the profiles with pycytominer into single-cell (normalized and feature-selected) and bulk (aggregated, normalized, and feature-selected) profiles, with a QC report per cell line and plate. |
 | [5.morphem_featurization](./5.morphem_featurization/) | Extract nucleocentric deep learning features with MorphEm using the nuclei from CellProfiler, and process them into single-cell and bulk profiles. |
 | [cell_lines](./cell_lines/) | Build the consolidated cell line metadata table and create the descriptive figures of the cell lines. |
 | [environments](./environments/) | Conda environment files and a script to create the environments on an HPC cluster. |

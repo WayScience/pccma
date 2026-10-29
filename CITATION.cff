@@ -15,7 +15,7 @@ authors:
   - given-names: Gregory P.
     family-names: Way
     orcid: "https://orcid.org/0000-0002-0503-9348"
-repository-code: "https://github.com/WayScience/pccma_atlas_image_profiling"
+repository-code: "https://github.com/WayScience/pccma"
 license: BSD-3-Clause
 keywords:
   - Cell Painting
