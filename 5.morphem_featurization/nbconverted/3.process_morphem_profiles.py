@@ -16,10 +16,13 @@
 # 
 # We set the MorphEm features in every pycytominer function, since pycytominer only finds the CellProfiler compartments (Cells, Nuclei, and Cytoplasm) by default.
 # We do not use the blocklist, since it only includes CellProfiler features.
+# 
+# > **Note:** We processed every plate by running this notebook as a script (`nbconverted/3.process_morphem_profiles.py`) with `run_morphem_pipeline.sh`.
+# > The outputs below are from running the notebook afterwards without overwriting, so it skips each plate because the processed profiles already exist.
 
 # ## Import libraries
 
-# In[ ]:
+# In[1]:
 
 
 import gc
@@ -29,11 +32,10 @@ import pprint
 import time
 
 import pandas as pd
-from pycytominer import aggregate, annotate, feature_select, normalize
-from pycytominer.cyto_utils import output
-
 from path_utils import get_root_dir
 from preprocess_utils import load_plate_passing_qc
+from pycytominer import aggregate, annotate, feature_select, normalize
+from pycytominer.cyto_utils import output
 
 # root of the repository (found from the .git folder), so every path is built from the root
 # and the notebook gives the same paths whether we run it from this folder or from the root
@@ -43,11 +45,11 @@ module_dir = root_dir / "5.morphem_featurization"
 
 # ## Set paths and variables
 
-# In[ ]:
+# In[2]:
 
 
 # Directory with the MorphEm profiles (one folder per cell line, one parquet file per plate/time point)
-morphem_dir = (module_dir / "data/morphem_profiles").resolve(strict=True)
+morphem_dir = (module_dir / "data/morphem_extracted_profiles").resolve(strict=True)
 
 # extract the plate names from the MorphEm profiles (<plate>_<cell_line>_morphem.parquet)
 plate_names = sorted(
@@ -64,9 +66,9 @@ qc_results_dir = (root_dir / "4.preprocess_features/qc_results").resolve(strict=
 platemap_dir = (root_dir / "0.download_data/metadata/platemaps").resolve(strict=True)
 
 # output directories
-annotated_dir = module_dir / "data/annotated_profiles"
-single_cell_dir = module_dir / "data/single_cell_profiles"
-bulk_dir = module_dir / "data/bulk_profiles"
+annotated_dir = module_dir / "data/morphem_annotated_profiles"
+single_cell_dir = module_dir / "data/morphem_single_cell_profiles"
+bulk_dir = module_dir / "data/morphem_bulk_profiles"
 for directory in (annotated_dir, single_cell_dir, bulk_dir):
     directory.mkdir(parents=True, exist_ok=True)
 
@@ -82,7 +84,7 @@ plate_names
 
 # ## Set plates to process
 
-# In[ ]:
+# In[3]:
 
 
 # Run configuration, both driven by environment variables so run_morphem_pipeline.sh
@@ -119,7 +121,7 @@ pprint.pprint(plate_info_dictionary, indent=4)
 
 # ## Process each plate
 
-# In[ ]:
+# In[4]:
 
 
 for plate_id, info in plate_info_dictionary.items():
@@ -236,4 +238,3 @@ for plate_id, info in plate_info_dictionary.items():
     gc.collect()
 
     print(f"Processing completed for {plate_id} in {time.time() - plate_start_time:.1f} seconds")
-

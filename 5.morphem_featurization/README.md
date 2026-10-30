@@ -74,7 +74,7 @@ We run the notebooks in order: first we check which crop holds the whole cell an
 | --- | --- | --- |
 | `0.evaluate_crop_sizes.ipynb` | `environments/preprocessing` (uv) | Run before the extraction to choose the crop (sanity check, not run by `run_morphem_pipeline.sh`). Checks whether a 224 x 224 crop centered on the nucleus holds the whole cell (99.2% of the 1.4 million single cells before QC fit), counts the crops at the edge of the image (29.9%, padded instead of moved), and counts the other single cells in each crop. Saves `figures/crop_size_224_fit_per_cell_line.png`, a landscape version for slides (`figures/crop_size_224_fit_per_cell_line_slide.png`), `figures/crop_neighbors_per_cell_line_slide.png`, `crop_evaluation/crop_size_summary.csv`, and `crop_evaluation/crop_neighbor_summary.csv`. |
 | `1.view_224_crops.ipynb` | `environments/preprocessing` (uv) | Run before the extraction to choose the crop (sanity check, not run by `run_morphem_pipeline.sh`). Shows example 224 x 224 crops centered on the nucleus for every cell line (single cells that passed QC, picked at the 25th, 50th, and 75th percentiles of the number of other nuclei in the crop), as composites of DNA, ER, and AGP. Saves `figures/example_224_crops_typical_per_cell_line.png` (one crop per cell line) and `figures/example_224_crops_per_cell_line.png` (three crops per cell line). Run `0.evaluate_crop_sizes.ipynb` first. |
-| `2.extract_morphem_features.ipynb` | `environments/morphem` (uv) | Extracts the MorphEm features for one cell line from one plate (`--plate` and `--cell_line`) and saves `data/morphem_profiles/<cell_line>/<plate>_<cell_line>_morphem.parquet`. When run as a notebook, it also shows example crops. |
+| `2.extract_morphem_features.ipynb` | `environments/morphem` (uv) | Extracts the MorphEm features for one cell line from one plate (`--plate` and `--cell_line`) and saves `data/morphem_extracted_profiles/<cell_line>/<plate>_<cell_line>_morphem.parquet`. When run as a notebook, it also shows example crops. |
 | `3.process_morphem_profiles.ipynb` | `environments/preprocessing` (uv) | For each plate: removes the single cells that failed QC from coSMicQC (using `4.preprocess_features/qc_results/`), annotates with the platemap, and creates the single-cell (standardize, feature select) and bulk (median, MAD robustize, feature select) profiles. |
 
 We set the MorphEm features in every pycytominer function, since pycytominer only finds the CellProfiler compartments (Cells, Nuclei, and Cytoplasm) by default.
@@ -112,10 +112,10 @@ The module depends on the outputs of the previous modules:
 
 | Folder | Description |
 | --- | --- |
-| `data/morphem_profiles/<cell_line>/` | One MorphEm profile per plate (all single cells, before QC). |
-| `data/annotated_profiles/` | One annotated single-cell profile per plate (single cells that passed QC). |
-| `data/single_cell_profiles/` | Normalized and feature-selected single-cell profiles per plate. |
-| `data/bulk_profiles/` | Aggregated, normalized, and feature-selected bulk profiles per plate. |
+| `data/morphem_extracted_profiles/<cell_line>/` | One MorphEm profile per plate (all single cells, before QC). |
+| `data/morphem_annotated_profiles/` | One annotated single-cell profile per plate (single cells that passed QC). |
+| `data/morphem_single_cell_profiles/` | Normalized and feature-selected single-cell profiles per plate. |
+| `data/morphem_bulk_profiles/` | Aggregated, normalized, and feature-selected bulk profiles per plate. |
 
 Every MorphEm profile has the same metadata as the converted profiles (`Image_Metadata_Plate`, `Image_Metadata_Well`, `Image_Metadata_Site`, `Metadata_ImageNumber`, and the object numbers), along with the nucleus and cell bounding boxes, the crop coordinates (`Metadata_Nucleocentric_Crop_*`, which are outside the image for crops at the edge), the crop size (`Metadata_Nucleocentric_Crop_Size`, 224), the edge and crowding columns of each crop (see [Crowding and empty pixels of each crop](#crowding-and-empty-pixels-of-each-crop)), and the fraction of each crop that was saturated in the camera per channel (`Metadata_Nucleocentric_SaturatedFraction_<channel>`).
 `3.process_morphem_profiles.ipynb` stops if any MorphEm profile on a plate is not from the 224 x 224 crop, so we do not mix profiles from different crops.
