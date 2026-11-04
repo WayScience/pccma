@@ -53,10 +53,15 @@ For feature selection, we drop features with any missing values, features on the
 
 ### Pooled bulk profiles
 
-Each plate keeps its own selected features, and only 57 are shared by all nine plates. For analyses across plates, `3b.pooled_bulk_processing.ipynb` stacks the per-plate normalized bulk profiles (712 wells, values unchanged) and selects features once on all wells (`pccma_atlas_pooled_bulk_feature_selected.parquet`, 827 features). It uses the per-plate settings with two differences:
+Each plate keeps its own selected features, and only 57 are shared by all nine plates.
+For analyses across plates, `3b.pooled_bulk_processing.ipynb` stacks the per-plate normalized bulk profiles (712 wells, values unchanged) and selects features once on all wells (`pccma_atlas_pooled_bulk_feature_selected.parquet`, 827 features).
+It uses the per-plate settings with two differences:
 
 - **Correlation threshold 0.95** (0.90 per plate).
-- **`drop_outliers` with a cutoff of 1,000.** Some features, mostly high-order granularity, have a near-zero MAD on a plate, so MAD robustize gives values up to about 1e19. The cutoff removes them (124 features) and keeps the real tail (the largest kept value is 530). The pycytominer default of 15 would also remove real differences between cell lines.
+- **`drop_outliers` with a cutoff of 1,000.**
+  Some features, mostly high-order granularity, have a near-zero MAD on a plate, so MAD robustize gives values up to about 1e19.
+  The cutoff removes them (124 features) and keeps the real tail (the largest kept value is 530).
+  The pycytominer default of 15 would also remove real differences between cell lines.
 
 The output starts with the `Metadata_` columns (plate, well, cell line, row, column, seeding density, time point, plate barcode, plate coating, PFA fixation), described in the notebook, followed by the features.
 
