@@ -162,7 +162,7 @@ print(f"UMAP of {len(umap_df)} wells saved")
 # The UMAP of the wells colored by tissue site, and colored by plate (to see whether the plate or layout shapes the map), and the similarity matrix of the cell lines at 24 h.
 # The plots are displayed here and not saved to disk.
 
-# In[3]:
+# In[7]:
 
 
 # tissue site colors, the same as `site_colors` in themes.R (in the order of the body, head to toe)
