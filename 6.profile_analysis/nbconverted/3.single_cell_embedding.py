@@ -23,6 +23,8 @@
 # - `single_cell_umap_examples.csv`: the example cell of each cluster and the file of its image.
 # - `example_cells/`: the example images (`<cancer group>_cluster<n>.png`).
 # - `umap_previews/`: one image per cancer group with its UMAP colored by cell line.
+# 
+# The notebook also shows the UMAP of one cancer group next to its example cells; this view is displayed in the notebook and is not saved to disk.
 
 # ## Import libraries
 
@@ -213,4 +215,38 @@ for example in examples:
 examples_df = pd.DataFrame(example_rows)
 examples_df.to_csv(results_dir / "single_cell_umap_examples.csv", index=False)
 print(f"{len(examples_df)} example cell images saved")
+
+
+# ## One cancer group at a glance
+# 
+# The UMAP of one cancer group colored by cluster (crosses mark the example cells), next to the images of the example cells.
+# Set `preview_group` to look at another cancer group.
+# The view is displayed here and not saved to disk.
+
+# In[3]:
+
+
+preview_group = "Neuroblastoma"
+
+umap_df = pd.read_parquet(results_dir / "single_cell_umap.parquet")
+examples_df = pd.read_csv(results_dir / "single_cell_umap_examples.csv")
+group_cells = umap_df[umap_df["cancer_group"] == preview_group]
+group_examples = examples_df[examples_df["cancer_group"] == preview_group].sort_values("cluster")
+
+fig = plt.figure(figsize=(12, 4.8))
+grid = fig.add_gridspec(2, 5, width_ratios=[1.6, 1.6, 1, 1, 1])
+umap_ax = fig.add_subplot(grid[:, :2])
+for cluster, cluster_cells in group_cells.groupby("cluster"):
+    umap_ax.scatter(cluster_cells["umap_1"], cluster_cells["umap_2"], s=2, alpha=0.6)
+    umap_ax.annotate(cluster, cluster_cells[["umap_1", "umap_2"]].median(), fontsize=11, weight="bold", ha="center")
+umap_ax.scatter(group_examples["umap_1"], group_examples["umap_2"], marker="x", color="black", s=40, zorder=3)
+umap_ax.set(title=f"{preview_group}: clusters", xlabel="UMAP 1", ylabel="UMAP 2")
+
+for position, example in enumerate(group_examples.itertuples()):
+    ax = fig.add_subplot(grid[position // 3, 2 + position % 3])
+    ax.imshow(plt.imread(results_dir / example.image_file))
+    ax.set_title(f"{example.Metadata_cell_line}, cluster {example.cluster}", fontsize=8)
+    ax.axis("off")
+fig.tight_layout()
+plt.show()
 
