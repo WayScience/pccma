@@ -25,6 +25,8 @@
 # 
 # Features with an absolute value above `outlier_cutoff` in any well are removed first (artifacts of a near-zero MAD, as in the pooled bulk profiles).
 # U2-OS is left out of the variation table, because it is on every plate in several conditions and serves as a reference.
+# 
+# The notebook also plots the nucleus size of the cell lines and the distribution of the variance between cancer groups; the plot is shown in the notebook and is not saved to disk.
 
 # ## Import libraries
 
@@ -34,9 +36,11 @@
 import pathlib
 import re
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import yaml
+from matplotlib.patches import Patch
 from scipy import stats
 
 
@@ -211,4 +215,52 @@ size_rank = variation_df[variation_df["feature"] == size_feature].assign(
 )[["time_point", "between_group_share", "q_value", "rank"]]
 print(f"\n{size_feature}, rank by the variance between cancer groups among {len(features)} features:")
 print(size_rank.round(2).to_string(index=False))
+
+
+# ## The comparison at a glance
+# 
+# Left, the nucleus size of each cell line at 24 h: the median (dot) and the interquartile range (line) of its cells, from the largest to the smallest median, colored by tissue site.
+# Right, how much of the variance of each feature (cell line means) lies between cancer groups, at each time point, with the share expected by chance.
+# The plot is displayed here and not saved to disk.
+
+# In[3]:
+
+
+# tissue site colors, the same as `site_colors` in themes.R (in the order of the body, head to toe)
+site_colors = {
+    "Central nervous system": "#0072B2",
+    "Eye": "#56B4E9",
+    "Adrenal gland": "#E69F00",
+    "Kidney": "#009E73",
+    "Ovary": "#D6BC00",
+    "Soft tissue": "#CC79A7",
+    "Bone": "#D55E00",
+    "Normal reference lines": "#8C8C8C",
+}
+
+fig, (size_ax, share_ax) = plt.subplots(1, 2, figsize=(12, 8), gridspec_kw={"width_ratios": [1.3, 1]})
+
+per_line = (
+    size_df[size_df["time_point"] == 24].groupby(["cell_line", "tissue_site"], as_index=False)[["q25", "q50", "q75"]].median()
+    .sort_values("q50", ascending=False).reset_index(drop=True)
+)
+for row in per_line.itertuples():
+    size_ax.plot([row.q25, row.q75], [row.Index, row.Index], color=site_colors[row.tissue_site], lw=1.5)
+size_ax.scatter(per_line["q50"], per_line.index, c=per_line["tissue_site"].map(site_colors), s=14, zorder=3)
+size_ax.set_yticks(per_line.index, per_line["cell_line"], fontsize=6)
+size_ax.invert_yaxis()
+size_ax.set_xlabel(f"{size_feature} at 24 h (SD of the plate)")
+size_ax.spines[["top", "right"]].set_visible(False)
+size_ax.legend(
+    handles=[Patch(color=color, label=site) for site, color in site_colors.items() if site in set(per_line["tissue_site"])],
+    title="Tissue site", fontsize=7, title_fontsize=8, frameon=False, loc="lower right",
+)
+
+for time_point, rows in variation_df.groupby("time_point"):
+    share_ax.hist(rows["between_group_share"], bins=np.linspace(0, 1, 41), histtype="step", lw=1.5, label=f"{time_point} h")
+share_ax.axvline(variation_df["between_group_null"].median(), color="black", ls="--", lw=1, label="expected by chance")
+share_ax.set(xlabel="Share of the variance between cancer groups", ylabel="Features")
+share_ax.legend(frameon=False)
+fig.tight_layout()
+plt.show()
 
