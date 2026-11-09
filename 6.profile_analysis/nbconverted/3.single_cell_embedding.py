@@ -223,7 +223,7 @@ print(f"{len(examples_df)} example cell images saved")
 # Set `preview_group` to look at another cancer group.
 # The view is displayed here and not saved to disk.
 
-# In[3]:
+# In[9]:
 
 
 preview_group = "Neuroblastoma"
