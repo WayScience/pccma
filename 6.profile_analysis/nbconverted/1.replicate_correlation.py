@@ -27,6 +27,8 @@
 # - `replicate_correlation_summary.csv`: one row per cell line and plate with the mean correlation over its pairs.
 # 
 # A pair row has the plate, time point, cell line, seeding density, plate coating, the two wells, `pearson`, `shuffled_pearson`, and the cancer group and tissue site of the cell line.
+# 
+# The notebook also plots the correlations (a histogram against the baseline, and the mean correlation of each cell line); the plot is shown in the notebook and is not saved to disk.
 
 # ## Import libraries
 
@@ -36,9 +38,11 @@
 import itertools
 import pathlib
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import yaml
+from matplotlib.patches import Patch
 
 
 # ## Set paths and parameters
@@ -161,4 +165,53 @@ print(f"Pairs with a correlation above 0.5: {(pairs_df['pearson'] > 0.5).mean():
 lowest = summary_df.nsmallest(5, "pearson")[["cell_line", "time_point", "pearson"]]
 print("\nLowest replicate correlations:")
 print(lowest.round(2).to_string(index=False))
+
+
+# ## Replicate correlation at a glance
+# 
+# Left, the correlation of all pairs of replicate wells against the shuffled-feature baseline.
+# Right, the mean correlation of each cell line (dot) and its range over the plates (line), colored by tissue site.
+# The cell lines with the lowest replicate correlation are on top.
+# The plot is displayed here and not saved to disk.
+
+# In[3]:
+
+
+# tissue site colors, the same as `site_colors` in themes.R (in the order of the body, head to toe)
+site_colors = {
+    "Central nervous system": "#0072B2",
+    "Eye": "#56B4E9",
+    "Adrenal gland": "#E69F00",
+    "Kidney": "#009E73",
+    "Ovary": "#D6BC00",
+    "Soft tissue": "#CC79A7",
+    "Bone": "#D55E00",
+    "Normal reference lines": "#8C8C8C",
+}
+
+fig, (hist_ax, line_ax) = plt.subplots(1, 2, figsize=(11, 8), gridspec_kw={"width_ratios": [1, 1.2]})
+
+bins = np.linspace(-0.2, 1, 61)
+hist_ax.hist(pairs_df["shuffled_pearson"], bins=bins, color="#BBBBBB", label="shuffled features")
+hist_ax.hist(pairs_df["pearson"], bins=bins, color="#332288", alpha=0.85, label="replicate pairs")
+hist_ax.set(xlabel="Pearson correlation", ylabel="Pairs of replicate wells")
+hist_ax.legend(frameon=False)
+
+per_line = (
+    summary_df.groupby(["cell_line", "tissue_site"])["pearson"].agg(mean="mean", low="min", high="max").reset_index()
+    .sort_values("mean").reset_index(drop=True)
+)
+for row in per_line.itertuples():
+    line_ax.plot([row.low, row.high], [row.Index, row.Index], color=site_colors[row.tissue_site], lw=1)
+line_ax.scatter(per_line["mean"], per_line.index, c=per_line["tissue_site"].map(site_colors), s=14, zorder=3)
+line_ax.set_yticks(per_line.index, per_line["cell_line"], fontsize=6)
+line_ax.invert_yaxis()
+line_ax.set_xlabel("Replicate correlation (mean and range over plates)")
+line_ax.spines[["top", "right"]].set_visible(False)
+line_ax.legend(
+    handles=[Patch(color=color, label=site) for site, color in site_colors.items() if site in set(per_line["tissue_site"])],
+    title="Tissue site", fontsize=7, title_fontsize=8, frameon=False, loc="lower left",
+)
+fig.tight_layout()
+plt.show()
 
