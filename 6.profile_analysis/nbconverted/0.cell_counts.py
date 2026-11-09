@@ -11,6 +11,7 @@
 # The cells that pass QC are the cells in the `*_sc_feature_selected.parquet` profiles, and the notebook checks that the totals match.
 # 
 # **Output:** `results/cell_counts.csv` with one row per cell line and plate.
+# The notebook also plots the cells of each cell line as a bar chart, colored by tissue site and grouped by cancer group. The chart is shown in the notebook and is not saved to disk.
 # 
 # | Column | Description |
 # | --- | --- |
@@ -30,9 +31,12 @@
 
 import pathlib
 
+import matplotlib.pyplot as plt
 import pandas as pd
 import pyarrow.parquet as pq
 import yaml
+from matplotlib.patches import Patch
+from matplotlib.ticker import StrMethodFormatter
 
 
 # ## Set paths
@@ -129,4 +133,53 @@ print(counts.groupby("time_point")["cells_after_qc"].agg(["sum", "median", "min"
 per_line = counts.groupby("cell_line")["cells_after_qc"].sum().sort_values()
 print(f"\nCells after QC per cell line (all time points): median {per_line.median():,.0f}, from {per_line.min():,} ({per_line.index[0]}) to {per_line.max():,} ({per_line.index[-1]})")
 print(f"Cell line and plate combinations with fewer than 1,000 cells: {(counts['cells_after_qc'] < 1000).sum()}")
+
+
+# ## Cells per cell line
+# 
+# A bar chart of the cells after QC of each cell line (all time points together), to scan the data set at a glance.
+# The bars are colored by tissue site, and the cell lines are grouped by cancer group (the number of cell lines is in brackets).
+# The chart is displayed here and not saved to disk.
+
+# In[7]:
+
+
+# tissue site colors, the same as `site_colors` in themes.R (in the order of the body, head to toe)
+site_colors = {
+    "Central nervous system": "#0072B2",
+    "Eye": "#56B4E9",
+    "Adrenal gland": "#E69F00",
+    "Kidney": "#009E73",
+    "Ovary": "#D6BC00",
+    "Soft tissue": "#CC79A7",
+    "Bone": "#D55E00",
+    "Normal reference lines": "#8C8C8C",
+}
+
+per_line = counts.groupby(["tissue_site", "cancer_group", "cell_line"], as_index=False)["cells_after_qc"].sum()
+per_line["site_rank"] = per_line["tissue_site"].map({site: rank for rank, site in enumerate(site_colors)})
+per_line = per_line.sort_values(["site_rank", "cancer_group", "cells_after_qc"], ascending=[True, True, False]).reset_index(drop=True)
+
+# one row per cell line, with a gap between cancer groups
+new_group = per_line["cancer_group"] != per_line["cancer_group"].shift()
+per_line["row"] = per_line.index + new_group.cumsum()
+
+fig, ax = plt.subplots(figsize=(9, 0.17 * len(per_line) + 2))
+ax.barh(per_line["row"], per_line["cells_after_qc"], color=per_line["tissue_site"].map(site_colors), height=0.8)
+ax.set_yticks(per_line["row"], per_line["cell_line"], fontsize=6.5)
+
+most_cells = per_line["cells_after_qc"].max()
+for group, group_rows in per_line.groupby("cancer_group", sort=False):
+    ax.text(most_cells * 1.02, group_rows["row"].mean(), f"{group} ({len(group_rows)})", va="center", fontsize=7)
+
+ax.set_xlim(0, most_cells * 1.75)
+ax.set_ylim(per_line["row"].max() + 1, per_line["row"].min() - 1)  # first cancer group on top
+ax.xaxis.set_major_formatter(StrMethodFormatter("{x:,.0f}"))
+ax.set_xlabel("Cells after QC (all time points)")
+ax.spines[["top", "right"]].set_visible(False)
+ax.legend(
+    handles=[Patch(color=color, label=site) for site, color in site_colors.items() if site in set(per_line["tissue_site"])],
+    title="Tissue site", ncol=4, fontsize=7, title_fontsize=8, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.07),
+)
+plt.show()
 
