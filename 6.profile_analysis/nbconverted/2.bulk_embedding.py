@@ -20,6 +20,8 @@
 # **Output:** in `results/`
 # - `bulk_similarity.csv`: one row per pair of cell lines and time point, with the cancer group and tissue site of both.
 # - `bulk_umap.csv`: one row per well, with its metadata, the UMAP coordinates, and the cell line annotations.
+# 
+# The notebook also plots the UMAP and the similarity matrix; the plots are shown in the notebook and are not saved to disk.
 
 # ## Import libraries
 
@@ -30,10 +32,12 @@ import itertools
 import pathlib
 import warnings
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import umap
 import yaml
+from matplotlib.patches import Patch
 
 # UMAP warns that a fixed random seed runs it on one thread, which is what keeps the embedding reproducible
 warnings.filterwarnings("ignore", message="n_jobs value")
@@ -151,4 +155,60 @@ umap_df = pooled_df[metadata_cols + ["cancer_type", "cancer_group", "tissue_site
 umap_df["umap_1"], umap_df["umap_2"] = embedding[:, 0], embedding[:, 1]
 umap_df.to_csv(results_dir / "bulk_umap.csv", index=False)
 print(f"UMAP of {len(umap_df)} wells saved")
+
+
+# ## The embedding at a glance
+# 
+# The UMAP of the wells colored by tissue site, and colored by plate (to see whether the plate or layout shapes the map), and the similarity matrix of the cell lines at 24 h.
+# The plots are displayed here and not saved to disk.
+
+# In[3]:
+
+
+# tissue site colors, the same as `site_colors` in themes.R (in the order of the body, head to toe)
+site_colors = {
+    "Central nervous system": "#0072B2",
+    "Eye": "#56B4E9",
+    "Adrenal gland": "#E69F00",
+    "Kidney": "#009E73",
+    "Ovary": "#D6BC00",
+    "Soft tissue": "#CC79A7",
+    "Bone": "#D55E00",
+    "Normal reference lines": "#8C8C8C",
+}
+site_rank = {site: rank for rank, site in enumerate(site_colors)}
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
+for site, color in site_colors.items():
+    wells = umap_df[umap_df["tissue_site"] == site]
+    axes[0].scatter(wells["umap_1"], wells["umap_2"], s=8, color=color, label=site)
+for plate, wells in umap_df.groupby("Metadata_Plate"):
+    axes[1].scatter(wells["umap_1"], wells["umap_2"], s=8, label=f"{plate} ({wells['Metadata_time_point'].iloc[0]} h)")
+axes[0].set(title="Wells colored by tissue site", xlabel="UMAP 1", ylabel="UMAP 2")
+axes[1].set(title="Wells colored by plate", xlabel="UMAP 1")
+for ax in axes:
+    ax.legend(fontsize=6, frameon=False, markerscale=1.5, loc="center left", bbox_to_anchor=(1, 0.5))
+fig.tight_layout()
+plt.show()
+
+# similarity matrix at 24 h, cell lines ordered by tissue site and cancer group
+at_24 = similarity_df[similarity_df["time_point"] == 24]
+lines = (
+    at_24[["cell_line_a", "cancer_group_a", "tissue_site_a"]].drop_duplicates()
+    .assign(site_rank=lambda df: df["tissue_site_a"].map(site_rank))
+    .sort_values(["site_rank", "cancer_group_a", "cell_line_a"])
+)
+matrix = at_24.pivot(index="cell_line_a", columns="cell_line_b", values="pearson").loc[lines["cell_line_a"], lines["cell_line_a"]]
+matrix = matrix.mask(np.eye(len(matrix), dtype=bool))  # the diagonal (1.0) would hide the rest of the scale
+
+fig, ax = plt.subplots(figsize=(9, 8))
+image = ax.imshow(matrix, cmap="RdBu_r", vmin=-0.5, vmax=0.5)
+ax.set_xticks(range(len(matrix)), matrix.columns, rotation=90, fontsize=4.5)
+ax.set_yticks(range(len(matrix)), matrix.index, fontsize=4.5)
+groups = lines["cancer_group_a"].to_numpy()
+for edge in np.flatnonzero(groups[1:] != groups[:-1]) + 0.5:  # lines between cancer groups
+    ax.axhline(edge, color="black", lw=0.5)
+    ax.axvline(edge, color="black", lw=0.5)
+fig.colorbar(image, ax=ax, shrink=0.6, label="Pearson correlation between cell lines (24 h)")
+plt.show()
 
