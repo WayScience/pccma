@@ -174,7 +174,7 @@ print(lowest.round(2).to_string(index=False))
 # The cell lines with the lowest replicate correlation are on top.
 # The plot is displayed here and not saved to disk.
 
-# In[3]:
+# In[7]:
 
 
 # tissue site colors, the same as `site_colors` in themes.R (in the order of the body, head to toe)
