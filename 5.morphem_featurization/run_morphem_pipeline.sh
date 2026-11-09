@@ -70,7 +70,7 @@ fi
 for converted_file in $(find 4.preprocess_features/data/converted_profiles -name "*_converted.parquet" | sort); do
     cell_line=$(basename "$(dirname "$converted_file")")
     plate=$(basename "$converted_file" | cut -d "_" -f 1)
-    output="${module}/data/morphem_profiles/${cell_line}/${plate}_${cell_line}_morphem.parquet"
+    output="${module}/data/morphem_extracted_profiles/${cell_line}/${plate}_${cell_line}_morphem.parquet"
 
     if is_up_to_date "$output" "$converted_file"; then
         log "INFO: Skipping ${plate} ${cell_line} (already extracted)"
@@ -86,13 +86,13 @@ for converted_file in $(find 4.preprocess_features/data/converted_profiles -name
 done
 
 # Step 2: process the MorphEm profiles (one job per plate)
-for plate in $(ls "${module}"/data/morphem_profiles/*/*_morphem.parquet | xargs -n 1 basename | cut -d "_" -f 1 | sort -u); do
-    output="${module}/data/bulk_profiles/${plate}_morphem_bulk_feature_selected.parquet"
-    sc_output="${module}/data/single_cell_profiles/${plate}_morphem_sc_feature_selected.parquet"
+for plate in $(ls "${module}"/data/morphem_extracted_profiles/*/*_morphem.parquet | xargs -n 1 basename | cut -d "_" -f 1 | sort -u); do
+    output="${module}/data/morphem_bulk_profiles/${plate}_morphem_bulk_feature_selected.parquet"
+    sc_output="${module}/data/morphem_single_cell_profiles/${plate}_morphem_sc_feature_selected.parquet"
 
     # inputs: the MorphEm profile and the QC results of each cell line on the plate
     inputs=()
-    for morphem_file in "${module}"/data/morphem_profiles/*/"${plate}"_*_morphem.parquet; do
+    for morphem_file in "${module}"/data/morphem_extracted_profiles/*/"${plate}"_*_morphem.parquet; do
         cell_line=$(basename "$(dirname "$morphem_file")")
         inputs+=("$morphem_file" "4.preprocess_features/qc_results/${cell_line}_qc_annotations.parquet")
     done
