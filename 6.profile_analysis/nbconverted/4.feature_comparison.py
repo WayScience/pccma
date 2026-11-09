@@ -223,7 +223,7 @@ print(size_rank.round(2).to_string(index=False))
 # Right, how much of the variance of each feature (cell line means) lies between cancer groups, at each time point, with the share expected by chance.
 # The plot is displayed here and not saved to disk.
 
-# In[3]:
+# In[10]:
 
 
 # tissue site colors, the same as `site_colors` in themes.R (in the order of the body, head to toe)
