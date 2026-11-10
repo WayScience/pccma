@@ -24,10 +24,4 @@ py-modules = [
     "path_utils",
     "preprocess_utils",
 ]
-# pccma_utils is a package (a folder with its own modules and tests in tests/)
-packages = ["errors", "pccma_utils"]
-
-[tool.pytest.ini_options]
-# run the tests from this folder with `pytest` (the folder is on the path, so pccma_utils imports without installing)
-testpaths = ["tests"]
-pythonpath = ["."]
+packages = ["errors"]
