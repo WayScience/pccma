@@ -15,12 +15,12 @@
 # **Method:** it is the method of `3.single_cell_embedding.ipynb` for one cancer group, with more cells.
 # At most `cells_per_line_per_plate` cells of each cell line on each plate are drawn at random (fixed seed), all time points are used, and the cells are clustered with k-means on the UMAP coordinates.
 # The representative cells of a cluster are the `examples_per_cluster` cells closest to its center.
-# Their images are cut from the raw images with `pccma_utils.cell_images` (`utils/pccma_utils/`; raw images, no illumination correction, each channel stretched in its own crop).
+# Their images are cut from the raw images with `pccma_utils.single_cells.crop_cells_as_png` (`utils/pccma_utils/`; raw images, no illumination correction, each channel stretched in its own crop).
 # 
 # **Output:** in `results/5.neuroblastoma_single_cell/`
 # - `neuroblastoma_single_cell_umap_coordinates.parquet`: one row per sampled cell with the cell line, plate, well, site (field number), nucleus position in the image, time point, UMAP coordinates, and cluster.
 # - `neuroblastoma_cluster_cell_line_composition.csv`: the number and the share of the cells of each cluster that come from each cell line.
-# - `neuroblastoma_cluster_example_cells.csv` and `neuroblastoma_cluster_example_cells/`: the representative cells (`selection` says how they were chosen) and their images (`cluster<n>_example<m>.png`).
+# - `neuroblastoma_cluster_example_cells.parquet`: the representative cells (`selection` says how they were chosen), with their images as PNG bytes in the column `image_png` (draw them with `pccma_utils.single_cells.png_to_array`).
 # - `neuroblastoma_umap_by_cluster_and_cell_line.png`: the UMAP colored by cluster and by cell line.
 # 
 # The notebook also shows the cell line composition of each cluster and the example cells; this view is displayed in the notebook and is not saved to disk.
@@ -38,9 +38,9 @@ import numpy as np
 import pandas as pd
 import pyarrow.parquet as pq
 import umap
-from pccma_utils.cell_images import crop_cell, find_image_dir
 from pccma_utils.cell_lines import load_cell_line_groups
 from pccma_utils.profiles import numeric_features
+from pccma_utils.single_cells import closest_to_centers, crop_cells_as_png, png_to_array, sample_cells
 from sklearn.cluster import KMeans
 
 # UMAP warns that a fixed random seed runs it on one thread, which is what keeps the embedding reproducible
@@ -62,7 +62,7 @@ profile_dir = local_dir if any(local_dir.glob("BR*_sc_feature_selected.parquet")
 screen_dir = bandicoot_root / "Atlas_v2_screen"
 
 results_dir = pathlib.Path("./results/5.neuroblastoma_single_cell")
-(results_dir / "neuroblastoma_cluster_example_cells").mkdir(parents=True, exist_ok=True)
+results_dir.mkdir(parents=True, exist_ok=True)
 
 cancer_group = "Neuroblastoma"
 cells_per_line_per_plate = 2000  # cells drawn per cell line on each plate
@@ -95,24 +95,9 @@ print(f"{len(neuroblastoma_lines)} cell lines on {len(plate_files)} plates, {len
 # In[4]:
 
 
-cell_columns = [
-    "Metadata_Plate", "Metadata_Well", "Metadata_Site", "Metadata_cell_line", "Metadata_time_point",
-    "Metadata_Nuclei_Location_Center_X", "Metadata_Nuclei_Location_Center_Y",
-]
-
-rng = np.random.default_rng(rng_seed)
-sampled = []
-for plate_file in plate_files:
-    plate_df = pd.read_parquet(plate_file, columns=cell_columns + features)
-    plate_df = plate_df[plate_df["Metadata_cell_line"].isin(neuroblastoma_lines)]
-    chosen = [
-        rng.choice(np.asarray(rows), size=min(len(rows), cells_per_line_per_plate), replace=False)
-        for rows in plate_df.groupby("Metadata_cell_line").indices.values()
-    ]
-    sampled.append(plate_df.iloc[np.concatenate(chosen)])
-    print(f"{plate_file.name}: {len(sampled[-1])} of {len(plate_df)} neuroblastoma cells")
-
-cells_df = pd.concat(sampled, ignore_index=True)
+cells_df, counts_df = sample_cells(plate_files, features, cells_per_line_per_plate, rng_seed, cell_lines=neuroblastoma_lines)
+for plate in counts_df.itertuples():
+    print(f"{plate.plate_file}: {plate.sampled} of {plate.available} neuroblastoma cells")
 print(f"{len(cells_df)} cells from {cells_df['Metadata_cell_line'].nunique()} cell lines")
 
 
@@ -168,31 +153,15 @@ print(largest.assign(cells_in_cluster=largest["cluster"].map(cells_df["cluster"]
 # In[7]:
 
 
-example_index = []  # rows of the examples, the cells closest to the center of each cluster
-example_number = []  # 1 for the cell closest to the center of its cluster, 2 for the next, and so on
-for cluster in range(1, n_clusters + 1):
-    in_cluster = np.where(cells_df["cluster"].to_numpy() == cluster)[0]
-    distance = ((embedding[in_cluster] - kmeans.cluster_centers_[cluster - 1]) ** 2).sum(axis=1)
-    closest = in_cluster[np.argsort(distance)[:examples_per_cluster]]
-    example_index.extend(closest)
-    example_number.extend(range(1, len(closest) + 1))
+examples = closest_to_centers(embedding, kmeans.labels_, kmeans.cluster_centers_, n=examples_per_cluster)
 
-examples_df = cells_df.iloc[example_index][keep].reset_index(drop=True)
-examples_df["example"] = example_number
+examples_df = cells_df.iloc[examples["position"]][keep].reset_index(drop=True)
+examples_df["example"] = examples["rank"].to_numpy()
 examples_df["selection"] = "one of the cells closest to the center of its cluster (example 1 is the closest)"
-examples_df["image_file"] = (
-    "neuroblastoma_cluster_example_cells/cluster" + examples_df["cluster"].astype(str) + "_example" + examples_df["example"].astype(str) + ".png"
-)
+examples_df["image_png"] = crop_cells_as_png(examples_df, screen_dir, crop_size)
 
-for cell in examples_df.itertuples():
-    image = crop_cell(
-        find_image_dir(screen_dir, cell.Metadata_Plate), cell.Metadata_Well, cell.Metadata_Site,
-        cell.Metadata_Nuclei_Location_Center_X, cell.Metadata_Nuclei_Location_Center_Y, size=crop_size,
-    )
-    plt.imsave(results_dir / cell.image_file, np.clip(image, 0, 1))
-
-examples_df.to_csv(results_dir / "neuroblastoma_cluster_example_cells.csv", index=False)
-print(f"{len(examples_df)} example cell images saved")
+examples_df.to_parquet(results_dir / "neuroblastoma_cluster_example_cells.parquet", compression="zstd", index=False)
+print(f"{len(examples_df)} example cells saved, with their images")
 
 
 # ## The clusters at a glance
@@ -218,7 +187,7 @@ plt.show()
 
 fig, axes = plt.subplots(n_clusters, examples_per_cluster, figsize=(1.5 * examples_per_cluster, 1.5 * n_clusters + 0.4))
 for ax, example in zip(axes.ravel(), examples_df.itertuples()):
-    ax.imshow(plt.imread(results_dir / example.image_file))
+    ax.imshow(png_to_array(example.image_png))
     ax.set_title(example.Metadata_cell_line, fontsize=6, pad=1)
 for ax in axes.ravel():
     ax.axis("off")
