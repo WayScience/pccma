@@ -122,7 +122,7 @@ Each uv environment is a folder in `environments` with a `pyproject.toml` and a 
 
 | uv environment | Modules |
 | --- | --- |
-| `environments/preprocessing` | `4.preprocess_features` and processing the MorphEm profiles in `5.morphem_featurization` |
+| `environments/preprocessing` | `4.preprocess_features`, processing the MorphEm profiles in `5.morphem_featurization`, and the notebooks of `6.profile_analysis` (including the lab's `pairwise_compare` package, installed from GitHub at a pinned commit) |
 | `environments/morphem` | Extracting the MorphEm features in `5.morphem_featurization` (PyTorch with CUDA) |
 
 The bash scripts of these modules create or update the environments for you.
