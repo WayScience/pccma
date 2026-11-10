@@ -10,7 +10,7 @@
 # **Input:** `4.preprocess_features/qc_report/qc_report_per_plate.csv`, which has the number of single cells of every cell line and plate before QC and the number that failed QC.
 # The cells that pass QC are the cells in the `*_sc_feature_selected.parquet` profiles, and the notebook checks that the totals match.
 # 
-# **Output:** `results/cell_counts.csv` with one row per cell line and plate.
+# **Output:** `results/0.cell_counts/cell_counts_per_cell_line_and_plate.csv` with one row per cell line and plate.
 # The notebook also plots the cells of each cell line as a bar chart, colored by tissue site and grouped by cancer group. The chart is shown in the notebook and is not saved to disk.
 # 
 # | Column | Description |
@@ -53,8 +53,8 @@ local_dir = pathlib.Path("../4.preprocess_features/data/single_cell_profiles")
 bandicoot_dir = pathlib.Path("~/mnt/bandicoot/PCCMA_data/Atlas_v2_profiles/single_cell_profiles").expanduser()
 profile_dir = local_dir if any(local_dir.glob("*_sc_feature_selected.parquet")) else bandicoot_dir
 
-results_dir = pathlib.Path("./results")
-results_dir.mkdir(exist_ok=True)
+results_dir = pathlib.Path("./results/0.cell_counts")
+results_dir.mkdir(parents=True, exist_ok=True)
 
 
 # ## Helper function
@@ -104,7 +104,7 @@ assert not counts.duplicated(["cell_line", "plate"]).any(), "a cell line and pla
 assert counts["cancer_group"].notna().all(), "a cell line has no cancer group"
 
 counts = counts.sort_values(["cancer_group", "cell_line", "time_point"]).reset_index(drop=True)
-counts.to_csv(results_dir / "cell_counts.csv", index=False)
+counts.to_csv(results_dir / "cell_counts_per_cell_line_and_plate.csv", index=False)
 print(f"{counts['cell_line'].nunique()} cell lines, {len(counts)} cell line and plate combinations")
 
 
@@ -141,7 +141,7 @@ print(f"Cell line and plate combinations with fewer than 1,000 cells: {(counts['
 # The bars are colored by tissue site, and the cell lines are grouped by cancer group (the number of cell lines is in brackets).
 # The chart is displayed here and not saved to disk.
 
-# In[7]:
+# In[3]:
 
 
 # tissue site colors, the same as `site_colors` in themes.R (in the order of the body, head to toe)
@@ -175,7 +175,7 @@ for group, group_rows in per_line.groupby("cancer_group", sort=False):
 ax.set_xlim(0, most_cells * 1.75)
 ax.set_ylim(per_line["row"].max() + 1, per_line["row"].min() - 1)  # first cancer group on top
 ax.xaxis.set_major_formatter(StrMethodFormatter("{x:,.0f}"))
-ax.set_xlabel("Cells after QC (all time points)")
+ax.set(title="Cells after QC of each cell line, all time points together", xlabel="Cells after QC")
 ax.spines[["top", "right"]].set_visible(False)
 ax.legend(
     handles=[Patch(color=color, label=site) for site, color in site_colors.items() if site in set(per_line["tissue_site"])],
