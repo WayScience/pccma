@@ -36,8 +36,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import umap
-import yaml
 from matplotlib.patches import Patch
+from pccma_utils.cell_lines import load_cell_line_groups
+from pccma_utils.palettes import site_colors
 
 # UMAP warns that a fixed random seed runs it on one thread, which is what keeps the embedding reproducible
 warnings.filterwarnings("ignore", message="n_jobs value")
@@ -64,34 +65,9 @@ results_dir.mkdir(parents=True, exist_ok=True)
 umap_parameters = {"n_neighbors": 15, "min_dist": 0.1, "n_components": 2, "metric": "euclidean", "random_state": 0}
 
 
-# ## Helper function
-
-# In[3]:
-
-
-def load_cell_line_groups(metadata_path, groups_path):
-    """One row per cell line with its cancer type, cancer group and tissue site.
-
-    The cancer groups and tissue sites come from cancer_type_categories.yaml, which lists
-    which `cancer_type` values of the metadata belong to each group.
-    """
-    metadata = pd.read_csv(metadata_path).drop_duplicates("cell_line")  # U2-OS has one row per plate condition
-    categories = yaml.safe_load(open(groups_path))
-    groups = pd.DataFrame(
-        [
-            (cancer_type, group["name"], site["name"])
-            for site in categories["sites"]
-            for group in site["groups"]
-            for cancer_type in group["cancer_types"]
-        ],
-        columns=["cancer_type", "cancer_group", "tissue_site"],
-    )
-    return metadata[["cell_line", "cancer_type", "origin"]].merge(groups, on="cancer_type", how="left")
-
-
 # ## Load the pooled profiles and the cell line annotations
 
-# In[4]:
+# In[3]:
 
 
 pooled_df = pd.read_parquet(pooled_path)
@@ -111,7 +87,7 @@ print(f"{len(pooled_df)} wells, {pooled_df['Metadata_cell_line'].nunique()} cell
 # 
 # Mean profile of each cell line on each plate, then the Pearson correlation between cell lines at the same time point.
 
-# In[5]:
+# In[4]:
 
 
 cell_line_profiles = pooled_df.groupby(["Metadata_time_point", "Metadata_cell_line"])[features].mean()
@@ -146,7 +122,7 @@ print(pd.DataFrame({
 
 # ## UMAP of the wells
 
-# In[6]:
+# In[5]:
 
 
 embedding = umap.UMAP(**umap_parameters).fit_transform(pooled_df[features].to_numpy())
@@ -162,20 +138,9 @@ print(f"UMAP of {len(umap_df)} wells saved")
 # The UMAP of the wells colored by tissue site, and colored by plate (to see whether the plate or layout shapes the map), and the similarity matrix of the cell lines at 24 h.
 # The plots are displayed here and not saved to disk.
 
-# In[7]:
+# In[6]:
 
 
-# tissue site colors, the same as `site_colors` in themes.R (in the order of the body, head to toe)
-site_colors = {
-    "Central nervous system": "#0072B2",
-    "Eye": "#56B4E9",
-    "Adrenal gland": "#E69F00",
-    "Kidney": "#009E73",
-    "Ovary": "#D6BC00",
-    "Soft tissue": "#CC79A7",
-    "Bone": "#D55E00",
-    "Normal reference lines": "#8C8C8C",
-}
 site_rank = {site: rank for rank, site in enumerate(site_colors)}
 
 fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
