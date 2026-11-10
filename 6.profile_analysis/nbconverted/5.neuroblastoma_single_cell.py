@@ -75,7 +75,7 @@ rng_seed = 0
 
 # ## Neuroblastoma cell lines, their plates, and the shared features
 
-# In[4]:
+# In[3]:
 
 
 neuroblastoma_lines = load_cell_line_groups(metadata_path, groups_path).query("cancer_group == @cancer_group")["cell_line"]
@@ -92,7 +92,7 @@ print(f"{len(neuroblastoma_lines)} cell lines on {len(plate_files)} plates, {len
 
 # ## Subsample the neuroblastoma cells
 
-# In[5]:
+# In[4]:
 
 
 cell_columns = [
@@ -118,7 +118,7 @@ print(f"{len(cells_df)} cells from {cells_df['Metadata_cell_line'].nunique()} ce
 
 # ## UMAP and clusters
 
-# In[6]:
+# In[5]:
 
 
 embedding = umap.UMAP(**umap_parameters).fit_transform(cells_df[features].to_numpy())
@@ -148,7 +148,7 @@ plt.close(fig)
 # 
 # The number of cells of each cluster from each cell line, and the share of the cluster.
 
-# In[7]:
+# In[6]:
 
 
 counts = cells_df.groupby(["cluster", "Metadata_cell_line"]).size().rename("n_cells").reset_index()
@@ -165,7 +165,7 @@ print(largest.assign(cells_in_cluster=largest["cluster"].map(cells_df["cluster"]
 # 
 # The cells closest to the center of each cluster, cut from the raw images of their plate.
 
-# In[8]:
+# In[7]:
 
 
 example_index = []  # rows of the examples, the cells closest to the center of each cluster
@@ -200,7 +200,7 @@ print(f"{len(examples_df)} example cell images saved")
 # The share of the cells of each cluster that comes from each cell line, and the representative cells of each cluster (one row per cluster, the cells closest to its center).
 # The views are displayed here and not saved to disk.
 
-# In[4]:
+# In[8]:
 
 
 share = counts.pivot(index="cluster", columns="cell_line", values="share_of_cluster").fillna(0)
