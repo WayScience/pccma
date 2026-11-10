@@ -1,4 +1,9 @@
-"""Functions to cut the image of a single cell out of the raw images of a plate."""
+"""Cut the image of a single cell out of the raw images of a plate.
+
+The raw Phenix images of a plate are one TIFF file per channel and field of view, named
+`r<row>c<column>f<field>p01-ch<channel>sk1fk1fl1.tiff` (for example `r09c05f02p01-ch5sk1fk1fl1.tiff`, which is
+well I05, field 2, channel 5). The channel numbers of the stains are in `CHANNELS`.
+"""
 
 import pathlib
 
@@ -18,7 +23,13 @@ CHANNELS = {
 
 
 def find_image_dir(screen_dir, plate):
-    """Folder with the raw images of a plate (the folder name is the barcode followed by the measurement)."""
+    """Folder with the raw images of a plate.
+
+    The folder name is the plate barcode followed by the measurement (`<plate>__<time>-Measurement <n>/Images`).
+    When a plate was measured more than once, the last measurement (in name order) is used.
+
+    Raises a FileNotFoundError when the plate has no image folder in `screen_dir`.
+    """
     matches = sorted(pathlib.Path(screen_dir).glob(f"{plate}__*/Images"))
     if not matches:
         raise FileNotFoundError(f"no image folder for plate {plate} in {screen_dir}")
@@ -26,18 +37,23 @@ def find_image_dir(screen_dir, plate):
 
 
 def read_field(image_dir, well, site, channel):
-    """Raw image of one channel of one field of view (the site is the field number)."""
+    """Raw image of one channel of one field of view, as a float32 array (rows x columns).
+
+    `well` is the well name (for example "I05"), `site` is the field number, and `channel` is the channel
+    number of the stain (see `CHANNELS`).
+    """
     row, column = ord(well[0]) - ord("A") + 1, int(well[1:])
     path = image_dir / f"r{row:02d}c{column:02d}f{int(site):02d}p01-ch{channel}sk1fk1fl1.tiff"
     return tifffile.imread(path).astype(np.float32)
 
 
 def crop_cell(image_dir, well, site, x, y, size=160, low=1, high=99.8):
-    """Color image (height x width x 3, 0-1) of the cell with its nucleus center at pixel (x, y).
+    """Color image (height x width x 3, values 0-1) of the cell with its nucleus center at pixel (x, y).
 
     The five channels are cropped around the center, each is stretched between the `low` and `high`
     percentiles of its own crop, and they are combined in color (screen blend). The raw images are used,
-    without illumination correction. The part of the crop outside the image is black.
+    without illumination correction. The part of the crop outside the image is padded with the darkest value
+    of the image, which is black after the stretch.
     """
     half = size // 2
     x, y = int(round(x)), int(round(y))
