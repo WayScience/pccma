@@ -73,7 +73,7 @@ rng_seed = 0
 
 # ## Helper function
 
-# In[4]:
+# In[3]:
 
 
 def file_name(cancer_group):
@@ -83,7 +83,7 @@ def file_name(cancer_group):
 
 # ## Features shared by all plates
 
-# In[5]:
+# In[4]:
 
 
 plate_files = sorted(profile_dir.glob("BR*_sc_feature_selected.parquet"))
@@ -95,7 +95,7 @@ print(f"{len(plate_files)} plates, {len(features)} features shared by all plates
 
 # ## Subsample the cells
 
-# In[6]:
+# In[5]:
 
 
 cell_columns = [
@@ -127,7 +127,7 @@ print(f"{len(cells_df)} cells from {cells_df['Metadata_cell_line'].nunique()} ce
 # 
 # The cluster number is stored with every cell and the example cell of each cluster is the one closest to its center.
 
-# In[7]:
+# In[6]:
 
 
 cells_df["umap_1"], cells_df["umap_2"], cells_df["cluster"] = np.nan, np.nan, -1
@@ -155,7 +155,7 @@ cells_df[keep].to_parquet(results_dir / "single_cell_umap_coordinates_by_cancer_
 # 
 # Cut the image of the example cell of each cluster from the raw images of its plate.
 
-# In[8]:
+# In[7]:
 
 
 examples_df = cells_df.loc[example_index, keep].reset_index(drop=True)
@@ -178,7 +178,7 @@ print(f"{len(examples_df)} example cell images saved")
 # The UMAP of every cancer group, colored by cell line.
 # The view is displayed here and not saved to disk.
 
-# In[3]:
+# In[8]:
 
 
 umap_df = pd.read_parquet(results_dir / "single_cell_umap_coordinates_by_cancer_group.parquet")
@@ -208,7 +208,7 @@ plt.show()
 # Set `preview_group` to look at another cancer group.
 # The view is displayed here and not saved to disk.
 
-# In[4]:
+# In[9]:
 
 
 preview_group = "Neuroblastoma"
