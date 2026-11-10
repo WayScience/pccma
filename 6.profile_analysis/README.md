@@ -1,7 +1,9 @@
 # Profile analysis
 
 In this module, we collect the data that the figures of the PCCMA paper will plot.
-Each notebook computes one set of tables from the profiles and saves them in a `results/` folder.
+Each notebook computes one set of tables from the profiles and saves them in its own folder, `results/<notebook name>/`, with a file name that describes the table (for example, `results/0.cell_counts/cell_counts_per_cell_line_and_plate.csv`).
+The header of each notebook describes every table and its columns.
+Charts in the notebooks are for demonstration and are displayed in the notebook, not saved to disk.
 
 ## Inputs
 
@@ -26,3 +28,8 @@ We join the profiles to it on the `cell_line` column.
 | `4.feature_comparison` | The distribution of nucleus size for each cell line, and the variance of each feature across cell lines with a statistical test. | Compares one size feature across all cell lines and identifies a second feature that differs between cell lines. | Normalized, univariate |
 | `5.neuroblastoma_single_cell` | A UMAP of the neuroblastoma single cells with representative images for the clusters. | Focuses on one cancer type to show what the clusters look like. | Single-cell, multivariate |
 | `6.metastatic_vs_primary` | A linear model per cell line comparing metastatic with primary disease, adjusting for other variables. | Tests the comparison without picking up confounding variables. | Normalized, univariate |
+
+## Shared code
+
+A function that more than one notebook needs goes in the `pccma_utils` package ([`utils/pccma_utils`](../utils/pccma_utils/)), which has tests in [`utils/tests`](../utils/tests/).
+A function used by a single notebook stays in that notebook.
