@@ -17,9 +17,9 @@
 # Every cell line is on one layout of three plates, so the positions of cell lines on the map can also reflect the layout and the plate.
 # The coordinates are saved with the plate, time point, coating, and fixation so that this can be checked.
 # 
-# **Output:** in `results/`
-# - `bulk_similarity.csv`: one row per pair of cell lines and time point, with the cancer group and tissue site of both.
-# - `bulk_umap.csv`: one row per well, with its metadata, the UMAP coordinates, and the cell line annotations.
+# **Output:** in `results/2.bulk_embedding/`
+# - `bulk_cell_line_pair_similarity.csv`: one row per pair of cell lines and time point, with the cancer group and tissue site of both.
+# - `bulk_well_umap_coordinates.csv`: one row per well, with its metadata, the UMAP coordinates, and the cell line annotations.
 # 
 # The notebook also plots the UMAP and the similarity matrix; the plots are shown in the notebook and are not saved to disk.
 
@@ -57,8 +57,8 @@ local_dir = pathlib.Path("../4.preprocess_features/data/bulk_profiles")
 bandicoot_dir = pathlib.Path("~/mnt/bandicoot/PCCMA_data/Atlas_v2_profiles/bulk_profiles").expanduser()
 pooled_path = (local_dir if (local_dir / pooled_name).exists() else bandicoot_dir) / pooled_name
 
-results_dir = pathlib.Path("./results")
-results_dir.mkdir(exist_ok=True)
+results_dir = pathlib.Path("./results/2.bulk_embedding")
+results_dir.mkdir(parents=True, exist_ok=True)
 
 # UMAP settings
 umap_parameters = {"n_neighbors": 15, "min_dist": 0.1, "n_components": 2, "metric": "euclidean", "random_state": 0}
@@ -132,7 +132,7 @@ for suffix in ["a", "b"]:
         on=f"cell_line_{suffix}",
         how="left",
     )
-similarity_df.to_csv(results_dir / "bulk_similarity.csv", index=False)
+similarity_df.to_csv(results_dir / "bulk_cell_line_pair_similarity.csv", index=False)
 
 # between different cell lines, is the similarity higher within a cancer group than across groups?
 different = similarity_df[similarity_df["cell_line_a"] != similarity_df["cell_line_b"]]
@@ -153,7 +153,7 @@ embedding = umap.UMAP(**umap_parameters).fit_transform(pooled_df[features].to_nu
 
 umap_df = pooled_df[metadata_cols + ["cancer_type", "cancer_group", "tissue_site", "origin"]].copy()
 umap_df["umap_1"], umap_df["umap_2"] = embedding[:, 0], embedding[:, 1]
-umap_df.to_csv(results_dir / "bulk_umap.csv", index=False)
+umap_df.to_csv(results_dir / "bulk_well_umap_coordinates.csv", index=False)
 print(f"UMAP of {len(umap_df)} wells saved")
 
 
@@ -209,6 +209,7 @@ groups = lines["cancer_group_a"].to_numpy()
 for edge in np.flatnonzero(groups[1:] != groups[:-1]) + 0.5:  # lines between cancer groups
     ax.axhline(edge, color="black", lw=0.5)
     ax.axvline(edge, color="black", lw=0.5)
+ax.set_title("Similarity between cell lines at 24 h, ordered by tissue site and cancer group")
 fig.colorbar(image, ax=ax, shrink=0.6, label="Pearson correlation between cell lines (24 h)")
 plt.show()
 
