@@ -42,10 +42,11 @@ import pathlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import yaml
 from comparators.PearsonsCorrelation import PearsonsCorrelation
 from comparison_tools.PairwiseCompareManager import PairwiseCompareManager
 from matplotlib.patches import Patch
+from pccma_utils.cell_lines import load_cell_line_groups
+from pccma_utils.palettes import site_colors
 
 
 # ## Set paths and parameters
@@ -68,31 +69,6 @@ results_dir.mkdir(parents=True, exist_ok=True)
 replicate_columns = ["Metadata_Plate", "Metadata_time_point", "Metadata_cell_line", "Metadata_seeding_density", "Metadata_plate_coating"]
 outlier_cutoff = 1000  # features above this absolute value in any well are removed (near-zero MAD artifacts)
 rng = np.random.default_rng(0)  # for the shuffled copy of each plate
-
-
-# ## Helper function
-
-# In[ ]:
-
-
-def load_cell_line_groups(metadata_path, groups_path):
-    """One row per cell line with its cancer type, cancer group and tissue site.
-
-    The cancer groups and tissue sites come from cancer_type_categories.yaml, which lists
-    which `cancer_type` values of the metadata belong to each group.
-    """
-    metadata = pd.read_csv(metadata_path).drop_duplicates("cell_line")  # U2-OS has one row per plate condition
-    categories = yaml.safe_load(open(groups_path))
-    groups = pd.DataFrame(
-        [
-            (cancer_type, group["name"], site["name"])
-            for site in categories["sites"]
-            for group in site["groups"]
-            for cancer_type in group["cancer_types"]
-        ],
-        columns=["cancer_type", "cancer_group", "tissue_site"],
-    )
-    return metadata[["cell_line", "cancer_type", "origin"]].merge(groups, on="cancer_type", how="left")
 
 
 # ## Correlation between replicate wells
@@ -181,18 +157,6 @@ print(lowest.round(2).to_string(index=False))
 
 # In[ ]:
 
-
-# tissue site colors, the same as `site_colors` in themes.R (in the order of the body, head to toe)
-site_colors = {
-    "Central nervous system": "#0072B2",
-    "Eye": "#56B4E9",
-    "Adrenal gland": "#E69F00",
-    "Kidney": "#009E73",
-    "Ovary": "#D6BC00",
-    "Soft tissue": "#CC79A7",
-    "Bone": "#D55E00",
-    "Normal reference lines": "#8C8C8C",
-}
 
 fig, (hist_ax, line_ax) = plt.subplots(1, 2, figsize=(11, 8), gridspec_kw={"width_ratios": [1, 1.2]})
 
