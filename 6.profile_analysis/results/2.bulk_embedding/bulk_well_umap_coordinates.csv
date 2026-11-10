@@ -1,0 +1,713 @@
+Metadata_Plate,Metadata_Well,Metadata_cell_line,Metadata_row,Metadata_column,Metadata_seeding_density,Metadata_time_point,Metadata_plate_barcode,Metadata_plate_coating,Metadata_pfa_fixation,cancer_type,cancer_group,tissue_site,origin,umap_1,umap_2
+BR00150695,C03,DAOY,C,3,12000,24,BR00150695,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,5.049384,-0.27162167
+BR00150695,C04,DAOY,C,4,12000,24,BR00150695,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,5.0370884,-0.25752485
+BR00150695,C05,NB-1,C,5,12000,24,BR00150695,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-1.1696641,2.5876753
+BR00150695,C06,NB-1,C,6,12000,24,BR00150695,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-1.1465845,2.6256998
+BR00150695,C07,SK-N-MC,C,7,8000,24,BR00150695,Standard,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.5771884,0.43531173
+BR00150695,C08,SK-N-MC,C,8,8000,24,BR00150695,Standard,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.5318011,0.44400918
+BR00150695,D03,DAOY,D,3,12000,24,BR00150695,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,5.002254,-0.22906998
+BR00150695,D04,DAOY,D,4,12000,24,BR00150695,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,5.020539,-0.23460406
+BR00150695,D05,NB-1,D,5,12000,24,BR00150695,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-1.0650702,2.5528295
+BR00150695,D06,NB-1,D,6,12000,24,BR00150695,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-1.1046299,2.5553777
+BR00150695,D07,SK-N-MC,D,7,8000,24,BR00150695,Standard,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.5217239,0.430247
+BR00150695,D08,SK-N-MC,D,8,8000,24,BR00150695,Standard,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.5517286,0.43192402
+BR00150695,E03,G292,E,3,12000,24,BR00150695,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,0.07636324,2.5699584
+BR00150695,E04,G292,E,4,12000,24,BR00150695,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,0.12977794,2.5302978
+BR00150695,E05,ONS-76,E,5,8000,24,BR00150695,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,1.6606742,3.8949492
+BR00150695,E06,ONS-76,E,6,8000,24,BR00150695,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,1.558554,3.8791041
+BR00150695,E07,U2-OS,E,7,4000,24,BR00150695,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.9887962,9.1797905
+BR00150695,E08,U2-OS,E,8,4000,24,BR00150695,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.9505112,9.1714945
+BR00150695,F03,G292,F,3,12000,24,BR00150695,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,0.048461657,2.557756
+BR00150695,F04,G292,F,4,12000,24,BR00150695,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,0.07158284,2.5818205
+BR00150695,F05,ONS-76,F,5,8000,24,BR00150695,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,1.5942764,3.852829
+BR00150695,F06,ONS-76,F,6,8000,24,BR00150695,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,1.5280129,3.877441
+BR00150695,F07,U2-OS,F,7,4000,24,BR00150695,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.962195,9.128441
+BR00150695,F08,U2-OS,F,8,4000,24,BR00150695,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.9571488,9.135585
+BR00150695,G03,G401,G,3,12000,24,BR00150695,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,0.931326,1.8741947
+BR00150695,G04,G401,G,4,12000,24,BR00150695,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,0.91890556,1.9073805
+BR00150695,G05,PA1,G,5,4000,24,BR00150695,Standard,single,Mixed Germ Cell,Germ cell tumor,Ovary,Metastasis,3.5490263,1.9426122
+BR00150695,G06,PA1,G,6,4000,24,BR00150695,Standard,single,Mixed Germ Cell,Germ cell tumor,Ovary,Metastasis,3.5821102,2.0604339
+BR00150695,H03,G401,H,3,12000,24,BR00150695,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,0.89522946,1.9548901
+BR00150695,H04,G401,H,4,12000,24,BR00150695,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,0.93733954,1.8731446
+BR00150695,H05,PA1,H,5,4000,24,BR00150695,Standard,single,Mixed Germ Cell,Germ cell tumor,Ovary,Metastasis,3.6524706,2.0036771
+BR00150695,H06,PA1,H,6,4000,24,BR00150695,Standard,single,Mixed Germ Cell,Germ cell tumor,Ovary,Metastasis,3.544156,1.9860799
+BR00150695,I03,G402,I,3,8000,24,BR00150695,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,-2.0300682,0.60907435
+BR00150695,I04,G402,I,4,8000,24,BR00150695,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,-2.041261,0.61657774
+BR00150695,J03,G402,J,3,8000,24,BR00150695,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,-2.064381,0.6332953
+BR00150695,J04,G402,J,4,8000,24,BR00150695,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,-2.0579607,0.6332673
+BR00150695,K03,IMR32,K,3,8000,24,BR00150695,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,2.01872,4.0331755
+BR00150695,K04,IMR32,K,4,8000,24,BR00150695,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,1.9493808,4.081147
+BR00150695,K05,SJSA-1,K,5,8000,24,BR00150695,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.5652196,9.002507
+BR00150695,K06,SJSA-1,K,6,8000,24,BR00150695,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.5550132,9.011167
+BR00150695,L03,IMR32,L,3,8000,24,BR00150695,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,1.9925092,4.0663886
+BR00150695,L04,IMR32,L,4,8000,24,BR00150695,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,2.0608087,4.006868
+BR00150695,L05,SJSA-1,L,5,8000,24,BR00150695,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.571053,9.004967
+BR00150695,L06,SJSA-1,L,6,8000,24,BR00150695,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.5916145,8.985543
+BR00150695,M03,KNS-42,M,3,1000,24,BR00150695,Standard,single,Glioma,Glioma,Central nervous system,Primary,-2.0266511,-0.8153126
+BR00150695,M04,KNS-42,M,4,1000,24,BR00150695,Standard,single,Glioma,Glioma,Central nervous system,Primary,-2.0452056,-0.83692145
+BR00150695,M05,SK-N-AS,M,5,12000,24,BR00150695,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,4.056011,5.2080584
+BR00150695,M06,SK-N-AS,M,6,12000,24,BR00150695,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,4.049608,5.1943564
+BR00150695,N03,KNS-42,N,3,1000,24,BR00150695,Standard,single,Glioma,Glioma,Central nervous system,Primary,-2.0259807,-0.8176688
+BR00150695,N04,KNS-42,N,4,1000,24,BR00150695,Standard,single,Glioma,Glioma,Central nervous system,Primary,-2.0247831,-0.8162633
+BR00150695,N05,SK-N-AS,N,5,12000,24,BR00150695,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,4.047142,5.1942325
+BR00150695,N06,SK-N-AS,N,6,12000,24,BR00150695,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,4.0658603,5.224972
+BR00150696,C03,DAOY,C,3,4000,48,BR00150696,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,5.102493,-0.19153528
+BR00150696,C04,DAOY,C,4,4000,48,BR00150696,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,5.075847,-0.36024082
+BR00150696,C05,NB-1,C,5,8000,48,BR00150696,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.94530797,2.4567616
+BR00150696,C06,NB-1,C,6,8000,48,BR00150696,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.9568981,2.4553435
+BR00150696,C07,SK-N-MC,C,7,4000,48,BR00150696,Standard,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.5757785,0.35189864
+BR00150696,C08,SK-N-MC,C,8,4000,48,BR00150696,Standard,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.6027662,0.3958
+BR00150696,D03,DAOY,D,3,4000,48,BR00150696,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,5.0855036,-0.18800512
+BR00150696,D04,DAOY,D,4,4000,48,BR00150696,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,5.1378236,-0.2945706
+BR00150696,D05,NB-1,D,5,8000,48,BR00150696,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.96056753,2.4693146
+BR00150696,D06,NB-1,D,6,8000,48,BR00150696,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.9945167,2.5040154
+BR00150696,D07,SK-N-MC,D,7,4000,48,BR00150696,Standard,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.6133335,0.4022942
+BR00150696,D08,SK-N-MC,D,8,4000,48,BR00150696,Standard,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.5896177,0.38517812
+BR00150696,E03,G292,E,3,12000,48,BR00150696,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.4096966,4.459064
+BR00150696,E04,G292,E,4,12000,48,BR00150696,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.8124986,4.701616
+BR00150696,E05,ONS-76,E,5,4000,48,BR00150696,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,0.9433722,3.7479692
+BR00150696,E06,ONS-76,E,6,4000,48,BR00150696,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,0.9522468,3.8174238
+BR00150696,E07,U2-OS,E,7,2000,48,BR00150696,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.8671288,9.101278
+BR00150696,E08,U2-OS,E,8,2000,48,BR00150696,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.8626,9.080979
+BR00150696,F03,G292,F,3,12000,48,BR00150696,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.8784528,4.707589
+BR00150696,F04,G292,F,4,12000,48,BR00150696,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.8254135,4.706849
+BR00150696,F05,ONS-76,F,5,4000,48,BR00150696,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,1.0287795,3.7588575
+BR00150696,F06,ONS-76,F,6,4000,48,BR00150696,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,1.0638803,3.7402267
+BR00150696,F07,U2-OS,F,7,2000,48,BR00150696,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.8966215,9.230753
+BR00150696,F08,U2-OS,F,8,2000,48,BR00150696,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.7857234,9.196446
+BR00150696,G03,G401,G,3,12000,48,BR00150696,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,1.0974743,1.4317986
+BR00150696,G04,G401,G,4,12000,48,BR00150696,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,1.0460751,1.6714542
+BR00150696,G05,PA1,G,5,2000,48,BR00150696,Standard,single,Mixed Germ Cell,Germ cell tumor,Ovary,Metastasis,4.1968293,1.1631458
+BR00150696,G06,PA1,G,6,2000,48,BR00150696,Standard,single,Mixed Germ Cell,Germ cell tumor,Ovary,Metastasis,4.174753,1.1904045
+BR00150696,H03,G401,H,3,12000,48,BR00150696,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,1.0575203,1.4379987
+BR00150696,H04,G401,H,4,12000,48,BR00150696,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,1.1063387,1.5027342
+BR00150696,H05,PA1,H,5,2000,48,BR00150696,Standard,single,Mixed Germ Cell,Germ cell tumor,Ovary,Metastasis,4.027274,1.3598799
+BR00150696,H06,PA1,H,6,2000,48,BR00150696,Standard,single,Mixed Germ Cell,Germ cell tumor,Ovary,Metastasis,4.120704,1.2055945
+BR00150696,I03,G402,I,3,4000,48,BR00150696,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,-2.0851548,0.6639646
+BR00150696,I04,G402,I,4,4000,48,BR00150696,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,-2.1300373,0.7023544
+BR00150696,I05,Saos-2,I,5,4000,48,BR00150696,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.6325908,8.923283
+BR00150696,I06,Saos-2,I,6,4000,48,BR00150696,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.642725,8.89974
+BR00150696,J03,G402,J,3,4000,48,BR00150696,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,-2.1152322,0.6490961
+BR00150696,J04,G402,J,4,4000,48,BR00150696,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,-2.064376,0.6286612
+BR00150696,J05,Saos-2,J,5,4000,48,BR00150696,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.6515746,8.9024315
+BR00150696,J06,Saos-2,J,6,4000,48,BR00150696,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.646948,8.917883
+BR00150696,K03,IMR32,K,3,4000,48,BR00150696,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,2.011959,4.052328
+BR00150696,K04,IMR32,K,4,4000,48,BR00150696,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,1.9833939,4.040109
+BR00150696,K05,SJSA-1,K,5,8000,48,BR00150696,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.317022,9.188503
+BR00150696,K06,SJSA-1,K,6,8000,48,BR00150696,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.3272164,9.204526
+BR00150696,L03,IMR32,L,3,4000,48,BR00150696,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,1.9740789,4.003563
+BR00150696,L04,IMR32,L,4,4000,48,BR00150696,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,2.0252132,4.005782
+BR00150696,L05,SJSA-1,L,5,8000,48,BR00150696,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.3783793,9.256746
+BR00150696,L06,SJSA-1,L,6,8000,48,BR00150696,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.319532,9.212498
+BR00150696,M03,KNS-42,M,3,4000,48,BR00150696,Standard,single,Glioma,Glioma,Central nervous system,Primary,-1.9783454,-0.8049967
+BR00150696,M04,KNS-42,M,4,4000,48,BR00150696,Standard,single,Glioma,Glioma,Central nervous system,Primary,-2.0307412,-0.84712803
+BR00150696,M05,SK-N-AS,M,5,4000,48,BR00150696,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,4.0035677,5.172345
+BR00150696,M06,SK-N-AS,M,6,4000,48,BR00150696,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,3.955031,5.105281
+BR00150696,N03,KNS-42,N,3,4000,48,BR00150696,Standard,single,Glioma,Glioma,Central nervous system,Primary,-1.9712491,-0.77679586
+BR00150696,N04,KNS-42,N,4,4000,48,BR00150696,Standard,single,Glioma,Glioma,Central nervous system,Primary,-1.990285,-0.80783844
+BR00150696,N05,SK-N-AS,N,5,4000,48,BR00150696,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,3.951715,5.126523
+BR00150696,N06,SK-N-AS,N,6,4000,48,BR00150696,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,4.0107217,5.14541
+BR00150697,C03,DAOY,C,3,4000,72,BR00150697,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,5.1446733,-0.22648789
+BR00150697,C04,DAOY,C,4,4000,72,BR00150697,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,5.124691,-0.2732285
+BR00150697,C05,NB-1,C,5,8000,72,BR00150697,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.7601801,2.3519914
+BR00150697,C06,NB-1,C,6,8000,72,BR00150697,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.72451603,2.3439877
+BR00150697,C07,SK-N-MC,C,7,4000,72,BR00150697,Standard,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.5934715,-0.08876905
+BR00150697,C08,SK-N-MC,C,8,4000,72,BR00150697,Standard,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.809536,-0.103412926
+BR00150697,D03,DAOY,D,3,4000,72,BR00150697,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,5.147071,-0.2751087
+BR00150697,D04,DAOY,D,4,4000,72,BR00150697,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,5.088604,-0.20549841
+BR00150697,D05,NB-1,D,5,8000,72,BR00150697,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.8198353,2.386469
+BR00150697,D06,NB-1,D,6,8000,72,BR00150697,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.79647475,2.3649635
+BR00150697,D07,SK-N-MC,D,7,4000,72,BR00150697,Standard,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.4673488,-0.04761451
+BR00150697,D08,SK-N-MC,D,8,4000,72,BR00150697,Standard,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.6738262,-0.103727214
+BR00150697,E03,G292,E,3,8000,72,BR00150697,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.1177685,7.5185966
+BR00150697,E04,G292,E,4,8000,72,BR00150697,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.2217233,7.657505
+BR00150697,E05,ONS-76,E,5,1000,72,BR00150697,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,1.0024264,3.7305822
+BR00150697,E06,ONS-76,E,6,1000,72,BR00150697,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,2.9796498,7.508284
+BR00150697,E07,U2-OS,E,7,1000,72,BR00150697,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.879945,9.054552
+BR00150697,E08,U2-OS,E,8,1000,72,BR00150697,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.0727913,7.9984045
+BR00150697,F03,G292,F,3,8000,72,BR00150697,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.096187,7.534584
+BR00150697,F04,G292,F,4,8000,72,BR00150697,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.141634,7.495128
+BR00150697,F05,ONS-76,F,5,1000,72,BR00150697,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,0.9894846,3.7285283
+BR00150697,F06,ONS-76,F,6,1000,72,BR00150697,Standard,single,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,2.9194427,7.619298
+BR00150697,F07,U2-OS,F,7,1000,72,BR00150697,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.0310502,8.213222
+BR00150697,F08,U2-OS,F,8,1000,72,BR00150697,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.915864,9.046154
+BR00150697,G03,G401,G,3,8000,72,BR00150697,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,1.0122695,1.0182985
+BR00150697,G04,G401,G,4,8000,72,BR00150697,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,1.0305599,1.0428989
+BR00150697,G05,PA1,G,5,1000,72,BR00150697,Standard,single,Mixed Germ Cell,Germ cell tumor,Ovary,Metastasis,4.241665,1.1900378
+BR00150697,G06,PA1,G,6,1000,72,BR00150697,Standard,single,Mixed Germ Cell,Germ cell tumor,Ovary,Metastasis,4.2395983,1.2053156
+BR00150697,H03,G401,H,3,8000,72,BR00150697,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,1.0138464,0.98471564
+BR00150697,H04,G401,H,4,8000,72,BR00150697,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,1.0405242,1.0552613
+BR00150697,H05,PA1,H,5,1000,72,BR00150697,Standard,single,Mixed Germ Cell,Germ cell tumor,Ovary,Metastasis,4.2932415,1.1096
+BR00150697,H06,PA1,H,6,1000,72,BR00150697,Standard,single,Mixed Germ Cell,Germ cell tumor,Ovary,Metastasis,4.2646475,1.1887168
+BR00150697,I03,G402,I,3,2000,72,BR00150697,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,-2.226246,0.84233254
+BR00150697,I04,G402,I,4,2000,72,BR00150697,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,-2.1374998,0.759574
+BR00150697,I05,Saos-2,I,5,2000,72,BR00150697,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.1130803,7.794446
+BR00150697,I06,Saos-2,I,6,2000,72,BR00150697,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.0804749,7.649179
+BR00150697,J03,G402,J,3,2000,72,BR00150697,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,-2.1995466,0.7887434
+BR00150697,J04,G402,J,4,2000,72,BR00150697,Standard,single,Malignant Rhabdoid Tumor,Malignant rhabdoid tumor,Kidney,Primary,-2.1691678,0.76257354
+BR00150697,J05,Saos-2,J,5,2000,72,BR00150697,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.1046984,7.977922
+BR00150697,J06,Saos-2,J,6,2000,72,BR00150697,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.0980031,7.9071603
+BR00150697,K03,IMR32,K,3,4000,72,BR00150697,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,3.0523582,7.4280853
+BR00150697,K04,IMR32,K,4,4000,72,BR00150697,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,2.1639428,3.8908236
+BR00150697,K05,SJSA-1,K,5,4000,72,BR00150697,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.3435957,9.071699
+BR00150697,K06,SJSA-1,K,6,4000,72,BR00150697,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.295813,9.210475
+BR00150697,L03,IMR32,L,3,4000,72,BR00150697,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,2.1909177,3.9049776
+BR00150697,L04,IMR32,L,4,4000,72,BR00150697,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,3.6852865,1.6184971
+BR00150697,L05,SJSA-1,L,5,4000,72,BR00150697,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.2578697,9.148173
+BR00150697,L06,SJSA-1,L,6,4000,72,BR00150697,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.2607555,9.151874
+BR00150697,M03,KNS-42,M,3,4000,72,BR00150697,Standard,single,Glioma,Glioma,Central nervous system,Primary,3.0222743,7.5442
+BR00150697,M04,KNS-42,M,4,4000,72,BR00150697,Standard,single,Glioma,Glioma,Central nervous system,Primary,3.0424168,7.564175
+BR00150697,M05,SK-N-AS,M,5,2000,72,BR00150697,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,3.1393075,7.5743713
+BR00150697,M06,SK-N-AS,M,6,2000,72,BR00150697,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,3.2648728,7.5360727
+BR00150697,N03,KNS-42,N,3,4000,72,BR00150697,Standard,single,Glioma,Glioma,Central nervous system,Primary,3.1212368,7.4754176
+BR00150697,N04,KNS-42,N,4,4000,72,BR00150697,Standard,single,Glioma,Glioma,Central nervous system,Primary,-1.9631279,-0.7590702
+BR00150697,N05,SK-N-AS,N,5,2000,72,BR00150697,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,3.945741,5.4353433
+BR00150697,N06,SK-N-AS,N,6,2000,72,BR00150697,Standard,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,3.2917826,7.5062485
+BR00150698,C03,A673,C,3,4000,24,BR00150698,Synthemax,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.5330899,0.12037111
+BR00150698,C04,A673,C,4,4000,24,BR00150698,Synthemax,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.2653167,-0.07650233
+BR00150698,C05,COGW408,C,5,8000,24,BR00150698,Synthemax,single,Wilms' Tumor,Wilms tumor,Kidney,,1.2934098,-1.2299448
+BR00150698,C06,COGW408,C,6,8000,24,BR00150698,Synthemax,single,Wilms' Tumor,Wilms tumor,Kidney,,1.6019967,-1.5219449
+BR00150698,C07,RH41,C,7,8000,24,BR00150698,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,-0.246516,3.209845
+BR00150698,C08,RH41,C,8,8000,24,BR00150698,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,-0.13982883,3.2216551
+BR00150698,C09,U2-OS,C,9,4000,24,BR00150698,Laminin,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.0009675,9.727312
+BR00150698,C10,U2-OS,C,10,4000,24,BR00150698,Laminin,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.8781033,9.83997
+BR00150698,D03,A673,D,3,4000,24,BR00150698,Synthemax,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.0529344,-0.07535051
+BR00150698,D04,A673,D,4,4000,24,BR00150698,Synthemax,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.655528,0.28110683
+BR00150698,D05,COGW408,D,5,8000,24,BR00150698,Synthemax,single,Wilms' Tumor,Wilms tumor,Kidney,,1.4148055,-1.4191577
+BR00150698,D06,COGW408,D,6,8000,24,BR00150698,Synthemax,single,Wilms' Tumor,Wilms tumor,Kidney,,1.6445719,-1.4738264
+BR00150698,D07,RH41,D,7,8000,24,BR00150698,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,-0.0044348077,3.1181552
+BR00150698,D08,RH41,D,8,8000,24,BR00150698,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,-0.14782257,3.2366662
+BR00150698,D09,U2-OS,D,9,4000,24,BR00150698,Laminin,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.9790258,9.721131
+BR00150698,D10,U2-OS,D,10,4000,24,BR00150698,Laminin,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.0157692,9.770155
+BR00150698,E05,D283,E,5,8000,24,BR00150698,Synthemax,single,Medulloblastoma,Medulloblastoma,Central nervous system,Metastasis,4.5285854,0.93374205
+BR00150698,E06,D283,E,6,8000,24,BR00150698,Synthemax,single,Medulloblastoma,Medulloblastoma,Central nervous system,Metastasis,4.3958607,0.87638426
+BR00150698,E07,SHSY5Y,E,7,4000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,0.044733316,0.7231437
+BR00150698,E08,SHSY5Y,E,8,4000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,0.020005237,0.6895882
+BR00150698,E09,U2-OS,E,9,4000,24,BR00150698,Synthemax,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.9248462,9.802742
+BR00150698,E10,U2-OS,E,10,4000,24,BR00150698,Synthemax,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.91242,9.8962
+BR00150698,F05,D283,F,5,8000,24,BR00150698,Synthemax,single,Medulloblastoma,Medulloblastoma,Central nervous system,Metastasis,4.4564667,0.87138385
+BR00150698,F06,D283,F,6,8000,24,BR00150698,Synthemax,single,Medulloblastoma,Medulloblastoma,Central nervous system,Metastasis,4.461951,0.8629663
+BR00150698,F07,SHSY5Y,F,7,4000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,0.00369565,0.6677257
+BR00150698,F08,SHSY5Y,F,8,4000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.006028554,0.64913887
+BR00150698,F09,U2-OS,F,9,4000,24,BR00150698,Synthemax,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.0401745,9.659543
+BR00150698,F10,U2-OS,F,10,4000,24,BR00150698,Synthemax,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.9541183,9.80703
+BR00150698,G03,CHLA200,G,3,4000,24,BR00150698,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,-2.5620244,1.255797
+BR00150698,G04,CHLA200,G,4,4000,24,BR00150698,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,-2.514943,1.3150203
+BR00150698,G05,KP-N-YN,G,5,8000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,1.5217346,-0.24097034
+BR00150698,G06,KP-N-YN,G,6,8000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,1.4918841,-0.28456286
+BR00150698,G07,SJGBM2,G,7,8000,24,BR00150698,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,2.8592,1.3444369
+BR00150698,G08,SJGBM2,G,8,8000,24,BR00150698,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,2.8254817,1.3305432
+BR00150698,G09,U2-OS,G,9,4000,24,BR00150698,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,3.0821967,9.627073
+BR00150698,G10,U2-OS,G,10,4000,24,BR00150698,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.9506493,9.774193
+BR00150698,H03,CHLA200,H,3,4000,24,BR00150698,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,-2.5172577,1.2985024
+BR00150698,H04,CHLA200,H,4,4000,24,BR00150698,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,-2.5569427,1.2980492
+BR00150698,H05,KP-N-YN,H,5,8000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,1.3735752,-0.20076111
+BR00150698,H06,KP-N-YN,H,6,8000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,1.2596679,-0.033581387
+BR00150698,H07,SJGBM2,H,7,8000,24,BR00150698,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,2.826793,1.3316845
+BR00150698,H08,SJGBM2,H,8,8000,24,BR00150698,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,2.8233447,1.3322014
+BR00150698,H09,U2-OS,H,9,4000,24,BR00150698,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.9192936,9.810635
+BR00150698,H10,U2-OS,H,10,4000,24,BR00150698,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.977122,9.789712
+BR00150698,I03,CHP212,I,3,12000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,2.783469,2.6273177
+BR00150698,I04,CHP212,I,4,12000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,2.8083627,2.5852537
+BR00150698,I05,RD,I,5,12000,24,BR00150698,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Primary,1.3420408,5.0232034
+BR00150698,I06,RD,I,6,12000,24,BR00150698,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Primary,1.3312396,5.0407915
+BR00150698,I07,SKNDZ,I,7,4000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,2.558416,-1.0221565
+BR00150698,I08,SKNDZ,I,8,4000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,2.5990481,-1.0861429
+BR00150698,J03,CHP212,J,3,12000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,2.868585,2.6118536
+BR00150698,J04,CHP212,J,4,12000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,2.7900841,2.6167336
+BR00150698,J05,RD,J,5,12000,24,BR00150698,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Primary,1.3548084,5.0200753
+BR00150698,J06,RD,J,6,12000,24,BR00150698,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Primary,1.3328091,5.0363145
+BR00150698,J07,SKNDZ,J,7,4000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,2.550597,-1.0869145
+BR00150698,J08,SKNDZ,J,8,4000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,2.5982163,-1.0089016
+BR00150698,K03,CHP212-1020,K,3,12000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.7246594,2.5404248
+BR00150698,K04,CHP212-1020,K,4,12000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.6567414,2.51942
+BR00150698,K05,RH30,K,5,12000,24,BR00150698,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,0.37835023,4.0245175
+BR00150698,K06,RH30,K,6,12000,24,BR00150698,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,0.41194803,4.0089703
+BR00150698,L03,CHP212-1020,L,3,12000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.7995915,2.4993074
+BR00150698,L04,CHP212-1020,L,4,12000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.6798637,2.6278126
+BR00150698,L05,RH30,L,5,12000,24,BR00150698,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,0.51151544,4.0610437
+BR00150698,L06,RH30,L,6,12000,24,BR00150698,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,0.4590367,4.034196
+BR00150698,M03,CHP212-EV,M,3,12000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.6157074,2.4459116
+BR00150698,M04,CHP212-EV,M,4,12000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.521655,2.569031
+BR00150698,M05,RH4,M,5,12000,24,BR00150698,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,5.6783934,1.4595227
+BR00150698,M06,RH4,M,6,12000,24,BR00150698,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,5.700756,1.5124196
+BR00150698,M07,PBT04 FHTC,M,7,12000,24,BR00150698,Laminin,single,High Grade Gliomas - MYCN,Glioma,Central nervous system,,-0.98964334,2.950824
+BR00150698,M08,PBT04 FHTC,M,8,12000,24,BR00150698,Laminin,single,High Grade Gliomas - MYCN,Glioma,Central nervous system,,-0.9371094,2.967476
+BR00150698,N03,CHP212-EV,N,3,12000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.5493171,2.4618464
+BR00150698,N04,CHP212-EV,N,4,12000,24,BR00150698,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.557812,2.613784
+BR00150698,N05,RH4,N,5,12000,24,BR00150698,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,5.6222296,1.5166895
+BR00150698,N06,RH4,N,6,12000,24,BR00150698,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,5.574537,1.4498252
+BR00150698,N07,PBT04 FHTC,N,7,12000,24,BR00150698,Laminin,single,High Grade Gliomas - MYCN,Glioma,Central nervous system,,-0.9567975,2.9860313
+BR00150698,N08,PBT04 FHTC,N,8,12000,24,BR00150698,Laminin,single,High Grade Gliomas - MYCN,Glioma,Central nervous system,,-0.9795951,2.9509156
+BR00150699,C03,A673,C,3,8000,48,BR00150699,Synthemax,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.4235435,-0.028732315
+BR00150699,C04,A673,C,4,8000,48,BR00150699,Synthemax,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.4289145,-0.04656031
+BR00150699,C05,COGW408,C,5,8000,48,BR00150699,Synthemax,single,Wilms' Tumor,Wilms tumor,Kidney,,1.7689697,-1.4027034
+BR00150699,C06,COGW408,C,6,8000,48,BR00150699,Synthemax,single,Wilms' Tumor,Wilms tumor,Kidney,,1.7695127,-1.4295344
+BR00150699,C07,RH41,C,7,8000,48,BR00150699,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,-0.26266184,3.2536483
+BR00150699,C08,RH41,C,8,8000,48,BR00150699,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,-0.1795682,3.2199528
+BR00150699,C09,U2-OS,C,9,2000,48,BR00150699,Laminin,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.5628457,10.131678
+BR00150699,C10,U2-OS,C,10,2000,48,BR00150699,Laminin,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.5117097,10.204908
+BR00150699,D03,A673,D,3,8000,48,BR00150699,Synthemax,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.5243967,0.05071694
+BR00150699,D04,A673,D,4,8000,48,BR00150699,Synthemax,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.6097853,0.13559285
+BR00150699,D05,COGW408,D,5,8000,48,BR00150699,Synthemax,single,Wilms' Tumor,Wilms tumor,Kidney,,1.2791591,-1.0706083
+BR00150699,D06,COGW408,D,6,8000,48,BR00150699,Synthemax,single,Wilms' Tumor,Wilms tumor,Kidney,,1.7385548,-1.5060842
+BR00150699,D07,RH41,D,7,8000,48,BR00150699,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,-0.27680528,3.1875904
+BR00150699,D08,RH41,D,8,8000,48,BR00150699,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,-0.2542969,3.2308166
+BR00150699,D09,U2-OS,D,9,2000,48,BR00150699,Laminin,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.4320014,10.305044
+BR00150699,D10,U2-OS,D,10,2000,48,BR00150699,Laminin,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.5074544,10.247598
+BR00150699,E05,D283,E,5,12000,48,BR00150699,Synthemax,single,Medulloblastoma,Medulloblastoma,Central nervous system,Metastasis,4.923057,0.20545864
+BR00150699,E06,D283,E,6,12000,48,BR00150699,Synthemax,single,Medulloblastoma,Medulloblastoma,Central nervous system,Metastasis,4.914867,0.23860992
+BR00150699,E07,SHSY5Y,E,7,8000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,0.25152206,0.6903719
+BR00150699,E08,SHSY5Y,E,8,8000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,0.07611164,0.7728549
+BR00150699,E09,U2-OS,E,9,2000,48,BR00150699,Synthemax,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.5729983,10.048023
+BR00150699,E10,U2-OS,E,10,2000,48,BR00150699,Synthemax,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.493425,10.253474
+BR00150699,F05,D283,F,5,12000,48,BR00150699,Synthemax,single,Medulloblastoma,Medulloblastoma,Central nervous system,Metastasis,4.853775,0.28105772
+BR00150699,F06,D283,F,6,12000,48,BR00150699,Synthemax,single,Medulloblastoma,Medulloblastoma,Central nervous system,Metastasis,4.9204397,0.2225017
+BR00150699,F07,SHSY5Y,F,7,8000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,0.037184842,0.71547407
+BR00150699,F08,SHSY5Y,F,8,8000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,0.09879626,0.7011502
+BR00150699,F09,U2-OS,F,9,2000,48,BR00150699,Synthemax,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.460668,10.285996
+BR00150699,F10,U2-OS,F,10,2000,48,BR00150699,Synthemax,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.5623643,10.183096
+BR00150699,G03,CHLA200,G,3,4000,48,BR00150699,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,-2.4326289,1.4017777
+BR00150699,G04,CHLA200,G,4,4000,48,BR00150699,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,-2.4373496,1.4258261
+BR00150699,G05,KP-N-YN,G,5,4000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,1.0386503,0.22179456
+BR00150699,G06,KP-N-YN,G,6,4000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,1.0498408,0.30239716
+BR00150699,G07,SJGBM2,G,7,8000,48,BR00150699,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,3.1218204,1.4394225
+BR00150699,G08,SJGBM2,G,8,8000,48,BR00150699,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,3.0726457,1.3556463
+BR00150699,G09,U2-OS,G,9,2000,48,BR00150699,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.509609,10.246589
+BR00150699,G10,U2-OS,G,10,2000,48,BR00150699,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.4997811,10.252758
+BR00150699,H03,CHLA200,H,3,4000,48,BR00150699,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,-2.4624321,1.3918093
+BR00150699,H04,CHLA200,H,4,4000,48,BR00150699,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,-2.4816804,1.3685087
+BR00150699,H05,KP-N-YN,H,5,4000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,1.1241846,0.18881688
+BR00150699,H06,KP-N-YN,H,6,4000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,1.0593861,0.28484347
+BR00150699,H07,SJGBM2,H,7,8000,48,BR00150699,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,3.0395684,1.3751143
+BR00150699,H08,SJGBM2,H,8,8000,48,BR00150699,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,2.9879987,1.3301197
+BR00150699,H09,U2-OS,H,9,2000,48,BR00150699,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.5565717,10.233068
+BR00150699,H10,U2-OS,H,10,2000,48,BR00150699,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.4818666,10.278993
+BR00150699,I03,CHP212,I,3,12000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,2.7494414,2.6539185
+BR00150699,I04,CHP212,I,4,12000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,2.6292374,2.6884086
+BR00150699,I05,RD,I,5,8000,48,BR00150699,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Primary,1.3105607,5.0566535
+BR00150699,I06,RD,I,6,8000,48,BR00150699,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Primary,1.2845731,5.0519385
+BR00150699,I07,SKNDZ,I,7,1000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,2.571788,-1.1263045
+BR00150699,I08,SKNDZ,I,8,1000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,2.5895376,-1.1343355
+BR00150699,J03,CHP212,J,3,12000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,2.818754,2.6211212
+BR00150699,J04,CHP212,J,4,12000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,2.678404,2.643391
+BR00150699,J05,RD,J,5,8000,48,BR00150699,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Primary,1.3467127,5.0413604
+BR00150699,J06,RD,J,6,8000,48,BR00150699,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Primary,1.3522098,5.0305123
+BR00150699,J07,SKNDZ,J,7,1000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,2.5418715,-1.2053826
+BR00150699,J08,SKNDZ,J,8,1000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,2.5457745,-1.1978114
+BR00150699,K03,CHP212-1020,K,3,12000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.7256584,2.5945194
+BR00150699,K04,CHP212-1020,K,4,12000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,4.0982337,2.4483042
+BR00150699,K05,RH30,K,5,12000,48,BR00150699,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,0.30819744,3.970244
+BR00150699,K06,RH30,K,6,12000,48,BR00150699,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,0.30241266,3.9740174
+BR00150699,L03,CHP212-1020,L,3,12000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.8180857,2.6350515
+BR00150699,L04,CHP212-1020,L,4,12000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.7340717,2.3555758
+BR00150699,L05,RH30,L,5,12000,48,BR00150699,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,0.30832863,3.9612484
+BR00150699,L06,RH30,L,6,12000,48,BR00150699,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,0.36362657,4.007457
+BR00150699,M03,CHP212-EV,M,3,12000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.3279228,2.5416367
+BR00150699,M04,CHP212-EV,M,4,12000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.8043666,2.4505892
+BR00150699,M05,RH4,M,5,12000,48,BR00150699,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,5.5081863,1.4781933
+BR00150699,M06,RH4,M,6,12000,48,BR00150699,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,5.502286,1.4621474
+BR00150699,M07,PBT04 FHTC,M,7,4000,48,BR00150699,Laminin,single,High Grade Gliomas - MYCN,Glioma,Central nervous system,,-1.1562188,3.0561042
+BR00150699,M08,PBT04 FHTC,M,8,4000,48,BR00150699,Laminin,single,High Grade Gliomas - MYCN,Glioma,Central nervous system,,-1.1944103,3.003484
+BR00150699,N03,CHP212-EV,N,3,12000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.576171,2.6407192
+BR00150699,N04,CHP212-EV,N,4,12000,48,BR00150699,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.4100387,2.5312548
+BR00150699,N05,RH4,N,5,12000,48,BR00150699,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,5.216154,1.5758141
+BR00150699,N06,RH4,N,6,12000,48,BR00150699,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,5.5283136,1.4930706
+BR00150699,N07,PBT04 FHTC,N,7,4000,48,BR00150699,Laminin,single,High Grade Gliomas - MYCN,Glioma,Central nervous system,,-1.1352173,2.9922192
+BR00150699,N08,PBT04 FHTC,N,8,4000,48,BR00150699,Laminin,single,High Grade Gliomas - MYCN,Glioma,Central nervous system,,-1.1850995,2.9979126
+BR00150700,C03,A673,C,3,4000,72,BR00150700,Synthemax,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,0.69996357,-2.289467
+BR00150700,C04,A673,C,4,4000,72,BR00150700,Synthemax,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,3.0097744,-0.21564524
+BR00150700,C05,COGW408,C,5,4000,72,BR00150700,Synthemax,single,Wilms' Tumor,Wilms tumor,Kidney,,-0.5826797,5.4965816
+BR00150700,C06,COGW408,C,6,4000,72,BR00150700,Synthemax,single,Wilms' Tumor,Wilms tumor,Kidney,,1.3389814,-1.300942
+BR00150700,C07,RH41,C,7,8000,72,BR00150700,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,-0.28745934,3.3208106
+BR00150700,C08,RH41,C,8,8000,72,BR00150700,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,-0.28563172,3.3917592
+BR00150700,C09,U2-OS,C,9,1000,72,BR00150700,Laminin,single,Osteosarcoma,Osteosarcoma,Bone,Primary,-0.26871663,5.7124305
+BR00150700,C10,U2-OS,C,10,1000,72,BR00150700,Laminin,single,Osteosarcoma,Osteosarcoma,Bone,Primary,-0.37144792,5.9140663
+BR00150700,D03,A673,D,3,4000,72,BR00150700,Synthemax,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,-0.06325526,5.3366337
+BR00150700,D04,A673,D,4,4000,72,BR00150700,Synthemax,single,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.5122452,-0.046619676
+BR00150700,D05,COGW408,D,5,4000,72,BR00150700,Synthemax,single,Wilms' Tumor,Wilms tumor,Kidney,,1.5533068,-1.4064392
+BR00150700,D06,COGW408,D,6,4000,72,BR00150700,Synthemax,single,Wilms' Tumor,Wilms tumor,Kidney,,1.7546374,-1.471439
+BR00150700,D07,RH41,D,7,8000,72,BR00150700,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,-0.30918002,3.3197033
+BR00150700,D08,RH41,D,8,8000,72,BR00150700,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,-0.16395734,3.391889
+BR00150700,D09,U2-OS,D,9,1000,72,BR00150700,Laminin,single,Osteosarcoma,Osteosarcoma,Bone,Primary,-0.75823003,5.7844424
+BR00150700,D10,U2-OS,D,10,1000,72,BR00150700,Laminin,single,Osteosarcoma,Osteosarcoma,Bone,Primary,-0.33083287,5.763733
+BR00150700,E05,D283,E,5,8000,72,BR00150700,Synthemax,single,Medulloblastoma,Medulloblastoma,Central nervous system,Metastasis,4.7354774,0.450172
+BR00150700,E06,D283,E,6,8000,72,BR00150700,Synthemax,single,Medulloblastoma,Medulloblastoma,Central nervous system,Metastasis,4.7543144,0.4081623
+BR00150700,E07,SHSY5Y,E,7,8000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.09671698,0.8920186
+BR00150700,E08,SHSY5Y,E,8,8000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.11317246,0.90131897
+BR00150700,E09,U2-OS,E,9,1000,72,BR00150700,Synthemax,single,Osteosarcoma,Osteosarcoma,Bone,Primary,-0.3657546,5.854628
+BR00150700,E10,U2-OS,E,10,1000,72,BR00150700,Synthemax,single,Osteosarcoma,Osteosarcoma,Bone,Primary,-0.74542946,5.8109517
+BR00150700,F05,D283,F,5,8000,72,BR00150700,Synthemax,single,Medulloblastoma,Medulloblastoma,Central nervous system,Metastasis,4.805698,0.34498066
+BR00150700,F06,D283,F,6,8000,72,BR00150700,Synthemax,single,Medulloblastoma,Medulloblastoma,Central nervous system,Metastasis,4.7919774,0.3450496
+BR00150700,F07,SHSY5Y,F,7,8000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.056750998,0.86197716
+BR00150700,F08,SHSY5Y,F,8,8000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.082424,0.9005581
+BR00150700,F09,U2-OS,F,9,1000,72,BR00150700,Synthemax,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.3547964,10.306565
+BR00150700,F10,U2-OS,F,10,1000,72,BR00150700,Synthemax,single,Osteosarcoma,Osteosarcoma,Bone,Primary,-0.5918229,5.871148
+BR00150700,G03,CHLA200,G,3,4000,72,BR00150700,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,-0.2357107,5.6016345
+BR00150700,G04,CHLA200,G,4,4000,72,BR00150700,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,-2.1840894,1.5847846
+BR00150700,G05,KP-N-YN,G,5,4000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.6154069,5.969942
+BR00150700,G06,KP-N-YN,G,6,4000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.45926416,6.001093
+BR00150700,G07,SJGBM2,G,7,8000,72,BR00150700,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,3.3279133,1.2937739
+BR00150700,G08,SJGBM2,G,8,8000,72,BR00150700,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,3.412146,1.2616866
+BR00150700,G09,U2-OS,G,9,1000,72,BR00150700,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,-0.30932966,5.829552
+BR00150700,G10,U2-OS,G,10,1000,72,BR00150700,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,-0.72287774,5.8230944
+BR00150700,H03,CHLA200,H,3,4000,72,BR00150700,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,-2.1611135,1.5909771
+BR00150700,H04,CHLA200,H,4,4000,72,BR00150700,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,-2.183526,1.5782155
+BR00150700,H05,KP-N-YN,H,5,4000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.51545167,5.978109
+BR00150700,H06,KP-N-YN,H,6,4000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.4404672,6.0214596
+BR00150700,H07,SJGBM2,H,7,8000,72,BR00150700,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,3.3423734,1.3547499
+BR00150700,H08,SJGBM2,H,8,8000,72,BR00150700,Synthemax,single,Glioblastoma Multiforme,Glioma,Central nervous system,Primary,3.4230318,1.3007706
+BR00150700,H09,U2-OS,H,9,1000,72,BR00150700,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,2.3967743,10.338113
+BR00150700,H10,U2-OS,H,10,1000,72,BR00150700,Standard,single,Osteosarcoma,Osteosarcoma,Bone,Primary,-0.24716312,5.6054015
+BR00150700,I03,CHP212,I,3,8000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,2.7553048,2.547737
+BR00150700,I04,CHP212,I,4,8000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,-0.15111277,5.5324087
+BR00150700,I05,RD,I,5,8000,72,BR00150700,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Primary,1.3458416,5.036399
+BR00150700,I06,RD,I,6,8000,72,BR00150700,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Primary,0.9199397,4.815623
+BR00150700,I07,SKNDZ,I,7,1000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.42662352,6.09804
+BR00150700,I08,SKNDZ,I,8,1000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.43804,6.1197395
+BR00150700,J03,CHP212,J,3,8000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,-0.17069796,5.5187397
+BR00150700,J04,CHP212,J,4,8000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,-0.15279783,5.502261
+BR00150700,J05,RD,J,5,8000,72,BR00150700,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Primary,3.0289176,7.5921617
+BR00150700,J06,RD,J,6,8000,72,BR00150700,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Primary,3.0480042,7.5778694
+BR00150700,J07,SKNDZ,J,7,1000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.42709732,6.115532
+BR00150700,J08,SKNDZ,J,8,1000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,-0.46939135,6.127292
+BR00150700,K03,CHP212-1020,K,3,8000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.8331728,2.715077
+BR00150700,K04,CHP212-1020,K,4,8000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,2.9387157,7.7064934
+BR00150700,K05,RH30,K,5,12000,72,BR00150700,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,1.0651873,4.486226
+BR00150700,K06,RH30,K,6,12000,72,BR00150700,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,0.9483917,4.1275864
+BR00150700,L03,CHP212-1020,L,3,8000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.7582843,2.6770582
+BR00150700,L04,CHP212-1020,L,4,8000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.7877178,2.6947644
+BR00150700,L05,RH30,L,5,12000,72,BR00150700,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,1.0160674,4.1445456
+BR00150700,L06,RH30,L,6,12000,72,BR00150700,Synthemax,single,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,0.8166235,4.098753
+BR00150700,M03,CHP212-EV,M,3,12000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.3254027,2.664497
+BR00150700,M04,CHP212-EV,M,4,12000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.237221,2.5786455
+BR00150700,M05,RH4,M,5,12000,72,BR00150700,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,5.0372214,1.2710475
+BR00150700,M06,RH4,M,6,12000,72,BR00150700,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,5.027517,1.2288017
+BR00150700,M07,PBT04 FHTC,M,7,12000,72,BR00150700,Laminin,single,High Grade Gliomas - MYCN,Glioma,Central nervous system,,-0.54648846,3.1793773
+BR00150700,M08,PBT04 FHTC,M,8,12000,72,BR00150700,Laminin,single,High Grade Gliomas - MYCN,Glioma,Central nervous system,,-0.66583383,5.8945007
+BR00150700,N03,CHP212-EV,N,3,12000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.3182707,2.560503
+BR00150700,N04,CHP212-EV,N,4,12000,72,BR00150700,Synthemax,single,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,3.3680406,2.564229
+BR00150700,N05,RH4,N,5,12000,72,BR00150700,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,5.05577,1.1911784
+BR00150700,N06,RH4,N,6,12000,72,BR00150700,Synthemax,single,"Rhabdomyosarcoma, alveolar",Rhabdomyosarcoma,Soft tissue,Metastasis,5.0277905,1.2256016
+BR00150700,N07,PBT04 FHTC,N,7,12000,72,BR00150700,Laminin,single,High Grade Gliomas - MYCN,Glioma,Central nervous system,,-0.67120504,3.1030517
+BR00150700,N08,PBT04 FHTC,N,8,12000,72,BR00150700,Laminin,single,High Grade Gliomas - MYCN,Glioma,Central nervous system,,-0.6685679,5.7004886
+BR00150701,C05,CHLA186,C,5,2000,24,BR00150701,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,-0.3628396,-0.77279925
+BR00150701,C06,CHLA186,C,6,2000,24,BR00150701,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,-0.40044802,-0.7930514
+BR00150701,C07,CHLA25,C,7,12000,24,BR00150701,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.08222334,-0.9573464
+BR00150701,C08,CHLA25,C,8,12000,24,BR00150701,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.20473652,-0.8506721
+BR00150701,C09,COGEP280,C,9,4000,24,BR00150701,Synthemax,double,"Ependymoma, anaplastic",Ependymoma,Central nervous system,,0.24220859,-1.6097246
+BR00150701,C10,COGEP280,C,10,4000,24,BR00150701,Synthemax,double,"Ependymoma, anaplastic",Ependymoma,Central nervous system,,0.44573143,-1.8881719
+BR00150701,C11,TC71,C,11,12000,24,BR00150701,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.3925014,-0.59043294
+BR00150701,C12,TC71,C,12,12000,24,BR00150701,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.4772134,-0.5990478
+BR00150701,D05,CHLA186,D,5,2000,24,BR00150701,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,-0.35632756,-0.80771863
+BR00150701,D06,CHLA186,D,6,2000,24,BR00150701,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,-0.35263613,-0.8157905
+BR00150701,D07,CHLA25,D,7,12000,24,BR00150701,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.052363943,-0.9685327
+BR00150701,D08,CHLA25,D,8,12000,24,BR00150701,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.093993895,-0.886251
+BR00150701,D09,COGEP280,D,9,4000,24,BR00150701,Synthemax,double,"Ependymoma, anaplastic",Ependymoma,Central nervous system,,0.31944335,-1.8691432
+BR00150701,D10,COGEP280,D,10,4000,24,BR00150701,Synthemax,double,"Ependymoma, anaplastic",Ependymoma,Central nervous system,,0.35316515,-1.7398231
+BR00150701,D11,TC71,D,11,12000,24,BR00150701,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.337641,-0.49356708
+BR00150701,D12,TC71,D,12,12000,24,BR00150701,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.3924341,-0.57254
+BR00150701,E05,CHLA194,E,5,4000,24,BR00150701,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,0.1512585,-2.0533717
+BR00150701,E06,CHLA194,E,6,4000,24,BR00150701,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,0.23666659,-2.2205355
+BR00150701,E07,CHLA258,E,7,8000,24,BR00150701,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,0.056909688,-1.1616768
+BR00150701,E08,CHLA258,E,8,8000,24,BR00150701,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,0.040371366,-1.1183729
+BR00150701,E09,COGR466h,E,9,8000,24,BR00150701,Synthemax,double,"Rhabdomyosarcoma, embryonal",Rhabdomyosarcoma,Soft tissue,,10.101007,2.1375082
+BR00150701,E10,COGR466h,E,10,8000,24,BR00150701,Synthemax,double,"Rhabdomyosarcoma, embryonal",Rhabdomyosarcoma,Soft tissue,,10.104087,2.1257443
+BR00150701,E11,WI38,E,11,12000,24,BR00150701,Synthemax,double,Normal (embryonic lung fibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.854588,3.9013617
+BR00150701,E12,WI38,E,12,12000,24,BR00150701,Synthemax,double,Normal (embryonic lung fibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.885745,3.8756227
+BR00150701,F05,CHLA194,F,5,4000,24,BR00150701,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,0.13351868,-1.9680411
+BR00150701,F06,CHLA194,F,6,4000,24,BR00150701,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,0.368792,-2.2821555
+BR00150701,F07,CHLA258,F,7,8000,24,BR00150701,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,0.07788295,-1.2281697
+BR00150701,F08,CHLA258,F,8,8000,24,BR00150701,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,-0.0059510423,-1.157551
+BR00150701,F09,COGR466h,F,9,8000,24,BR00150701,Synthemax,double,"Rhabdomyosarcoma, embryonal",Rhabdomyosarcoma,Soft tissue,,10.0486355,2.117484
+BR00150701,F10,COGR466h,F,10,8000,24,BR00150701,Synthemax,double,"Rhabdomyosarcoma, embryonal",Rhabdomyosarcoma,Soft tissue,,10.010925,2.128755
+BR00150701,F11,WI38,F,11,12000,24,BR00150701,Synthemax,double,Normal (embryonic lung fibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.862437,3.9015024
+BR00150701,F12,WI38,F,12,12000,24,BR00150701,Synthemax,double,Normal (embryonic lung fibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.864834,3.953486
+BR00150701,G05,CHLA196,G,5,2000,24,BR00150701,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,0.05906953,-1.9544083
+BR00150701,G06,CHLA196,G,6,2000,24,BR00150701,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,-0.15500265,-1.9170339
+BR00150701,G07,CHLA262,G,7,12000,24,BR00150701,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,,1.3166064,-2.5953598
+BR00150701,G08,CHLA262,G,8,12000,24,BR00150701,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,,1.6210005,-1.4296105
+BR00150701,G09,D425,G,9,8000,24,BR00150701,Synthemax,double,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,-2.0076113,3.1037416
+BR00150701,G10,D425,G,10,8000,24,BR00150701,Synthemax,double,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,-2.0021782,3.1094482
+BR00150701,G11,WPMY1,G,11,12000,24,BR00150701,Synthemax,double,Normal (prostate stromal myofibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.400397,2.097633
+BR00150701,G12,WPMY1,G,12,12000,24,BR00150701,Synthemax,double,Normal (prostate stromal myofibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.448138,2.1440017
+BR00150701,H05,CHLA196,H,5,2000,24,BR00150701,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,-0.05320817,-1.9063678
+BR00150701,H06,CHLA196,H,6,2000,24,BR00150701,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,-0.055347305,-2.0615919
+BR00150701,H07,CHLA262,H,7,12000,24,BR00150701,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,,1.3156465,-2.3148994
+BR00150701,H08,CHLA262,H,8,12000,24,BR00150701,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,,1.3259453,-2.3268883
+BR00150701,H09,D425,H,9,8000,24,BR00150701,Synthemax,double,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,-2.0210783,3.1102502
+BR00150701,H10,D425,H,10,8000,24,BR00150701,Synthemax,double,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,-2.013851,3.0543134
+BR00150701,H11,WPMY1,H,11,12000,24,BR00150701,Synthemax,double,Normal (prostate stromal myofibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.438804,2.086442
+BR00150701,H12,WPMY1,H,12,12000,24,BR00150701,Synthemax,double,Normal (prostate stromal myofibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.428309,2.1007433
+BR00150701,I03,CCD 841 CoN,I,3,12000,24,BR00150701,Synthemax,double,Normal (colon epithelium),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.846358,3.9389632
+BR00150701,I04,CCD 841 CoN,I,4,12000,24,BR00150701,Synthemax,double,Normal (colon epithelium),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.856532,3.9285057
+BR00150701,I05,CHLA203,I,5,1000,24,BR00150701,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,0.07944766,-1.0244681
+BR00150701,I06,CHLA203,I,6,1000,24,BR00150701,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,0.046479918,-0.98659754
+BR00150701,I07,CHP134,I,7,4000,24,BR00150701,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,-1.8499546,3.3257449
+BR00150701,I08,CHP134,I,8,4000,24,BR00150701,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,-1.8355489,3.4364855
+BR00150701,I09,HMC3,I,9,8000,24,BR00150701,Synthemax,double,Normal (immortalized microglia),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.32543,1.0718989
+BR00150701,I10,HMC3,I,10,8000,24,BR00150701,Synthemax,double,Normal (immortalized microglia),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.307726,1.126701
+BR00150701,I11,U2-OS,I,11,4000,24,BR00150701,Synthemax,double,Osteosarcoma,Osteosarcoma,Bone,Primary,11.996503,2.4492788
+BR00150701,I12,U2-OS,I,12,4000,24,BR00150701,Synthemax,double,Osteosarcoma,Osteosarcoma,Bone,Primary,12.079963,2.5340006
+BR00150701,J03,CCD 841 CoN,J,3,12000,24,BR00150701,Synthemax,double,Normal (colon epithelium),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.868617,3.8686562
+BR00150701,J04,CCD 841 CoN,J,4,12000,24,BR00150701,Synthemax,double,Normal (colon epithelium),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.853976,3.982925
+BR00150701,J05,CHLA203,J,5,1000,24,BR00150701,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,0.026048873,-1.1616491
+BR00150701,J06,CHLA203,J,6,1000,24,BR00150701,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,0.04764445,-0.9764523
+BR00150701,J07,CHP134,J,7,4000,24,BR00150701,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,-1.9032303,3.344173
+BR00150701,J08,CHP134,J,8,4000,24,BR00150701,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,-1.8346242,3.4204314
+BR00150701,J09,HMC3,J,9,8000,24,BR00150701,Synthemax,double,Normal (immortalized microglia),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.293395,1.1433308
+BR00150701,J10,HMC3,J,10,8000,24,BR00150701,Synthemax,double,Normal (immortalized microglia),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.299893,1.1441718
+BR00150701,J11,U2-OS,J,11,4000,24,BR00150701,Synthemax,double,Osteosarcoma,Osteosarcoma,Bone,Primary,12.082021,2.522398
+BR00150701,J12,U2-OS,J,12,4000,24,BR00150701,Synthemax,double,Osteosarcoma,Osteosarcoma,Bone,Primary,12.077375,2.5659924
+BR00150701,K03,CHLA10,K,3,8000,24,BR00150701,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,7.3734674,1.4474314
+BR00150701,K04,CHLA10,K,4,8000,24,BR00150701,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,7.4065266,1.4456497
+BR00150701,K05,CHLA210,K,5,8000,24,BR00150701,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,2.2220035,-0.24942169
+BR00150701,K06,CHLA210,K,6,8000,24,BR00150701,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,1.0433689,-1.9047971
+BR00150701,K07,COGAR397hnb,K,7,8000,24,BR00150701,Synthemax,double,Atypical Teratoid Rhabdoid Tumor,Atypical teratoid rhabdoid tumor,Central nervous system,Metastasis,0.84790516,-2.0090501
+BR00150701,K08,COGAR397hnb,K,8,8000,24,BR00150701,Synthemax,double,Atypical Teratoid Rhabdoid Tumor,Atypical teratoid rhabdoid tumor,Central nervous system,Metastasis,0.7870267,-1.4467256
+BR00150701,K09,SKNAS-1020,K,9,8000,24,BR00150701,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,5.150778,3.7185893
+BR00150701,K10,SKNAS-1020,K,10,8000,24,BR00150701,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,5.2820697,3.673305
+BR00150701,K11,U2-OS,K,11,4000,24,BR00150701,Laminin,double,Osteosarcoma,Osteosarcoma,Bone,Primary,12.111605,2.546439
+BR00150701,K12,U2-OS,K,12,4000,24,BR00150701,Laminin,double,Osteosarcoma,Osteosarcoma,Bone,Primary,12.104915,2.5610366
+BR00150701,L03,CHLA10,L,3,8000,24,BR00150701,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,7.348502,1.475456
+BR00150701,L04,CHLA10,L,4,8000,24,BR00150701,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,7.4016247,1.4335387
+BR00150701,L05,CHLA210,L,5,8000,24,BR00150701,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,0.9007179,-1.9396244
+BR00150701,L06,CHLA210,L,6,8000,24,BR00150701,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,0.93099713,-2.0095513
+BR00150701,L07,COGAR397hnb,L,7,8000,24,BR00150701,Synthemax,double,Atypical Teratoid Rhabdoid Tumor,Atypical teratoid rhabdoid tumor,Central nervous system,Metastasis,0.7195344,-1.8241352
+BR00150701,L08,COGAR397hnb,L,8,8000,24,BR00150701,Synthemax,double,Atypical Teratoid Rhabdoid Tumor,Atypical teratoid rhabdoid tumor,Central nervous system,Metastasis,0.96451056,-2.1688466
+BR00150701,L09,SKNAS-1020,L,9,8000,24,BR00150701,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,5.1072636,3.567384
+BR00150701,L10,SKNAS-1020,L,10,8000,24,BR00150701,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,5.2762694,3.6823113
+BR00150701,L11,U2-OS,L,11,4000,24,BR00150701,Laminin,double,Osteosarcoma,Osteosarcoma,Bone,Primary,12.168719,2.4602537
+BR00150701,L12,U2-OS,L,12,4000,24,BR00150701,Laminin,double,Osteosarcoma,Osteosarcoma,Bone,Primary,12.060191,2.512992
+BR00150701,M03,CHLA113,M,3,4000,24,BR00150701,Synthemax,double,PNET / Medulloblastoma,Medulloblastoma,Central nervous system,,7.9237204,1.3925457
+BR00150701,M04,CHLA113,M,4,4000,24,BR00150701,Synthemax,double,PNET / Medulloblastoma,Medulloblastoma,Central nervous system,,7.9165745,1.3925314
+BR00150701,M05,CHLA218,M,5,12000,24,BR00150701,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.33370024,0.56345993
+BR00150701,M06,CHLA218,M,6,12000,24,BR00150701,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.34659922,0.60075295
+BR00150701,M07,COGE352,M,7,4000,24,BR00150701,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,0.731244,-2.0688684
+BR00150701,M08,COGE352,M,8,4000,24,BR00150701,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,0.69836223,-2.3066807
+BR00150701,M09,SKNAS-EV,M,9,12000,24,BR00150701,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,5.346716,3.7363207
+BR00150701,M10,SKNAS-EV,M,10,12000,24,BR00150701,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,5.25484,3.7941658
+BR00150701,M11,U2-OS,M,11,4000,24,BR00150701,Standard,double,Osteosarcoma,Osteosarcoma,Bone,Primary,12.0693865,2.5294323
+BR00150701,M12,U2-OS,M,12,4000,24,BR00150701,Standard,double,Osteosarcoma,Osteosarcoma,Bone,Primary,12.117684,2.5690613
+BR00150701,N03,CHLA113,N,3,4000,24,BR00150701,Synthemax,double,PNET / Medulloblastoma,Medulloblastoma,Central nervous system,,7.891702,1.3961189
+BR00150701,N04,CHLA113,N,4,4000,24,BR00150701,Synthemax,double,PNET / Medulloblastoma,Medulloblastoma,Central nervous system,,7.9151125,1.3888646
+BR00150701,N05,CHLA218,N,5,12000,24,BR00150701,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.2984324,0.6278458
+BR00150701,N06,CHLA218,N,6,12000,24,BR00150701,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.38126358,0.5686617
+BR00150701,N07,COGE352,N,7,4000,24,BR00150701,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,0.51043135,-2.0017014
+BR00150701,N08,COGE352,N,8,4000,24,BR00150701,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.3692455,-2.8836935
+BR00150701,N09,SKNAS-EV,N,9,12000,24,BR00150701,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,5.323232,3.8027537
+BR00150701,N10,SKNAS-EV,N,10,12000,24,BR00150701,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,5.2767854,3.780335
+BR00150701,N11,U2-OS,N,11,4000,24,BR00150701,Standard,double,Osteosarcoma,Osteosarcoma,Bone,Primary,12.088671,2.5312302
+BR00150701,N12,U2-OS,N,12,4000,24,BR00150701,Standard,double,Osteosarcoma,Osteosarcoma,Bone,Primary,12.128294,2.5808554
+BR00150702,C05,CHLA186,C,5,4000,48,BR00150702,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,0.8838802,-1.1655074
+BR00150702,C06,CHLA186,C,6,4000,48,BR00150702,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,0.6915521,-1.373049
+BR00150702,C07,CHLA25,C,7,4000,48,BR00150702,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,-0.16609786,-1.3694906
+BR00150702,C08,CHLA25,C,8,4000,48,BR00150702,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,-0.20967604,-1.2602955
+BR00150702,C09,COGEP280,C,9,4000,48,BR00150702,Synthemax,double,"Ependymoma, anaplastic",Ependymoma,Central nervous system,,0.8110928,-2.4045017
+BR00150702,C10,COGEP280,C,10,4000,48,BR00150702,Synthemax,double,"Ependymoma, anaplastic",Ependymoma,Central nervous system,,0.8797325,-2.3672328
+BR00150702,C11,TC71,C,11,12000,48,BR00150702,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.660399,-0.19350414
+BR00150702,C12,TC71,C,12,12000,48,BR00150702,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.7211719,-0.24636805
+BR00150702,D05,CHLA186,D,5,4000,48,BR00150702,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,0.7514999,-1.5621884
+BR00150702,D06,CHLA186,D,6,4000,48,BR00150702,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,1.0706905,-2.080317
+BR00150702,D07,CHLA25,D,7,4000,48,BR00150702,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,-0.15945536,-1.0423303
+BR00150702,D08,CHLA25,D,8,4000,48,BR00150702,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,-0.24054305,-1.3203728
+BR00150702,D09,COGEP280,D,9,4000,48,BR00150702,Synthemax,double,"Ependymoma, anaplastic",Ependymoma,Central nervous system,,0.9294331,-2.5215354
+BR00150702,D10,COGEP280,D,10,4000,48,BR00150702,Synthemax,double,"Ependymoma, anaplastic",Ependymoma,Central nervous system,,0.9386033,-2.4685922
+BR00150702,D11,TC71,D,11,12000,48,BR00150702,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.7208192,-0.18341616
+BR00150702,D12,TC71,D,12,12000,48,BR00150702,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,2.74986,-0.23477565
+BR00150702,E05,CHLA194,E,5,1000,48,BR00150702,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,-0.029434254,-2.206089
+BR00150702,E06,CHLA194,E,6,1000,48,BR00150702,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,-0.16313063,-2.0809028
+BR00150702,E07,CHLA258,E,7,8000,48,BR00150702,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,0.8325805,-1.4252949
+BR00150702,E08,CHLA258,E,8,8000,48,BR00150702,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,0.90618736,-1.5179467
+BR00150702,E09,COGR466h,E,9,4000,48,BR00150702,Synthemax,double,"Rhabdomyosarcoma, embryonal",Rhabdomyosarcoma,Soft tissue,,10.061399,2.0916219
+BR00150702,E10,COGR466h,E,10,4000,48,BR00150702,Synthemax,double,"Rhabdomyosarcoma, embryonal",Rhabdomyosarcoma,Soft tissue,,10.016411,2.10924
+BR00150702,E11,WI38,E,11,8000,48,BR00150702,Synthemax,double,Normal (embryonic lung fibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.953472,3.4389255
+BR00150702,E12,WI38,E,12,8000,48,BR00150702,Synthemax,double,Normal (embryonic lung fibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.958732,3.408817
+BR00150702,F05,CHLA194,F,5,1000,48,BR00150702,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,-0.020735193,-2.2121084
+BR00150702,F06,CHLA194,F,6,1000,48,BR00150702,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,0.12383578,-2.1243188
+BR00150702,F07,CHLA258,F,7,8000,48,BR00150702,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,0.91086036,-1.1370916
+BR00150702,F08,CHLA258,F,8,8000,48,BR00150702,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,0.88734794,-1.1474749
+BR00150702,F09,COGR466h,F,9,4000,48,BR00150702,Synthemax,double,"Rhabdomyosarcoma, embryonal",Rhabdomyosarcoma,Soft tissue,,10.001568,2.1411736
+BR00150702,F10,COGR466h,F,10,4000,48,BR00150702,Synthemax,double,"Rhabdomyosarcoma, embryonal",Rhabdomyosarcoma,Soft tissue,,10.016242,2.0891366
+BR00150702,F11,WI38,F,11,8000,48,BR00150702,Synthemax,double,Normal (embryonic lung fibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.900145,3.5810616
+BR00150702,F12,WI38,F,12,8000,48,BR00150702,Synthemax,double,Normal (embryonic lung fibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.885661,3.5558484
+BR00150702,G05,CHLA196,G,5,1000,48,BR00150702,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,-0.15743804,-1.8445652
+BR00150702,G06,CHLA196,G,6,1000,48,BR00150702,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,-0.38725552,-0.7868734
+BR00150702,G07,CHLA262,G,7,12000,48,BR00150702,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,,1.4386388,-1.6481625
+BR00150702,G08,CHLA262,G,8,12000,48,BR00150702,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,,1.5604466,-1.6778905
+BR00150702,G09,D425,G,9,12000,48,BR00150702,Synthemax,double,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,-2.0814946,3.0458896
+BR00150702,G10,D425,G,10,12000,48,BR00150702,Synthemax,double,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,-2.072999,3.0423925
+BR00150702,G11,WPMY1,G,11,8000,48,BR00150702,Synthemax,double,Normal (prostate stromal myofibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.348331,1.9880117
+BR00150702,G12,WPMY1,G,12,8000,48,BR00150702,Synthemax,double,Normal (prostate stromal myofibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.390358,2.044606
+BR00150702,H05,CHLA196,H,5,1000,48,BR00150702,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,-0.20523183,-2.0045705
+BR00150702,H06,CHLA196,H,6,1000,48,BR00150702,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,0.084570654,-2.325821
+BR00150702,H07,CHLA262,H,7,12000,48,BR00150702,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,,1.4988542,-1.6554456
+BR00150702,H08,CHLA262,H,8,12000,48,BR00150702,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,,1.5705246,-1.6290592
+BR00150702,H09,D425,H,9,12000,48,BR00150702,Synthemax,double,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,-2.0587966,3.0167427
+BR00150702,H10,D425,H,10,12000,48,BR00150702,Synthemax,double,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,-2.0813673,3.0601883
+BR00150702,H11,WPMY1,H,11,8000,48,BR00150702,Synthemax,double,Normal (prostate stromal myofibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.313636,2.0745213
+BR00150702,H12,WPMY1,H,12,8000,48,BR00150702,Synthemax,double,Normal (prostate stromal myofibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.32056,2.1793785
+BR00150702,I03,CCD 841 CoN,I,3,12000,48,BR00150702,Synthemax,double,Normal (colon epithelium),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.996513,3.390183
+BR00150702,I04,CCD 841 CoN,I,4,12000,48,BR00150702,Synthemax,double,Normal (colon epithelium),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.045065,3.4148219
+BR00150702,I05,CHLA203,I,5,2000,48,BR00150702,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,0.4448284,-1.8125126
+BR00150702,I06,CHLA203,I,6,2000,48,BR00150702,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,0.532244,-1.9647031
+BR00150702,I07,CHP134,I,7,4000,48,BR00150702,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,-1.6145719,3.5918016
+BR00150702,I08,CHP134,I,8,4000,48,BR00150702,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,-1.6267232,3.5932875
+BR00150702,I09,HMC3,I,9,2000,48,BR00150702,Synthemax,double,Normal (immortalized microglia),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.437693,0.763374
+BR00150702,I10,HMC3,I,10,2000,48,BR00150702,Synthemax,double,Normal (immortalized microglia),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.461111,0.7572865
+BR00150702,I11,U2-OS,I,11,2000,48,BR00150702,Synthemax,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.899466,1.0167203
+BR00150702,I12,U2-OS,I,12,2000,48,BR00150702,Synthemax,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.860046,1.048355
+BR00150702,J03,CCD 841 CoN,J,3,12000,48,BR00150702,Synthemax,double,Normal (colon epithelium),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.028447,3.3710666
+BR00150702,J04,CCD 841 CoN,J,4,12000,48,BR00150702,Synthemax,double,Normal (colon epithelium),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.001312,3.4026191
+BR00150702,J05,CHLA203,J,5,2000,48,BR00150702,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,0.30879536,-1.7176065
+BR00150702,J06,CHLA203,J,6,2000,48,BR00150702,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,0.484739,-2.0241685
+BR00150702,J07,CHP134,J,7,4000,48,BR00150702,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,-1.6278342,3.6204913
+BR00150702,J08,CHP134,J,8,4000,48,BR00150702,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,-1.6135219,3.5810945
+BR00150702,J09,HMC3,J,9,2000,48,BR00150702,Synthemax,double,Normal (immortalized microglia),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.45369,0.76902544
+BR00150702,J10,HMC3,J,10,2000,48,BR00150702,Synthemax,double,Normal (immortalized microglia),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.462168,0.78132427
+BR00150702,J11,U2-OS,J,11,2000,48,BR00150702,Synthemax,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.875975,1.0644748
+BR00150702,J12,U2-OS,J,12,2000,48,BR00150702,Synthemax,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.899949,1.0458583
+BR00150702,K03,CHLA10,K,3,4000,48,BR00150702,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,7.2094507,1.5478542
+BR00150702,K04,CHLA10,K,4,4000,48,BR00150702,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,7.2656093,1.5098574
+BR00150702,K05,CHLA210,K,5,4000,48,BR00150702,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,0.91620827,-0.7070502
+BR00150702,K06,CHLA210,K,6,4000,48,BR00150702,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,0.90404344,-0.6853917
+BR00150702,K07,COGAR397hnb,K,7,4000,48,BR00150702,Synthemax,double,Atypical Teratoid Rhabdoid Tumor,Atypical teratoid rhabdoid tumor,Central nervous system,Metastasis,1.2540318,-2.8883047
+BR00150702,K08,COGAR397hnb,K,8,4000,48,BR00150702,Synthemax,double,Atypical Teratoid Rhabdoid Tumor,Atypical teratoid rhabdoid tumor,Central nervous system,Metastasis,1.0837592,-2.3201914
+BR00150702,K09,SKNAS-1020,K,9,8000,48,BR00150702,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,5.0075746,3.6064355
+BR00150702,K10,SKNAS-1020,K,10,8000,48,BR00150702,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,5.0585747,3.617787
+BR00150702,K11,U2-OS,K,11,2000,48,BR00150702,Laminin,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.859336,0.9901279
+BR00150702,K12,U2-OS,K,12,2000,48,BR00150702,Laminin,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.987874,1.009234
+BR00150702,L03,CHLA10,L,3,4000,48,BR00150702,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,7.2622037,1.5092335
+BR00150702,L04,CHLA10,L,4,4000,48,BR00150702,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,7.2797704,1.4943376
+BR00150702,L05,CHLA210,L,5,4000,48,BR00150702,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,0.8779914,-0.78673667
+BR00150702,L06,CHLA210,L,6,4000,48,BR00150702,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,0.9458778,-0.72992134
+BR00150702,L07,COGAR397hnb,L,7,4000,48,BR00150702,Synthemax,double,Atypical Teratoid Rhabdoid Tumor,Atypical teratoid rhabdoid tumor,Central nervous system,Metastasis,1.1628342,-2.583653
+BR00150702,L08,COGAR397hnb,L,8,4000,48,BR00150702,Synthemax,double,Atypical Teratoid Rhabdoid Tumor,Atypical teratoid rhabdoid tumor,Central nervous system,Metastasis,1.0960721,-2.5772612
+BR00150702,L09,SKNAS-1020,L,9,8000,48,BR00150702,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,4.993029,3.6107635
+BR00150702,L10,SKNAS-1020,L,10,8000,48,BR00150702,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,4.967774,3.588323
+BR00150702,L11,U2-OS,L,11,2000,48,BR00150702,Laminin,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.876118,0.9498007
+BR00150702,L12,U2-OS,L,12,2000,48,BR00150702,Laminin,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.950722,1.0153308
+BR00150702,M03,CHLA113,M,3,2000,48,BR00150702,Synthemax,double,PNET / Medulloblastoma,Medulloblastoma,Central nervous system,,8.01622,1.3992085
+BR00150702,M04,CHLA113,M,4,2000,48,BR00150702,Synthemax,double,PNET / Medulloblastoma,Medulloblastoma,Central nervous system,,7.982563,1.4097799
+BR00150702,M05,CHLA218,M,5,12000,48,BR00150702,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.62071276,0.42208996
+BR00150702,M06,CHLA218,M,6,12000,48,BR00150702,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.49335054,0.524159
+BR00150702,M07,COGE352,M,7,4000,48,BR00150702,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.2250949,-2.5821652
+BR00150702,M08,COGE352,M,8,4000,48,BR00150702,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.2043043,-2.5912921
+BR00150702,M09,SKNAS-EV,M,9,12000,48,BR00150702,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,5.078681,3.7561889
+BR00150702,M10,SKNAS-EV,M,10,12000,48,BR00150702,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,5.0727983,3.722159
+BR00150702,M11,U2-OS,M,11,2000,48,BR00150702,Standard,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.9435425,0.973379
+BR00150702,M12,U2-OS,M,12,2000,48,BR00150702,Standard,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.874502,0.96531445
+BR00150702,N03,CHLA113,N,3,2000,48,BR00150702,Synthemax,double,PNET / Medulloblastoma,Medulloblastoma,Central nervous system,,8.074824,1.3448244
+BR00150702,N04,CHLA113,N,4,2000,48,BR00150702,Synthemax,double,PNET / Medulloblastoma,Medulloblastoma,Central nervous system,,8.030367,1.3855058
+BR00150702,N05,CHLA218,N,5,12000,48,BR00150702,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.49160546,0.51816505
+BR00150702,N06,CHLA218,N,6,12000,48,BR00150702,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.51783323,0.5632178
+BR00150702,N07,COGE352,N,7,4000,48,BR00150702,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,0.48606774,-2.1724238
+BR00150702,N08,COGE352,N,8,4000,48,BR00150702,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.3499501,-2.0832772
+BR00150702,N09,SKNAS-EV,N,9,12000,48,BR00150702,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,5.1639132,3.7951992
+BR00150702,N10,SKNAS-EV,N,10,12000,48,BR00150702,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,5.139477,3.7658052
+BR00150702,N11,U2-OS,N,11,2000,48,BR00150702,Standard,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.902111,0.9637705
+BR00150702,N12,U2-OS,N,12,2000,48,BR00150702,Standard,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.955713,0.96178204
+BR00150703,C05,CHLA186,C,5,4000,72,BR00150703,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,3.1381295,-0.11632952
+BR00150703,C06,CHLA186,C,6,4000,72,BR00150703,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,3.1723933,-0.17620666
+BR00150703,C07,CHLA25,C,7,8000,72,BR00150703,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.35818142,-0.6486705
+BR00150703,C08,CHLA25,C,8,8000,72,BR00150703,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.6458087,0.018598245
+BR00150703,C09,COGEP280,C,9,4000,72,BR00150703,Synthemax,double,"Ependymoma, anaplastic",Ependymoma,Central nervous system,,2.0422735,-0.60270995
+BR00150703,C10,COGEP280,C,10,4000,72,BR00150703,Synthemax,double,"Ependymoma, anaplastic",Ependymoma,Central nervous system,,2.895906,-0.28476095
+BR00150703,C11,TC71,C,11,12000,72,BR00150703,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,3.1920083,-0.23149301
+BR00150703,C12,TC71,C,12,12000,72,BR00150703,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,3.2373152,-0.25406533
+BR00150703,D05,CHLA186,D,5,4000,72,BR00150703,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,2.993528,-0.18728451
+BR00150703,D06,CHLA186,D,6,4000,72,BR00150703,Synthemax,double,Rhabdomyosarcoma,Rhabdomyosarcoma,Soft tissue,Metastasis,3.1589453,-0.15633015
+BR00150703,D07,CHLA25,D,7,8000,72,BR00150703,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.23610173,-0.74432755
+BR00150703,D08,CHLA25,D,8,8000,72,BR00150703,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.29121307,-0.6396559
+BR00150703,D09,COGEP280,D,9,4000,72,BR00150703,Synthemax,double,"Ependymoma, anaplastic",Ependymoma,Central nervous system,,1.878904,-0.7156234
+BR00150703,D10,COGEP280,D,10,4000,72,BR00150703,Synthemax,double,"Ependymoma, anaplastic",Ependymoma,Central nervous system,,2.208631,-0.3993535
+BR00150703,D11,TC71,D,11,12000,72,BR00150703,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,3.1864638,-0.22454882
+BR00150703,D12,TC71,D,12,12000,72,BR00150703,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Primary,3.190702,-0.22595495
+BR00150703,E05,CHLA194,E,5,2000,72,BR00150703,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,1.1131382,-3.3234196
+BR00150703,E06,CHLA194,E,6,2000,72,BR00150703,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,2.3420153,9.245277
+BR00150703,E07,CHLA258,E,7,4000,72,BR00150703,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,1.0899245,-1.0744196
+BR00150703,E08,CHLA258,E,8,4000,72,BR00150703,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,1.1253959,-2.6311724
+BR00150703,E09,COGR466h,E,9,2000,72,BR00150703,Synthemax,double,"Rhabdomyosarcoma, embryonal",Rhabdomyosarcoma,Soft tissue,,10.140699,-0.94070244
+BR00150703,E10,COGR466h,E,10,2000,72,BR00150703,Synthemax,double,"Rhabdomyosarcoma, embryonal",Rhabdomyosarcoma,Soft tissue,,10.190083,-1.0828031
+BR00150703,E11,WI38,E,11,4000,72,BR00150703,Synthemax,double,Normal (embryonic lung fibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,1.6191306,-3.136314
+BR00150703,E12,WI38,E,12,4000,72,BR00150703,Synthemax,double,Normal (embryonic lung fibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.9427,3.3734026
+BR00150703,F05,CHLA194,F,5,2000,72,BR00150703,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,1.1510603,-3.3226712
+BR00150703,F06,CHLA194,F,6,2000,72,BR00150703,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,1.1809822,-3.104296
+BR00150703,F07,CHLA258,F,7,4000,72,BR00150703,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,1.160096,-2.9173753
+BR00150703,F08,CHLA258,F,8,4000,72,BR00150703,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,1.113064,-2.5304236
+BR00150703,F09,COGR466h,F,9,2000,72,BR00150703,Synthemax,double,"Rhabdomyosarcoma, embryonal",Rhabdomyosarcoma,Soft tissue,,10.211365,-0.97605115
+BR00150703,F10,COGR466h,F,10,2000,72,BR00150703,Synthemax,double,"Rhabdomyosarcoma, embryonal",Rhabdomyosarcoma,Soft tissue,,10.199493,-0.88044196
+BR00150703,F11,WI38,F,11,4000,72,BR00150703,Synthemax,double,Normal (embryonic lung fibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,1.5829527,-3.0622122
+BR00150703,F12,WI38,F,12,4000,72,BR00150703,Synthemax,double,Normal (embryonic lung fibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.841259,3.1875765
+BR00150703,G05,CHLA196,G,5,1000,72,BR00150703,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,1.1567504,-3.3267481
+BR00150703,G06,CHLA196,G,6,1000,72,BR00150703,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,1.0009112,-3.2118313
+BR00150703,G09,D425,G,9,2000,72,BR00150703,Synthemax,double,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,-2.2815824,3.3221972
+BR00150703,G10,D425,G,10,2000,72,BR00150703,Synthemax,double,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,-2.3030188,3.3356626
+BR00150703,G11,WPMY1,G,11,2000,72,BR00150703,Synthemax,double,Normal (prostate stromal myofibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,-1.1133264,3.8045611
+BR00150703,G12,WPMY1,G,12,2000,72,BR00150703,Synthemax,double,Normal (prostate stromal myofibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,-1.1038216,3.8172328
+BR00150703,H05,CHLA196,H,5,1000,72,BR00150703,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,0.71444124,-3.0001261
+BR00150703,H06,CHLA196,H,6,1000,72,BR00150703,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,0.8623884,-3.1224654
+BR00150703,H09,D425,H,9,2000,72,BR00150703,Synthemax,double,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,-2.3044353,3.3239245
+BR00150703,H10,D425,H,10,2000,72,BR00150703,Synthemax,double,Medulloblastoma,Medulloblastoma,Central nervous system,Primary,-2.3231008,3.3477228
+BR00150703,H11,WPMY1,H,11,2000,72,BR00150703,Synthemax,double,Normal (prostate stromal myofibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,-1.0657289,3.8511832
+BR00150703,H12,WPMY1,H,12,2000,72,BR00150703,Synthemax,double,Normal (prostate stromal myofibroblast),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,-1.1557763,3.8288062
+BR00150703,I03,CCD 841 CoN,I,3,12000,72,BR00150703,Synthemax,double,Normal (colon epithelium),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.907498,3.1729026
+BR00150703,I04,CCD 841 CoN,I,4,12000,72,BR00150703,Synthemax,double,Normal (colon epithelium),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,4.478113,2.372509
+BR00150703,I05,CHLA203,I,5,4000,72,BR00150703,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,1.3806216,-2.8436387
+BR00150703,I06,CHLA203,I,6,4000,72,BR00150703,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,1.6098998,-0.8870673
+BR00150703,I07,CHP134,I,7,1000,72,BR00150703,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,-2.0911946,3.6817806
+BR00150703,I08,CHP134,I,8,1000,72,BR00150703,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,-2.0588717,3.6702828
+BR00150703,I09,HMC3,I,9,2000,72,BR00150703,Synthemax,double,Normal (immortalized microglia),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.231259,-0.7199752
+BR00150703,I10,HMC3,I,10,2000,72,BR00150703,Synthemax,double,Normal (immortalized microglia),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.328937,0.030798363
+BR00150703,I11,U2-OS,I,11,1000,72,BR00150703,Synthemax,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.322162,-0.5994386
+BR00150703,I12,U2-OS,I,12,1000,72,BR00150703,Synthemax,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.283827,-0.75341046
+BR00150703,J03,CCD 841 CoN,J,3,12000,72,BR00150703,Synthemax,double,Normal (colon epithelium),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,9.977486,3.2118423
+BR00150703,J04,CCD 841 CoN,J,4,12000,72,BR00150703,Synthemax,double,Normal (colon epithelium),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.001477,3.3302097
+BR00150703,J05,CHLA203,J,5,4000,72,BR00150703,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,1.6140387,-0.728682
+BR00150703,J06,CHLA203,J,6,4000,72,BR00150703,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,,1.649607,-0.7411897
+BR00150703,J07,CHP134,J,7,1000,72,BR00150703,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,-1.9986174,3.6756854
+BR00150703,J08,CHP134,J,8,1000,72,BR00150703,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Primary,-2.0610418,3.6795645
+BR00150703,J09,HMC3,J,9,2000,72,BR00150703,Synthemax,double,Normal (immortalized microglia),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.317864,-0.871542
+BR00150703,J10,HMC3,J,10,2000,72,BR00150703,Synthemax,double,Normal (immortalized microglia),"Normal (colon, lung, microglia, prostate)",Normal reference lines,,10.200669,-0.55994165
+BR00150703,J11,U2-OS,J,11,1000,72,BR00150703,Synthemax,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.282738,-0.48390722
+BR00150703,J12,U2-OS,J,12,1000,72,BR00150703,Synthemax,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.31012,-0.71325034
+BR00150703,K03,CHLA10,K,3,4000,72,BR00150703,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,7.157339,1.5444114
+BR00150703,K04,CHLA10,K,4,4000,72,BR00150703,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,7.149249,1.5447451
+BR00150703,K05,CHLA210,K,5,4000,72,BR00150703,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,2.8892872,-0.12338056
+BR00150703,K06,CHLA210,K,6,4000,72,BR00150703,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,2.8067367,-0.030668259
+BR00150703,K07,COGAR397hnb,K,7,4000,72,BR00150703,Synthemax,double,Atypical Teratoid Rhabdoid Tumor,Atypical teratoid rhabdoid tumor,Central nervous system,Metastasis,1.4144006,-3.0571842
+BR00150703,K08,COGAR397hnb,K,8,4000,72,BR00150703,Synthemax,double,Atypical Teratoid Rhabdoid Tumor,Atypical teratoid rhabdoid tumor,Central nervous system,Metastasis,1.2436305,-2.91903
+BR00150703,K09,SKNAS-1020,K,9,8000,72,BR00150703,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,4.9280653,3.5405722
+BR00150703,K10,SKNAS-1020,K,10,8000,72,BR00150703,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,4.9286094,3.527838
+BR00150703,K11,U2-OS,K,11,1000,72,BR00150703,Laminin,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.195706,-0.443238
+BR00150703,K12,U2-OS,K,12,1000,72,BR00150703,Laminin,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.191232,-0.7564179
+BR00150703,L03,CHLA10,L,3,4000,72,BR00150703,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,7.1453214,1.5279586
+BR00150703,L04,CHLA10,L,4,4000,72,BR00150703,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Metastasis,7.189737,1.5249691
+BR00150703,L05,CHLA210,L,5,4000,72,BR00150703,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,2.7306867,-0.050998766
+BR00150703,L06,CHLA210,L,6,4000,72,BR00150703,Synthemax,double,Retinoblastoma,Retinoblastoma,Eye,Primary,2.7631342,-0.1437007
+BR00150703,L07,COGAR397hnb,L,7,4000,72,BR00150703,Synthemax,double,Atypical Teratoid Rhabdoid Tumor,Atypical teratoid rhabdoid tumor,Central nervous system,Metastasis,1.2516848,-3.0144966
+BR00150703,L08,COGAR397hnb,L,8,4000,72,BR00150703,Synthemax,double,Atypical Teratoid Rhabdoid Tumor,Atypical teratoid rhabdoid tumor,Central nervous system,Metastasis,1.2010382,-1.4824338
+BR00150703,L09,SKNAS-1020,L,9,8000,72,BR00150703,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,4.9098325,3.5186322
+BR00150703,L10,SKNAS-1020,L,10,8000,72,BR00150703,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,4.853933,3.4948523
+BR00150703,L11,U2-OS,L,11,1000,72,BR00150703,Laminin,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.19088,-1.0503869
+BR00150703,L12,U2-OS,L,12,1000,72,BR00150703,Laminin,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.209715,-1.0476387
+BR00150703,M03,CHLA113,M,3,1000,72,BR00150703,Synthemax,double,PNET / Medulloblastoma,Medulloblastoma,Central nervous system,,10.189123,-0.635093
+BR00150703,M04,CHLA113,M,4,1000,72,BR00150703,Synthemax,double,PNET / Medulloblastoma,Medulloblastoma,Central nervous system,,10.19027,-0.52559435
+BR00150703,M05,CHLA218,M,5,12000,72,BR00150703,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.5661126,0.46922746
+BR00150703,M06,CHLA218,M,6,12000,72,BR00150703,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.61550677,0.38909122
+BR00150703,M07,COGE352,M,7,2000,72,BR00150703,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.1704785,-3.112375
+BR00150703,M08,COGE352,M,8,2000,72,BR00150703,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.2344664,-3.3178544
+BR00150703,M09,SKNAS-EV,M,9,12000,72,BR00150703,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,10.070322,-0.8157838
+BR00150703,M10,SKNAS-EV,M,10,12000,72,BR00150703,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,10.030892,-0.65420675
+BR00150703,M11,U2-OS,M,11,1000,72,BR00150703,Standard,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.323144,-0.7810988
+BR00150703,M12,U2-OS,M,12,1000,72,BR00150703,Standard,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.28808,-0.84432477
+BR00150703,N03,CHLA113,N,3,1000,72,BR00150703,Synthemax,double,PNET / Medulloblastoma,Medulloblastoma,Central nervous system,,10.188507,-0.4458
+BR00150703,N04,CHLA113,N,4,1000,72,BR00150703,Synthemax,double,PNET / Medulloblastoma,Medulloblastoma,Central nervous system,,10.115342,-0.56483096
+BR00150703,N05,CHLA218,N,5,12000,72,BR00150703,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.6279465,0.35086054
+BR00150703,N06,CHLA218,N,6,12000,72,BR00150703,Synthemax,double,Primitive Neuroectodermal Tumor (PNET),Ewing sarcoma family,Bone,Primary,0.6004827,0.41315037
+BR00150703,N07,COGE352,N,7,2000,72,BR00150703,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.1741973,-2.9789712
+BR00150703,N08,COGE352,N,8,2000,72,BR00150703,Synthemax,double,Ewing's Sarcoma,Ewing sarcoma family,Bone,Metastasis,1.2175157,-3.2590952
+BR00150703,N09,SKNAS-EV,N,9,12000,72,BR00150703,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,10.158584,-0.95735925
+BR00150703,N10,SKNAS-EV,N,10,12000,72,BR00150703,Synthemax,double,Neuroblastoma,Neuroblastoma,Adrenal gland,Metastasis,10.173266,-0.7486868
+BR00150703,N11,U2-OS,N,11,1000,72,BR00150703,Standard,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.282763,-0.64014107
+BR00150703,N12,U2-OS,N,12,1000,72,BR00150703,Standard,double,Osteosarcoma,Osteosarcoma,Bone,Primary,10.291624,-0.75921845
