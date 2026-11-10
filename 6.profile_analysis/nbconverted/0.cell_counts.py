@@ -126,28 +126,29 @@ per_line = per_line.sort_values(["site_rank", "cancer_group", "cells_after_qc"],
 new_group = per_line["cancer_group"] != per_line["cancer_group"].shift()
 per_line["row"] = per_line.index + new_group.cumsum()
 
-fig, ax = plt.subplots(figsize=(9, 0.17 * len(per_line) + 2))
+fig, ax = plt.subplots(figsize=(10, 0.24 * len(per_line) + 2))
 ax.barh(per_line["row"], per_line["cells_after_qc"], color=per_line["tissue_site"].map(site_colors), height=0.8)
-ax.set_yticks(per_line["row"], per_line["cell_line"], fontsize=6.5)
+ax.set_yticks(per_line["row"], per_line["cell_line"], fontsize=9)
 
 most_cells = per_line["cells_after_qc"].max()
 
 # the actual count at the end of each bar
 for _, line in per_line.iterrows():
-    ax.text(line["cells_after_qc"] + most_cells * 0.01, line["row"], f"{line['cells_after_qc']:,}", va="center", fontsize=6)
+    ax.text(line["cells_after_qc"] + most_cells * 0.01, line["row"], f"{line['cells_after_qc']:,}", va="center", fontsize=8)
 
 # the cancer group (and its number of cell lines) to the right of the counts
 for group, group_rows in per_line.groupby("cancer_group", sort=False):
-    ax.text(most_cells * 1.12, group_rows["row"].mean(), f"{group} ({len(group_rows)})", va="center", fontsize=7)
+    ax.text(most_cells * 1.12, group_rows["row"].mean(), f"{group} ({len(group_rows)})", va="center", fontsize=9)
 
 ax.set_xlim(0, most_cells * 1.85)
 ax.set_ylim(per_line["row"].max() + 1, per_line["row"].min() - 1)  # first cancer group on top
 ax.xaxis.set_major_formatter(StrMethodFormatter("{x:,.0f}"))
-ax.set(title="Cells after QC of each cell line, all time points together", xlabel="Cells after QC")
+ax.set_title("Cells after QC of each cell line, all time points together", fontsize=13)
+ax.set_xlabel("Cells after QC", fontsize=11)
 ax.spines[["top", "right"]].set_visible(False)
 ax.legend(
     handles=[Patch(color=color, label=site) for site, color in site_colors.items() if site in set(per_line["tissue_site"])],
-    title="Tissue site", ncol=4, fontsize=7, title_fontsize=8, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.07),
+    title="Tissue site", ncol=4, fontsize=9, title_fontsize=10, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.07),
 )
 plt.show()
 
