@@ -60,7 +60,7 @@ results_dir.mkdir(parents=True, exist_ok=True)
 
 # ## Cell counts per cell line and plate
 
-# In[4]:
+# In[3]:
 
 
 qc_report = pd.read_csv(qc_report_path).rename(columns={
@@ -86,7 +86,7 @@ print(f"{counts['cell_line'].nunique()} cell lines, {len(counts)} cell line and 
 # 
 # The cells after QC of each plate should equal the number of rows in that plate's single-cell profiles.
 
-# In[5]:
+# In[4]:
 
 
 after_qc = counts.groupby("plate")["cells_after_qc"].sum()
@@ -98,7 +98,7 @@ print("The cell counts match the single-cell profiles of all", len(after_qc), "p
 
 # ## Summary
 
-# In[6]:
+# In[5]:
 
 
 print("Cells after QC per time point:")
@@ -115,7 +115,7 @@ print(f"Cell line and plate combinations with fewer than 1,000 cells: {(counts['
 # The bars are colored by tissue site, with the count at the end of each bar, and the cell lines are grouped by cancer group (the number of cell lines is in brackets).
 # The chart is displayed here and not saved to disk.
 
-# In[3]:
+# In[6]:
 
 
 per_line = counts.groupby(["tissue_site", "cancer_group", "cell_line"], as_index=False)["cells_after_qc"].sum()
