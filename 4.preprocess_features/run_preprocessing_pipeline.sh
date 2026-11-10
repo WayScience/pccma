@@ -10,6 +10,7 @@
 #                                          failed QC removed per cell line), shared input for both
 #                                          branches below
 #   3.bulk_processing.ipynb             -> aggregated/normalized/feature-selected bulk profiles
+#   3b.pooled_bulk_processing.ipynb     -> one pooled, feature-selected bulk profile of all plates (needs step 3 for all plates)
 #   4.single_cell_normalize.ipynb       -> normalized single-cell profiles
 #   5.single_cell_feature_select.ipynb  -> feature-selected single-cell profiles
 #   6.sc_qc_report.ipynb                -> QC report per cell line and plate (qc_report/)
@@ -178,6 +179,21 @@ run_step() {
 
 run_step "annotate" nbconverted/2.annotate.py "./data/annotated_profiles/PLATE_annotated.parquet"
 run_step "bulk_processing" nbconverted/3.bulk_processing.py "./data/bulk_profiles/PLATE_bulk_feature_selected.parquet"
+
+# Pooled bulk profiles of all plates (one process, after every plate has its normalized bulk profile)
+pooled_output="./data/bulk_profiles/pccma_atlas_pooled_bulk_feature_selected.parquet"
+if [[ " ${failed_plates[*]} " == *" bulk_processing:"* ]]; then
+    echo "⚠️ bulk_processing failed for some plates, skipping the pooled bulk profiles"
+elif [ -f "$pooled_output" ] && [ -z "$overwrite" ] && [ -z "$(find data/bulk_profiles -name '*_bulk_normalized.parquet' -newer "$pooled_output")" ]; then
+    echo "✅ pooled bulk profiles already done (found ${pooled_output})"
+else
+    echo ">>> Running pooled_bulk_processing"
+    python nbconverted/3b.pooled_bulk_processing.py
+    if [ $? -ne 0 ]; then
+        echo "pooled_bulk_processing FAILED"
+        failed_plates+=("pooled_bulk_processing:all")
+    fi
+fi
 
 run_step "single_cell_normalize" nbconverted/4.single_cell_normalize.py "./data/single_cell_profiles/PLATE_sc_normalized.parquet"
 run_step "single_cell_feature_select" nbconverted/5.single_cell_feature_select.py "./data/single_cell_profiles/PLATE_sc_feature_selected.parquet"

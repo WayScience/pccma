@@ -14,6 +14,7 @@ We run the notebooks in order with `run_preprocessing_pipeline.sh`:
 | `1.sc_quality_control.ipynb` | Finds poor quality single cells with coSMicQC for one cell line at a time (all plates of the cell line together), using the thresholds in `qc_thresholds.yml`. Saves the QC annotations of each single cell and figures of the outliers. |
 | `2.annotate.ipynb` | For each plate, removes the single cells that failed QC, concatenates the cell lines, and annotates the single cells with the platemap (cell line, time point, and seeding density of each well). |
 | `3.bulk_processing.ipynb` | Creates the bulk profiles of each plate: aggregate to the well (median), normalize (MAD robustize to the whole plate), and feature select. |
+| `3b.pooled_bulk_processing.ipynb` | Pools the per-plate normalized bulk profiles of all plates into one file and feature selects it once, so all plates share the same features (see [Pooled bulk profiles](#pooled-bulk-profiles)). |
 | `4.single_cell_normalize.ipynb` | Normalizes the single-cell profiles of each plate (standardize to the whole plate). |
 | `5.single_cell_feature_select.ipynb` | Feature selects the normalized single-cell profiles of each plate. |
 | `6.sc_qc_report.ipynb` | Summarizes how many single cells failed each QC condition per cell line and plate, and per cell line across all plates. |
@@ -50,6 +51,20 @@ We process the profiles with pycytominer, normalizing to the whole plate since t
 
 For feature selection, we drop features with any missing values, features on the default blocklist, and features with low frequency, low variance, or high correlation (Pearson correlation above 0.90).
 
+### Pooled bulk profiles
+
+Each plate keeps its own selected features, and only 57 are shared by all nine plates.
+For analyses across plates, `3b.pooled_bulk_processing.ipynb` stacks the per-plate normalized bulk profiles (712 wells, values unchanged) and selects features once on all wells (`pccma_atlas_pooled_bulk_feature_selected.parquet`, 827 features).
+It uses the per-plate settings with two differences:
+
+- **Correlation threshold 0.95** (0.90 per plate).
+- **`drop_outliers` with a cutoff of 1,000.**
+  Some features, mostly high-order granularity, have a near-zero MAD on a plate, so MAD robustize gives values up to about 1e19.
+  The cutoff removes them (124 features) and keeps the real tail (the largest kept value is 530).
+  The pycytominer default of 15 would also remove real differences between cell lines.
+
+The output starts with the `Metadata_` columns (plate, well, cell line, row, column, seeding density, time point, plate barcode, plate coating, PFA fixation), described in the notebook, followed by the features.
+
 ## Inputs and outputs
 
 The module depends on:
@@ -62,7 +77,7 @@ The module depends on:
 | `data/converted_profiles/<cell_line>/` | One converted single-cell profile per plate (`<plate>_<cell_line>_converted.parquet`, all single cells before QC). | No |
 | `data/annotated_profiles/` | One annotated single-cell profile per plate (single cells that passed QC). | No |
 | `data/single_cell_profiles/` | Normalized and feature-selected single-cell profiles per plate. | No |
-| `data/bulk_profiles/` | Aggregated, normalized, and feature-selected bulk profiles per plate. | No |
+| `data/bulk_profiles/` | Aggregated, normalized, and feature-selected bulk profiles per plate, and the pooled bulk profiles of all plates (`pccma_atlas_pooled_bulk_feature_selected.parquet`, also copied to the bandicoot mount). | No |
 | `qc_results/` | QC annotations of each single cell (`<cell_line>_qc_annotations.parquet`) and the thresholds used (`<cell_line>_qc_thresholds.json`). | No |
 | `qc_figures/` | Figures of the outliers of each cell line. | No |
 | `qc_report/` | QC report per cell line and plate, and per cell line. | Yes |
