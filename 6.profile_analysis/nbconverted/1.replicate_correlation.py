@@ -34,7 +34,7 @@
 
 # ## Import libraries
 
-# In[ ]:
+# In[1]:
 
 
 import pathlib
@@ -51,7 +51,7 @@ from pccma_utils.palettes import site_colors
 
 # ## Set paths and parameters
 
-# In[ ]:
+# In[2]:
 
 
 metadata_path = pathlib.Path("../cell_lines/pccma_cell_line_metadata.csv")
@@ -75,7 +75,7 @@ rng = np.random.default_rng(0)  # for the shuffled copy of each plate
 # 
 # One plate at a time.
 
-# In[ ]:
+# In[3]:
 
 
 pair_tables = []
@@ -129,7 +129,7 @@ print(f"{len(real_pairs)} pairs of replicate wells from {real_pairs['plate'].nun
 
 # ## Summary per cell line and plate
 
-# In[ ]:
+# In[4]:
 
 
 group_columns = ["cell_line", "plate", "time_point", "seeding_density", "plate_coating", "cancer_group", "tissue_site"]
@@ -155,7 +155,7 @@ print(lowest.round(2).to_string(index=False))
 # The cell lines with the lowest replicate correlation are on top.
 # The plot is displayed here and not saved to disk.
 
-# In[ ]:
+# In[5]:
 
 
 fig, (hist_ax, line_ax) = plt.subplots(1, 2, figsize=(11, 8), gridspec_kw={"width_ratios": [1, 1.2]})
