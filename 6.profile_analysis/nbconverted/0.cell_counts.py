@@ -138,7 +138,7 @@ print(f"Cell line and plate combinations with fewer than 1,000 cells: {(counts['
 # ## Cells per cell line
 # 
 # A bar chart of the cells after QC of each cell line (all time points together), to scan the data set at a glance.
-# The bars are colored by tissue site, and the cell lines are grouped by cancer group (the number of cell lines is in brackets).
+# The bars are colored by tissue site, with the count at the end of each bar, and the cell lines are grouped by cancer group (the number of cell lines is in brackets).
 # The chart is displayed here and not saved to disk.
 
 # In[3]:
@@ -169,10 +169,16 @@ ax.barh(per_line["row"], per_line["cells_after_qc"], color=per_line["tissue_site
 ax.set_yticks(per_line["row"], per_line["cell_line"], fontsize=6.5)
 
 most_cells = per_line["cells_after_qc"].max()
-for group, group_rows in per_line.groupby("cancer_group", sort=False):
-    ax.text(most_cells * 1.02, group_rows["row"].mean(), f"{group} ({len(group_rows)})", va="center", fontsize=7)
 
-ax.set_xlim(0, most_cells * 1.75)
+# the actual count at the end of each bar
+for _, line in per_line.iterrows():
+    ax.text(line["cells_after_qc"] + most_cells * 0.01, line["row"], f"{line['cells_after_qc']:,}", va="center", fontsize=6)
+
+# the cancer group (and its number of cell lines) to the right of the counts
+for group, group_rows in per_line.groupby("cancer_group", sort=False):
+    ax.text(most_cells * 1.12, group_rows["row"].mean(), f"{group} ({len(group_rows)})", va="center", fontsize=7)
+
+ax.set_xlim(0, most_cells * 1.85)
 ax.set_ylim(per_line["row"].max() + 1, per_line["row"].min() - 1)  # first cancer group on top
 ax.xaxis.set_major_formatter(StrMethodFormatter("{x:,.0f}"))
 ax.set(title="Cells after QC of each cell line, all time points together", xlabel="Cells after QC")
