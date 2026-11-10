@@ -23,10 +23,13 @@
 # We save the features with the same metadata columns as the converted profiles (plate, well, site, image number, and object numbers), so we can remove the single cells that failed QC with the QC annotations from `4.preprocess_features/1.sc_quality_control.ipynb`.
 # We also save whether each crop is at the edge of the image and the fraction of the crop that is padding (`Metadata_Nucleocentric_Crop_At_Edge` and `Metadata_Nucleocentric_Pad_Fraction`), and how crowded each crop is: the number of other nuclei in the crop, the fraction of the crop covered by the bounding boxes of other cells, and the fraction of the cell's bounding box that overlaps the bounding boxes of other cells (`Metadata_Nucleocentric_Other_Nuclei_Count`, `Metadata_Nucleocentric_Other_Cells_Fraction`, and `Metadata_Nucleocentric_Cell_Overlap_Fraction`).
 # We do not remove any single cells with these columns, but we can use them in later analyses (e.g., to remove crowded crops).
+# 
+# > **Note:** We extracted the MorphEm features for every job by running this notebook as a script (`nbconverted/2.extract_morphem_features.py`) with `run_morphem_pipeline.sh`.
+# > The outputs below are from running the notebook afterwards without overwriting, so it skips the extraction because the MorphEm profile already exists.
 
 # ## Import libraries
 
-# In[ ]:
+# In[1]:
 
 
 import argparse
@@ -68,7 +71,7 @@ module_dir = root_dir / "5.morphem_featurization"
 
 # ## Define functions
 
-# In[ ]:
+# In[2]:
 
 
 def correct_illumination(image: np.ndarray, illum_function: np.ndarray) -> np.ndarray:
@@ -80,7 +83,7 @@ def correct_illumination(image: np.ndarray, illum_function: np.ndarray) -> np.nd
 
 # ## Set paths and variables
 
-# In[ ]:
+# In[3]:
 
 
 if not in_notebook:
@@ -116,7 +119,6 @@ channels = ["DNA", "ER", "RNA", "AGP", "Mito"] # constant list
 seed = 0
 torch.manual_seed(seed)
 
-
 image_base_dir = bandicoot_check(
     pathlib.Path(os.path.expanduser("~/mnt/bandicoot")).resolve(), root_dir
 )
@@ -133,7 +135,7 @@ converted_path = (
 illum_dir = (root_dir / "2.illumination_correction/illum_directory" / plate).resolve(strict=True)
 
 # one folder per cell line with one parquet file per plate (time point), the same as the converted profiles
-output_dir = module_dir / "data/morphem_profiles" / cell_line
+output_dir = module_dir / "data/morphem_extracted_profiles" / cell_line
 output_dir.mkdir(parents=True, exist_ok=True)
 output_path = output_dir / f"{plate}_{cell_line}_morphem.parquet"
 
@@ -171,7 +173,7 @@ else:
 # 
 # We only load the metadata columns, the center and bounding box of each nucleus, and the image paths.
 
-# In[ ]:
+# In[4]:
 
 
 # columns that identify each single cell (the QC annotations are merged on these columns)
@@ -231,7 +233,7 @@ if extract_features:
 
 # ## Load the illumination correction functions and MorphEm
 
-# In[ ]:
+# In[5]:
 
 
 if extract_features:
@@ -245,7 +247,7 @@ if extract_features:
 
 # ## Extract the nucleocentric features from each FOV
 
-# In[ ]:
+# In[6]:
 
 
 if extract_features:
@@ -377,7 +379,7 @@ if extract_features:
 # We keep the image file names and paths so we can display the crops later (e.g., with CytoDataFrame).
 # We also keep the fraction of each crop that was saturated in the camera per channel (`Metadata_Nucleocentric_SaturatedFraction_<channel>`), since the saturated pixels are where MorphEm adds noise, so we can find the single cells that might be too saturated.
 
-# In[ ]:
+# In[7]:
 
 
 if extract_features:
@@ -417,7 +419,7 @@ if extract_features:
 # 
 # We show the crops of a few single cells with the nucleus bounding box in red, to confirm that the crops are centered on the nuclei (as a sanity check).
 
-# In[ ]:
+# In[8]:
 
 
 if in_notebook and extract_features:
@@ -468,4 +470,3 @@ if in_notebook and extract_features:
     plt.suptitle(f"Nucleocentric crops ({crop_size} x {crop_size} pixels) for {cell_line} from {plate}")
     plt.tight_layout()
     plt.show()
-

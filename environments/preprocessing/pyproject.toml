@@ -33,17 +33,23 @@ dependencies = [
     "jupyterlab==4.6.4",
     "ipykernel==7.4.0",
     "nbconvert==7.17.2",
+    # the lab's pairwise comparison package (6.profile_analysis/1.replicate_correlation.ipynb), installed from GitHub
+    "pairwise-compare",
     # shared utilities of the repository (utils/), installed in editable mode from [tool.uv.sources]
     "pccma-atlas-utils",
 ]
 
 [tool.uv.sources]
 pccma-atlas-utils = { path = "../../utils", editable = true }
+# pinned to a commit, because the package has no releases
+pairwise-compare = { git = "https://github.com/WayScience/pairwise_compare", rev = "1d18454a06171ff7ad629d0b49ee87d251aac648" }
 
 [tool.uv]
 package = false
 # use a Python that uv manages instead of one from a conda environment
 python-preference = "only-managed"
+# pairwise-compare asks for pyarrow 18, but it only uses pandas and numpy, so we keep the pyarrow of this environment
+override-dependencies = ["pyarrow==22.0.0"]
 constraint-dependencies = [
     "agate-dbf==0.2.4",
     "agate-excel==0.4.2",

@@ -43,3 +43,7 @@ runinfo/
 
 # Ignore build metadata from installing utils/ in editable mode
 *.egg-info/
+
+# Mac specific files
+.DS_Store
+
