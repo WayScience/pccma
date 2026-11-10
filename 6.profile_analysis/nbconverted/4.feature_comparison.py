@@ -35,6 +35,7 @@
 
 import pathlib
 import re
+import warnings
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -67,7 +68,7 @@ outlier_cutoff = 1000  # features above this absolute value in any well are remo
 
 # ## Helper functions
 
-# In[4]:
+# In[3]:
 
 
 def describe_feature(feature):
@@ -77,7 +78,7 @@ def describe_feature(feature):
     return parts[0], parts[1], "_".join(channels) if channels else "none"
 
 
-# In[5]:
+# In[4]:
 
 
 def between_group_share(values, groups):
@@ -91,7 +92,7 @@ def between_group_share(values, groups):
 # 
 # The percentiles of the nucleus size of the single cells of each cell line on each plate.
 
-# In[6]:
+# In[5]:
 
 
 cell_line_groups = load_cell_line_groups(metadata_path, groups_path)
@@ -126,7 +127,7 @@ print(size_df.groupby("time_point")["q50"].agg(["min", "median", "max"]).round(2
 # Bulk profiles of all plates, with the extreme features removed.
 # For each time point, the share of variance between cell lines and a test of the cell line means across cancer groups.
 
-# In[7]:
+# In[6]:
 
 
 bulk_df = pd.concat([pd.read_parquet(file) for file in sorted(bulk_dir.glob("BR*_bulk_normalized.parquet"))], ignore_index=True)
@@ -140,7 +141,7 @@ assert bulk_df["cancer_group"].notna().all(), "a cell line has no cancer group"
 print(f"{len(bulk_df)} wells of {bulk_df['Metadata_cell_line'].nunique()} cell lines, {len(features)} features ({len(extreme)} removed for values above {outlier_cutoff})")
 
 
-# In[8]:
+# In[7]:
 
 
 variation = []
@@ -153,7 +154,10 @@ for time_point, wells in bulk_df.groupby("Metadata_time_point"):
     group_share = between_group_share(line_means.reset_index(drop=True), line_groups)
     group_null = (len(set(line_groups)) - 1) / (len(line_means) - 1)
     group_values = [group_df.to_numpy() for _, group_df in line_means.groupby(level="cancer_group")]
-    tests = [stats.kruskal(*[values[:, i] for values in group_values]) for i in range(len(features))]
+    # a feature with the same value in every cell line has no test (a division by zero), which is counted below
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", message="invalid value encountered in scalar divide", category=RuntimeWarning)
+        tests = [stats.kruskal(*[values[:, i] for values in group_values]) for i in range(len(features))]
 
     table = pd.DataFrame({
         "time_point": time_point,
@@ -180,7 +184,7 @@ print(f"{len(variation_df)} rows: {len(features)} features at {variation_df['tim
 
 # ## Summary
 
-# In[9]:
+# In[8]:
 
 
 print("Share of variance between cell lines (over wells) and between cancer groups (over cell line means): median over features")
@@ -205,7 +209,7 @@ print(size_rank.round(2).to_string(index=False))
 # Values are in units of the standard deviation on the plate of the cell line.
 # The plot is displayed here and not saved to disk.
 
-# In[10]:
+# In[9]:
 
 
 per_line = (
