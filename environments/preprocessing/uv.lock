@@ -307,7 +307,6 @@ constraints = [
     { name = "zipp", specifier = "==3.23.0" },
     { name = "zstandard", specifier = "==0.25.0" },
 ]
-overrides = [{ name = "pyarrow", specifier = "==22.0.0" }]
 
 [[package]]
 name = "aiobotocore"
@@ -2599,14 +2598,15 @@ wheels = [
 
 [[package]]
 name = "pairwise-compare"
-version = "0.1.3"
-source = { git = "https://github.com/WayScience/pairwise_compare?rev=1d18454a06171ff7ad629d0b49ee87d251aac648#1d18454a06171ff7ad629d0b49ee87d251aac648" }
+version = "0.4.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy" },
     { name = "pandas" },
-    { name = "pathlib2" },
-    { name = "pyarrow" },
-    { name = "setuptools" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/91/54/84158ae258825c49927fa80d158ccfa63db7ab0f70bf18b833ba59ab5ca6/pairwise_compare-0.4.0.tar.gz", hash = "sha256:d313950173bcb52bbe543c292b28b4259c22a353b02ff175ab87532667432cdc", size = 1189256, upload-time = "2026-11-11T04:32:59.992Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/34/83/3fe733c70b3cff35afb615faba690b4202142be383a4e7929e33e296bc5b/pairwise_compare-0.4.0-py3-none-any.whl", hash = "sha256:f9b8f85201a7ff4d8bddaccbee9749edcb484a76b7ae569499b05aeacea62e8e", size = 14534, upload-time = "2026-11-11T04:32:58.581Z" },
 ]
 
 [[package]]
@@ -2702,18 +2702,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pathlib2"
-version = "2.3.7.post1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "six" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/31/51/99caf463dc7c18eb18dad1fffe465a3cf3ee50ac3d1dccbd1781336fe9c7/pathlib2-2.3.7.post1.tar.gz", hash = "sha256:9fe0edad898b83c0c3e199c842b27ed216645d2e177757b2dd67384d4113c641", size = 211190, upload-time = "2022-02-10T18:01:09.996Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/09/eb/4af4bcd5b8731366b676192675221c5324394a580dfae469d498313b5c4a/pathlib2-2.3.7.post1-py2.py3-none-any.whl", hash = "sha256:5266a0fd000452f1b3467d782f079a4343c63aaa119221fbdc4e39577489ca5b", size = 18027, upload-time = "2022-02-10T18:01:07.751Z" },
-]
-
-[[package]]
 name = "pccma-atlas-preprocessing"
 version = "0.1.0"
 source = { virtual = "." }
@@ -2755,7 +2743,7 @@ requires-dist = [
     { name = "matplotlib", specifier = "==3.11.2" },
     { name = "nbconvert", specifier = "==7.17.2" },
     { name = "numpy", specifier = "==2.4.6" },
-    { name = "pairwise-compare", git = "https://github.com/WayScience/pairwise_compare?rev=1d18454a06171ff7ad629d0b49ee87d251aac648" },
+    { name = "pairwise-compare", specifier = ">=0.4.0" },
     { name = "pandas", specifier = "==2.2.3" },
     { name = "papermill", specifier = "==2.7.0" },
     { name = "pccma-atlas-utils", editable = "../../utils" },
@@ -3667,15 +3655,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/1c/e1/61838733db1ee33c4d550e72e98891824b28f644a2fb9612f107e5bf819d/setproctitle-1.3.8-pp311-pypy311_pp73-macosx_11_0_arm64.whl", hash = "sha256:26da5ad9883d825b9d732fd1dcb99268a4ee545b1edd0aaa5c56f16009cccaf8", size = 12627, upload-time = "2026-10-01T21:09:21.435Z" },
     { url = "https://files.pythonhosted.org/packages/ce/cf/08599efcb67f437acc0b1b6510aa08f44873cbd416b526139c4eb38b2775/setproctitle-1.3.8-pp311-pypy311_pp73-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl", hash = "sha256:15aaec002066f6dd7d920c46d3bffc3e529cb4a9fac961f2dd878aad64b0e29e", size = 14324, upload-time = "2026-10-01T21:09:23.204Z" },
     { url = "https://files.pythonhosted.org/packages/ce/a1/971a49677f247a613a2229df65af01d5a27e8793adee5b818680e90c30a9/setproctitle-1.3.8-pp311-pypy311_pp73-win_amd64.whl", hash = "sha256:6a740a6de2675da29594612eca3c962ceefc063fb62f43fc5a8f84d547ce0d7a", size = 12982, upload-time = "2026-10-01T21:09:25.006Z" },
-]
-
-[[package]]
-name = "setuptools"
-version = "84.0.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/6d/44/f5da03a8ef95d369145c5bb53050e7877c9f3d312e128605fd9504829143/setuptools-84.0.0.tar.gz", hash = "sha256:f4695c21257f0d9b537ec2692c941d02ee143b7cc1276941349a546573b2ef73", size = 1168449, upload-time = "2026-08-08T18:27:58.365Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/95/9c/c510029fc6ef33a6275cd2c5d3cecd6613dfd6aa401d57c54f1c18852ccf/setuptools-84.0.0-py3-none-any.whl", hash = "sha256:51a52592b3b99e102b609654876bd65f19f999935166d1352678931132b0c670", size = 818216, upload-time = "2026-08-08T18:27:56.719Z" },
 ]
 
 [[package]]
