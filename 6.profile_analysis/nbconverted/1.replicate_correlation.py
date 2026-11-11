@@ -19,9 +19,9 @@
 # Most cell lines have four replicate wells, which gives six pairs.
 # The four wells of a cell line are neighbors on the plate (a 2x2 block), so they also share their position.
 # 
-# **Method:** the correlations come from the lab's [`pairwise_compare`](https://github.com/WayScience/pairwise_compare) package (`PairwiseCompareManager` with `PearsonsCorrelation`), as in the PedCP90 optimization (`pediatric_cancer_atlas_profiling/4.optimization`).
+# **Method:** the correlations come from the lab's [`pairwise_compare`](https://github.com/WayScience/pairwise_compare) package (`compare_pairs`, which gives the Pearson correlation by default), as in the PedCP90 optimization (`pediatric_cancer_atlas_profiling/4.optimization`).
 # It gives the same Pearson correlation as `numpy.corrcoef` (checked on the pooled bulk profiles: all 1,068 pairs of replicate wells, largest difference 2e-15).
-# Install it with `pip install git+https://github.com/WayScience/pairwise_compare.git`.
+# The package (`pairwise-compare` on PyPI) is installed by the `environments/preprocessing` uv environment.
 # 
 # **Shuffled baseline:** as in the PedCP90 optimization, a shuffled copy of the plate is made by shuffling the values of each feature among the wells of the plate (fixed seed).
 # The replicate pairs of the shuffled copy are compared the same way. Their correlation is the chance level for the plate: low, but not exactly zero, because every feature keeps its distribution (shuffling the order of the features within each well instead, `axis=1` in `rng.permuted`, gives a baseline of exactly zero on average).
@@ -42,9 +42,8 @@ import pathlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from comparators.PearsonsCorrelation import PearsonsCorrelation
-from comparison_tools.PairwiseCompareManager import PairwiseCompareManager
 from matplotlib.patches import Patch
+from pairwise_compare import compare_pairs
 from pccma_utils.cell_lines import load_cell_line_groups
 from pccma_utils.palettes import site_colors
 
@@ -66,7 +65,8 @@ results_dir = pathlib.Path("./results/1.replicate_correlation")
 results_dir.mkdir(parents=True, exist_ok=True)
 
 # wells with the same values of these columns (within a plate) are replicates
-replicate_columns = ["Metadata_Plate", "Metadata_time_point", "Metadata_cell_line", "Metadata_seeding_density", "Metadata_plate_coating"]
+# (the pairs are saved sorted by these columns in this order, which is the alphabetical order of their names)
+replicate_columns = ["Metadata_Plate", "Metadata_cell_line", "Metadata_plate_coating", "Metadata_seeding_density", "Metadata_time_point"]
 outlier_cutoff = 1000  # features above this absolute value in any well are removed (near-zero MAD artifacts)
 rng = np.random.default_rng(0)  # for the shuffled copy of each plate
 
@@ -97,20 +97,14 @@ for plate_file in sorted(profile_dir.glob("BR*_bulk_feature_selected.parquet")):
 
     # Pearson correlation of every pair of wells with the same values of the replicate columns (and the same Shuffled)
     pair_tables.append(
-        PairwiseCompareManager(
-            _df=both_df,
-            _comparator=PearsonsCorrelation(),
-            _same_columns=replicate_columns + ["Shuffled"],
-            _different_columns=["Metadata_Well"],
-            _feat_cols=features,
-        )()
+        compare_pairs(both_df, different=["Metadata_Well"], features=features, same=replicate_columns + ["Shuffled"])
     )
 
-# pairwise_compare names the columns of the two compared groups; both groups have the same replicate columns
+# pairwise_compare names the columns of the two compared wells <column>__group0 and <column>__group1; both wells have the same replicate columns
 pairs_df = pd.concat(pair_tables, ignore_index=True).rename(columns={
-    **{f"{col}__antehoc_group0": col.replace("Metadata_", "") for col in replicate_columns + ["Shuffled"]},
-    "Metadata_Well__posthoc_group0": "well_a",
-    "Metadata_Well__posthoc_group1": "well_b",
+    **{f"{col}__group0": col.replace("Metadata_", "") for col in replicate_columns + ["Shuffled"]},
+    "Metadata_Well__group0": "well_a",
+    "Metadata_Well__group1": "well_b",
     "pearsons_correlation": "pearson",
 })
 pairs_df = pairs_df.rename(columns={"Plate": "plate", "Shuffled": "shuffled"})
