@@ -96,9 +96,10 @@ The module numbers follow the order in which we run them.
 | [3.cp_analysis](./3.cp_analysis/) | Perform illumination correction, segmentation, and feature extraction with CellProfiler, where each cell line has its own pipeline. |
 | [4.preprocess_features](./4.preprocess_features/) | Convert the CellProfiler outputs to single-cell parquet files with CytoTable, remove poor quality single cells with coSMicQC, and process the profiles with pycytominer into single-cell (normalized and feature-selected) and bulk (aggregated, normalized, and feature-selected) profiles, with a QC report per cell line and plate. |
 | [5.morphem_featurization](./5.morphem_featurization/) | Extract nucleocentric deep learning features with MorphEm using the nuclei from CellProfiler, and process them into single-cell and bulk profiles. |
+| [5a.object_image_crops](./5a.object_image_crops/) | Write the nucleocentric crop of every single cell that passed QC to a standalone image-crop warehouse (JPGs plus a manifest), joinable with the single-cell profiles and the UMAP tables. |
 | [cell_lines](./cell_lines/) | Build the consolidated cell line metadata table and create the descriptive figures of the cell lines. |
 | [environments](./environments/) | Conda environment files and a script to create the environments on an HPC cluster. |
-| [utils](./utils/) | Shared functions for creating LoadData CSVs, running CellProfiler in parallel, loading the single cells that passed QC, and extracting MorphEm features. The uv environments install it as a package in editable mode (`pccma-atlas-utils`), so notebooks import it without changing `sys.path`. |
+| [utils](./utils/) | Shared functions for creating LoadData CSVs, running CellProfiler in parallel, loading the single cells that passed QC, extracting MorphEm features, and writing the image-crop warehouse. The uv environments install it as a package in editable mode (`pccma-atlas-utils`), so notebooks import it without changing `sys.path`. |
 
 ## Quality control (QC) of poor quality images
 
