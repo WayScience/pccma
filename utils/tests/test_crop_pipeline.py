@@ -278,3 +278,58 @@ def test_source_relocation_preserves_measurement(atlas):
     record["Image_PathName_OrigDNA"] = "/unmounted/BR00150698__other_measurement/Images"
     with pytest.raises(FileNotFoundError):
         resolve_image_path(record, "DNA", directory)
+
+
+def add_other_plate_inputs(root):
+    """An unprocessed second plate must not expand an explicitly plate-scoped run."""
+    converted = root / "4.preprocess_features/data/converted_profiles/A673/BR00150698_A673_converted.parquet"
+    cells = pd.read_parquet(converted)
+    cells["Image_Metadata_Plate"] = "BR00150699"
+    cells.to_parquet(converted.with_name("BR00150699_A673_converted.parquet"), index=False)
+    for directory, filename in (
+        ("4.preprocess_features/data/single_cell_profiles", "BR00150698_sc_feature_selected.parquet"),
+        ("5.morphem_featurization/data/morphem_single_cell_profiles", "BR00150698_morphem_sc_feature_selected.parquet"),
+    ):
+        path = root / directory / filename
+        table = pd.read_parquet(path)
+        table["Metadata_Plate"] = "BR00150699"
+        table.to_parquet(path.with_name(filename.replace("BR00150698", "BR00150699")), index=False)
+    for path in (root / "6.profile_analysis/results/3.single_cell_embedding").glob("*.parquet"):
+        table = pd.read_parquet(path)
+        other = table.copy()
+        other["Metadata_Plate"] = "BR00150699"
+        pd.concat([table, other], ignore_index=True).to_parquet(path, index=False)
+
+
+def test_one_plate_runner_does_not_process_or_require_other_plates(atlas, monkeypatch):
+    import json
+    add_other_plate_inputs(atlas)
+    monkeypatch.setenv("PCCMA_PLATE", "BR00150698")
+    shutil.copyfile(REPO / MODULE / "run_crop_pipeline.sh", atlas / MODULE / "run_crop_pipeline.sh")
+    (atlas / "utils").symlink_to(REPO / "utils", target_is_directory=True)
+    env = dict(os.environ, PCCMA_PYTHON=sys.executable)
+    result = subprocess.run(["bash", str(atlas / MODULE / "run_crop_pipeline.sh")],
+        cwd=atlas, env=env, capture_output=True, text=True, timeout=60)
+    assert result.returncode == 0, result.stdout + result.stderr
+    index = pd.read_parquet(warehouse(atlas) / "crops_index.parquet")
+    assert set(index["Metadata_Plate"]) == {"BR00150698"}
+    assert not (warehouse(atlas) / "crops/BR00150699").exists()
+    report = json.loads((warehouse(atlas) / "validation.json").read_text())
+    assert report["plate_scope"] == "BR00150698"
+    assert report["umap_rows_outside_scope"]["single_cell_umap_coordinates_by_cancer_group.parquet"] == 2
+
+
+def test_plate_scope_rejects_mixed_output_directory(atlas, monkeypatch):
+    generate(atlas)
+    manifest_dir = warehouse(atlas) / "manifests"
+    mixed = manifest_dir / "BR00150699_A673_manifest.parquet"
+    mixed.write_bytes(b"unrelated existing output")
+    monkeypatch.setenv("PCCMA_PLATE", "BR00150698")
+    assert "separate output" in generate(atlas, ok=False).lower()
+    assert mixed.read_bytes() == b"unrelated existing output"
+
+
+def test_plate_scope_rejects_mismatched_job(atlas, monkeypatch):
+    monkeypatch.setenv("PCCMA_PLATE", "BR00150699")
+    assert "scope" in generate(atlas, ok=False).lower()
+    assert not list(warehouse(atlas).rglob("*.jpg"))

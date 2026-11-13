@@ -63,12 +63,24 @@ Optional environment variables:
 
 | Variable | Purpose |
 | --- | --- |
-| `OVERWRITE=1` | Regenerate every crop job. |
+| `OVERWRITE=1` | Regenerate every selected crop job. |
+| `PCCMA_PLATE` | Restrict generation, index coverage, profile checks and UMAP checks to one exact plate barcode. Unset means all plates. Use a separate output root for a plate-scoped run. |
 | `PCCMA_IMAGES_DIR` | Raw-image root for relocating recorded TIFF paths, preserving the exact plate-measurement folder. Defaults to `~/mnt/bandicoot/PCCMA_data/Atlas_v2_screen`. Existing recorded TIFF paths are used first. |
 | `PCCMA_CROPS_DIR` | Local output root, e.g. a sufficiently large local work disk. |
 | `PCCMA_PROFILES_DIR` | CellProfiler single-cell profiles for validation; defaults to local profiles, then the bandicoot profiles folder. |
 
-Do a one-job pilot before a full run. After converting the notebooks, run:
+To process just one plate, including index construction and validation, use a new output root:
+
+```bash
+PCCMA_PLATE=BR00150695 PCCMA_CROPS_DIR=/local/work/new-plate-run/warehouse \
+    ./5a.object_image_crops/run_crop_pipeline.sh
+```
+
+Other plates' inputs are ignored, not deleted or modified. The validation report records the plate
+scope and how many UMAP rows lie outside it. A scoped run refuses an output directory containing
+other plates' manifests/index; keep different pilot runs in different output roots.
+
+Do a one-job pilot before a full plate run. After converting the notebooks, run:
 
 ```bash
 PYTHONPATH=utils python 5a.object_image_crops/nbconverted/0.generate_object_crops.py \
@@ -78,7 +90,7 @@ PYTHONPATH=utils python 5a.object_image_crops/nbconverted/0.generate_object_crop
 | Notebook | Purpose |
 | --- | --- |
 | `0.generate_object_crops.ipynb` | One plate/cell-line job, reading each field once and writing six images per QC-passing cell. Includes a notebook-only preview. |
-| `1.build_crop_index.ipynb` | Combine manifests, annotate wells, validate unique keys and all six paths, and publish the index atomically. Requires all converted-profile jobs; not a partial-run index builder. |
+| `1.build_crop_index.ipynb` | Combine manifests, annotate wells, validate unique keys and all six paths, and publish the index atomically. Requires all converted-profile jobs within the selected plate scope (or the full atlas if no plate is selected). |
 | `2.validate_joins.ipynb` | Exact two-way CellProfiler profile coverage; optional MorphEm and UMAP joins; all paths; fresh pixel recomputation for up to three cells per plate. Writes a validation report. |
 
 Absent MorphEm/UMAP inputs are explicitly reported as skipped, not verified. Missing CellProfiler
@@ -88,8 +100,7 @@ Pixel validation compares decoded images against a fresh JPEG roundtrip in the s
 codec-version differences may require validation with the original generation environment.
 
 The tracked cell-count summary lists 1,204,712 post-QC cells. Six images each means 7,228,272 JPGs.
-Actual space and runtime must be measured on a real-image pilot; no full-dataset size or runtime
-has been established. Check free space and file-count limits before a full run.
+The one-plate measurements below are real; no full-dataset size or runtime has been established. Check free space and file-count limits before a full run.
 
 ## Join without modifying source tables
 
@@ -141,6 +152,48 @@ rsync -rnc --itemize-changes --exclude='.staging/' --exclude='*.tmp.*' \
 The verification should report no changed/missing source files. These commands do not delete
 extra destination files; the index defines the current published cell set. Do not sync while
 crop generation is running. Consumers prepend the destination root to the same relative paths.
+
+## Verified one-plate run
+
+Completed November 13, 2026 (16:25:17 UTC), run `BR00150695-20261113T155150Z-g790ecb4`:
+
+- Plate `BR00150695` only: **80,493 post-QC cells**, 13 cell-line jobs and **482,958 JPGs**.
+- CellProfiler and MorphEm profiles matched one-to-one; 6,500 UMAP points and seven example cells on this plate joined successfully. Other plates were excluded explicitly.
+- Shared crop bounds matched the existing MorphEm metadata for every selected cell. Fresh pixel recomputation checked all six images for three cells.
+- Every JPG was fully decoded and SHA256 hashed. Every archive payload was checked, followed by checksum read-back of every published artifact from bandicoot.
+- The archive is 5,888,471,040 bytes (5.89 GB / 5.48 GiB). Generation, validation and safe publication took 21 minutes 47 seconds after launch.
+- All 52 tests passed on Willow in the isolated run environment. Source input sizes/mtimes and the existing checkout were unchanged.
+
+Durable artifacts on Willow's bandicoot mount:
+
+    /home/davebunten/mnt/bandicoot/PCCMA_data/Atlas_v2_object_crops/runs/BR00150695-20261113T155150Z-g790ecb4/
+        BR00150695-object-image-crops.tar
+        crops_index.parquet
+        validation.json
+        completion.json
+        SHA256SUMS
+        jpg-sha256.txt.gz
+        preview.jpg
+        ... source patch/hashes, environment, membership flags and run provenance
+
+The tar contains `warehouse/` with the complete JPG tree, manifests, index and validation.
+Relative paths in the sidecar index resolve inside that `warehouse/` directory. This plate archive
+avoids copying nearly half a million individual files onto the shared filesystem. Extract only
+into a new empty directory, never over existing results.
+
+Browsable original generated files remain on Willow:
+
+    /home/davebunten/work/pccma-crops-runs/BR00150695-20261113T155150Z-g790ecb4/warehouse
+
+The original QC annotation files were unavailable. The run inherited the exact retained-object
+membership of the existing published post-QC profiles and recorded run-local boolean flags; it
+**did not recalculate QC** or infer original failure reasons. Input sources and prior results were
+read-only. Code provenance is base revision `790ecb4` plus the preserved one-plate-scope patch,
+not an unmodified checkout of that revision.
+
+Local review copies are gitignored under
+`data/pilot_runs/BR00150695-20261113T155150Z-g790ecb4/` (preview, index, validation and completion/read-back records).
+No other plate was processed. Use a new run/output directory for expansion.
 
 ## Tests
 

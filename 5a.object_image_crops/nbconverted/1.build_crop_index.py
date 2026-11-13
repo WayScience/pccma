@@ -16,7 +16,8 @@
 import os
 import pathlib
 import pandas as pd
-from crop_warehouse import FINAL_PROFILE_KEY, POSITION_KEY, PATH_COLUMNS, require_unique_keys, validate_crop_files
+from crop_warehouse import (FINAL_PROFILE_KEY, POSITION_KEY, PATH_COLUMNS, require_unique_keys,
+    validate_crop_files, requested_plate, guard_plate_scope)
 from path_utils import get_root_dir
 
 root_dir = get_root_dir()
@@ -26,11 +27,15 @@ warehouse_dir = pathlib.Path(os.environ.get('PCCMA_CROPS_DIR',
 index_path = warehouse_dir / 'crops_index.parquet'
 manifest_dir = warehouse_dir / 'manifests'
 converted_dir = root_dir / '4.preprocess_features/data/converted_profiles'
-converted = sorted(converted_dir.glob('*/*_converted.parquet'))
+selected_plate = requested_plate()
+guard_plate_scope(warehouse_dir, selected_plate)
+pattern = f'*/{selected_plate}_*_converted.parquet' if selected_plate else '*/*_converted.parquet'
+converted = sorted(converted_dir.glob(pattern))
 if not converted:
     raise FileNotFoundError(f'No converted profiles in {converted_dir}')
 expected = {path.name.replace('_converted.parquet', '_manifest.parquet') for path in converted}
-manifest_paths = sorted(manifest_dir.glob('*_manifest.parquet'))
+pattern = f'{selected_plate}_*_manifest.parquet' if selected_plate else '*_manifest.parquet'
+manifest_paths = sorted(manifest_dir.glob(pattern))
 if expected != {path.name for path in manifest_paths}:
     raise ValueError('Missing or stale job manifests; generate every converted-profile job first')
 

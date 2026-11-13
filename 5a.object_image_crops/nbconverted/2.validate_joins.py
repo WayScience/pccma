@@ -21,7 +21,7 @@ import pathlib
 import pandas as pd
 from crop_warehouse import (
     FINAL_PROFILE_KEY, POSITION_KEY, PATH_COLUMNS, join_crop_paths, require_unique_keys,
-    validate_crop_files, validate_profile_join, validate_sample_pixels,
+    validate_crop_files, validate_profile_join, validate_sample_pixels, requested_plate, guard_plate_scope,
 )
 from path_utils import get_root_dir
 
@@ -29,13 +29,18 @@ root_dir = get_root_dir()
 module_dir = root_dir / '5a.object_image_crops'
 warehouse_dir = pathlib.Path(os.environ.get('PCCMA_CROPS_DIR',
     str(module_dir / 'data/object_image_crops'))).expanduser().resolve()
+selected_plate = requested_plate()
+guard_plate_scope(warehouse_dir, selected_plate)
 report_path = warehouse_dir / 'validation.json'
 report_path.unlink(missing_ok=True)
 index_df = pd.read_parquet(warehouse_dir / 'crops_index.parquet')
 require_unique_keys(index_df, FINAL_PROFILE_KEY, 'Crop index')
 require_unique_keys(index_df, POSITION_KEY, 'Crop positions')
 validate_crop_files(index_df, warehouse_dir)
-report = {'cells': len(index_df), 'jpg_files': len(index_df) * len(PATH_COLUMNS)}
+if selected_plate and not index_df['Metadata_Plate'].eq(selected_plate).all():
+    raise ValueError('Index contains cells outside the requested plate scope')
+report = {'cells': len(index_df), 'jpg_files': len(index_df) * len(PATH_COLUMNS),
+          'plate_scope': selected_plate or 'all'}
 
 local = root_dir / '4.preprocess_features/data/single_cell_profiles'
 mount = pathlib.Path('~/mnt/bandicoot/PCCMA_data/Atlas_v2_profiles/single_cell_profiles').expanduser()
@@ -49,7 +54,8 @@ profile_dir = pathlib.Path(os.environ.get('PCCMA_PROFILES_DIR',
 # In[ ]:
 
 
-profile_paths = sorted(profile_dir.glob('BR*_sc_feature_selected.parquet'))
+profile_pattern = f'{selected_plate}_sc_feature_selected.parquet' if selected_plate else 'BR*_sc_feature_selected.parquet'
+profile_paths = sorted(profile_dir.glob(profile_pattern))
 if not profile_paths:
     raise FileNotFoundError(f'No CellProfiler single-cell profiles in {profile_dir}')
 profile_plates = {path.name.split('_')[0] for path in profile_paths}
@@ -70,7 +76,8 @@ report['cellprofiler'] = 'verified'
 
 
 morphem_dir = root_dir / '5.morphem_featurization/data/morphem_single_cell_profiles'
-morphem_paths = sorted(morphem_dir.glob('BR*_morphem_sc_feature_selected.parquet'))
+morphem_pattern = f'{selected_plate}_morphem_sc_feature_selected.parquet' if selected_plate else 'BR*_morphem_sc_feature_selected.parquet'
+morphem_paths = sorted(morphem_dir.glob(morphem_pattern))
 if morphem_paths:
     checked = []
     for path in morphem_paths:
@@ -87,6 +94,7 @@ else:
 
 umap_dir = root_dir / '6.profile_analysis/results/3.single_cell_embedding'
 report['umap'] = {}
+report['umap_rows_outside_scope'] = {}
 for filename in ('single_cell_umap_coordinates_by_cancer_group.parquet', 'single_cell_umap_example_cells.parquet'):
     path = umap_dir / filename
     if not path.is_file():
@@ -94,6 +102,10 @@ for filename in ('single_cell_umap_coordinates_by_cancer_group.parquet', 'single
         print(f'UMAP join skipped: {filename} unavailable')
         continue
     table = pd.read_parquet(path)
+    total_rows = len(table)
+    if selected_plate:
+        table = table.loc[table['Metadata_Plate'] == selected_plate]
+    report['umap_rows_outside_scope'][filename] = total_rows - len(table)
     joined = join_crop_paths(table, index_df)
     report['umap'][filename] = len(joined)
     print(f'UMAP {filename}: all {len(joined)} cells matched one-to-one')

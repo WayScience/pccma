@@ -27,7 +27,7 @@ from crop_warehouse import (
     CHANNELS, PATH_COLUMNS, PROFILE_KEY_COLUMNS, UMAP_KEY_COLUMNS,
     crop_id, make_cell_crops, manifest_row, read_corrected_field,
     require_unique_keys, resolve_image_path, save_cell_crops, select_passing_cells,
-    validate_crop_files,
+    validate_crop_files, requested_plate, guard_plate_scope,
 )
 from path_utils import get_root_dir
 
@@ -53,6 +53,11 @@ if not in_notebook:
     plate, cell_line, overwrite = args.plate, args.cell_line, args.overwrite
 else:
     plate, cell_line, overwrite = 'BR00150698', 'A673', False
+
+selected_plate = requested_plate()
+if selected_plate and plate != selected_plate:
+    raise ValueError(f'Job plate {plate} is outside requested scope {selected_plate}')
+guard_plate_scope(warehouse_dir, selected_plate)
 
 # Identifiers are path components, never paths supplied by a job.
 for value in (plate, cell_line):

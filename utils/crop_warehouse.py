@@ -13,6 +13,8 @@ crops, not lossless model inputs. Geometry is shared through `nucleocentric_crop
 """
 
 import io
+import os
+import re
 import pathlib
 
 import pandas as pd
@@ -398,3 +400,26 @@ def validate_sample_pixels(index: pd.DataFrame, warehouse: pathlib.Path,
                     raise ValueError(f"Wrong crop pixels: {record[column]}")
             checked += 1
     return checked
+
+
+def requested_plate() -> str | None:
+    """Return an explicit plate restriction; the unset default preserves full-atlas operation."""
+    value = os.environ.get("PCCMA_PLATE", "")
+    if value and re.fullmatch(r"BR[0-9]{8}", value) is None:
+        raise ValueError(f"Invalid PCCMA_PLATE scope: {value}")
+    return value or None
+
+
+def guard_plate_scope(warehouse: pathlib.Path, plate: str | None) -> None:
+    """Refuse to publish a single-plate index over a mixed-plate output directory."""
+    if plate is None:
+        return
+    others = [p for p in (warehouse / "manifests").glob("*_manifest.parquet")
+              if not p.name.startswith(f"{plate}_")]
+    index_path = warehouse / "crops_index.parquet"
+    if index_path.is_file():
+        existing = pd.read_parquet(index_path, columns=["Metadata_Plate"])
+        if not existing["Metadata_Plate"].eq(plate).all():
+            others.append(index_path)
+    if others:
+        raise ValueError("Plate scope requires a separate output directory; other plate outputs exist")

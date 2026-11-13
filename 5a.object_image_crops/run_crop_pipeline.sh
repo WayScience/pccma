@@ -20,7 +20,15 @@ run_python() {
 }
 
 shopt -s nullglob
-converted_files=(4.preprocess_features/data/converted_profiles/*/*_converted.parquet)
+if [ -n "${PCCMA_PLATE:-}" ]; then
+    if [[ ! "$PCCMA_PLATE" =~ ^BR[0-9]{8}$ ]]; then
+        printf 'ERROR: Invalid PCCMA_PLATE scope.\n' >&2
+        exit 1
+    fi
+    converted_files=(4.preprocess_features/data/converted_profiles/*/"${PCCMA_PLATE}"_*_converted.parquet)
+else
+    converted_files=(4.preprocess_features/data/converted_profiles/*/*_converted.parquet)
+fi
 if [ "${#converted_files[@]}" -eq 0 ]; then
     printf 'ERROR: No converted profiles found; run conversion and single-cell QC first.\n' >&2
     exit 1
