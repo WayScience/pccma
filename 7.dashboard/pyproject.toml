@@ -1,0 +1,19 @@
+[project]
+name = "pccma-dashboard"
+version = "0.1.0"
+description = "Static single-cell UMAP and crop report; independent of the compute environments"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "pandas==2.2.3",
+    "pyarrow==22.0.0",
+    "pillow==12.3.0",
+]
+
+[dependency-groups]
+dev = ["pytest==7.4.4", "playwright==1.56.0"]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

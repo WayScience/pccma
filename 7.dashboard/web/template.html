@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>PCCMA · Single-cell atlas</title>
+<style>__REPORT_CSS__</style>
+</head>
+<body>
+<a class="skip-link" href="#plot">Skip to UMAP plot</a>
+<header class="page-header">
+  <div><p class="eyebrow">PCCMA / single-plate explorer</p><h1><a href="https://github.com/WayScience/pccma" target="_blank" rel="noopener noreferrer">Single-cell morphology <span aria-hidden="true">↗</span></a></h1><p id="plate-label" class="subtitle">Loading plate metadata…</p></div>
+  <div id="summary" class="summary" aria-label="Dataset summary"></div>
+</header>
+<main>
+  <div id="error-banner" class="banner error" role="alert" hidden></div>
+  <div id="image-warning" class="banner warning" role="status" hidden></div>
+  <div class="workspace">
+    <section class="plot-panel" aria-label="UMAP explorer">
+      <div class="toolbar">
+        <label>Cancer group<select id="group-select" aria-label="Cancer group"></select></label>
+        <label>Color by<select id="color-select" aria-label="Color by"><option value="line">Cell line</option><option value="cluster">Cluster</option><option value="well">Well</option></select></label>
+        <div class="zoom-controls" role="group" aria-label="Plot view"><button id="zoom-out" type="button" aria-label="Zoom out">−</button><output id="zoom-label" aria-label="Zoom level">100%</output><button id="zoom-in" type="button" aria-label="Zoom in">+</button><button id="reset-view" type="button">Reset view</button></div>
+      </div>
+      <div class="plot-heading"><h2 id="group-title">UMAP</h2><p id="plot-count" role="status" aria-live="polite"></p></div>
+      <div id="plot-wrap" class="plot-wrap">
+        <canvas id="plot" tabindex="0" role="img" aria-label="UMAP scatter plot. Hover to preview a cell; click or tap to pin. Use left and right arrows to select cells; plus and minus to zoom." aria-describedby="plot-help"></canvas>
+        <p id="empty-state" class="empty-state" hidden></p>
+        <span class="axis-label axis-x" aria-hidden="true">UMAP 1</span><span class="axis-label axis-y" aria-hidden="true">UMAP 2</span>
+        <span id="plot-annotation" class="plot-annotation" aria-hidden="true">Independent embedding</span>
+      </div>
+      <div class="plot-footer"><p id="plot-help">Hover to preview · click/tap to pin · drag to pan · scroll to zoom · ← / → to select</p><p class="microcopy">One cancer group at a time. Distances between groups are not comparable.</p></div>
+      <div class="legend-heading"><h3 id="legend-title">Cell lines</h3><span>Click a category to hide or show it</span></div>
+      <div id="legend" class="legend" aria-labelledby="legend-title"></div>
+    </section>
+    <aside id="inspector" class="inspector" aria-labelledby="inspector-title">
+      <div class="inspector-heading"><div><p class="eyebrow">Cell inspector</p><h2 id="inspector-title">Point preview</h2></div><span id="pin-status" class="badge">Unpinned</span></div>
+      <p id="inspector-hint" class="inspector-hint">Hover a point to inspect its extracted cell crop. Click or tap to keep it here.</p>
+      <div class="cell-navigation" role="group" aria-label="Cell navigation"><button id="previous-cell" type="button" aria-label="Previous visible cell">← Previous</button><button id="next-cell" type="button" aria-label="Next visible cell">Next →</button><button id="unpin-cell" type="button" disabled>Unpin</button></div>
+      <p id="cell-id" class="cell-id">No cell selected</p>
+      <dl id="cell-metadata" class="metadata"></dl>
+      <div id="crop-area" class="crop-area"><p class="crop-placeholder">Select a cell to view its images.</p></div>
+      <div class="channel-controls"><label>Grayscale channels<select id="channel-select" aria-label="Grayscale channels"><option value="all">All five channels</option><option value="DNA">DNA</option><option value="ER">ER</option><option value="RNA">RNA</option><option value="AGP">AGP</option><option value="Mito">Mito</option></select></label></div>
+      <p class="microcopy crop-note">224 × 224 px crops · JPEG quality 95 visual derivatives, not quantitative intensity measurements.</p>
+    </aside>
+  </div>
+  <details class="provenance"><summary>Data provenance &amp; interpretation</summary><div class="provenance-body"><p>This is a single-plate subset of the existing all-timepoint UMAP, not an embedding refit on the selected plate. Original UMAP coordinates were computed independently within each cancer group across nine plates. Distances across cancer-group UMAPs are not comparable.</p><p>The published sampling selected 500 cells per cell line per plate after QC. Only exact crop-key matches for this plate are displayed; no other-plate or background points are included.</p><dl id="provenance-metadata" class="provenance-metadata"></dl></div></details>
+</main>
+<footer class="page-footer">Data: <a href="https://github.com/WayScience/pccma" target="_blank" rel="noopener noreferrer">PCCMA</a> · Methods: <a href="https://doi.org/10.1038/nprot.2016.105" target="_blank" rel="noopener noreferrer">Cell Painting</a>, <a href="https://doi.org/10.21105/joss.00861" target="_blank" rel="noopener noreferrer">UMAP</a> · Existing coordinates linked to extracted cells.</footer>
+<noscript><p class="banner error">JavaScript is required to draw this static dashboard. No network connection is needed after downloading the report and its bundled crop assets.</p></noscript>
+<script type="application/json" id="report-data">__REPORT_DATA__</script>
+<script>__REPORT_JS__</script>
+</body>
+</html>
