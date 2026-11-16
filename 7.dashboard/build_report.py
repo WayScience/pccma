@@ -11,6 +11,7 @@ import math
 import re
 import shutil
 
+import duckdb
 import pandas as pd
 from PIL import Image
 
@@ -104,6 +105,7 @@ def prepare_data(umap, index, *, plate, run_id):
             "id": identifier, "line": row["Metadata_cell_line"], "group": row["cancer_group"],
             "tissue": row["tissue_site"], "well": row["Metadata_Well"],
             "site": int(row["Metadata_Site"]), "cell": int(row["Metadata_Cells_Number_Object_Number"]),
+            "image": int(row["Metadata_ImageNumber"]),
             "nucleus": int(row["Metadata_Nuclei_Number_Object_Number"]),
             "time": int(row["Metadata_time_point"]), "cluster": int(row["cluster"]),
             "x": row["umap_1"], "y": row["umap_2"],
@@ -116,7 +118,8 @@ def prepare_data(umap, index, *, plate, run_id):
                     "excluded_umap_rows": len(umap) - len(selected),
                     "cell_lines": selected.Metadata_cell_line.nunique(),
                     "cancer_groups": selected.cancer_group.nunique(),
-                    "crop_size": int(crops.Metadata_Nucleocentric_Crop_Size.iloc[0])},
+                    "crop_size": int(crops.Metadata_Nucleocentric_Crop_Size.iloc[0]),
+                    "timepoints": sorted({int(value) for value in selected.Metadata_time_point})},
         "sources": {"qc": "Inherited published post-QC membership; QC not recalculated."},
         "images": {"status": "bundled", "message": "Original warehouse JPEGs.", "channels": CHANNELS},
         "points": points,
@@ -127,6 +130,123 @@ def sha256(path):
     """Hash a source file without retaining its local/private absolute path."""
     with Path(path).open("rb") as stream:
         return hashlib.file_digest(stream, "sha256").hexdigest()
+
+
+def build_catalog(bundle, payload, assets):
+    """Write a self-contained native DuckDB catalog for exactly the plotted cells.
+
+    JPEGs stay separate; image_assets.path is an unescaped POSIX filesystem path
+    relative to the bundle root (NOT relative to data/). report_metadata values
+    are JSON, with source basenames/checksums but no input directory paths.
+    Diagnostic coordinate-only reports deliberately do not call this function.
+    """
+    points = payload["points"]
+    if (payload["images"]["status"] != "bundled" or not points
+            or len(points) != payload["summary"]["umap_cells"]):
+        raise ValueError("Catalog requires a complete plotted-cell bundle")
+    by_path = {asset["path"]: asset for asset in assets}
+    if len(by_path) != len(assets) or len(assets) != len(points) * len(CHANNELS):
+        raise ValueError("Catalog asset count or uniqueness mismatch")
+    cell_columns = ["cell_id", "plate", "run_id", "cell_line", "cancer_group", "tissue_site",
+                    "well", "site", "image_number", "cell_number", "nucleus_number",
+                    "time_point", "cluster", "umap_1", "umap_2", "center_x", "center_y"]
+    cells, images = [], []
+    for point in points:
+        if set(point["images"]) != set(CHANNELS):
+            raise ValueError("Catalog cell is missing expected channels")
+        cells.append((point["id"], payload["plate"], payload["run_id"], point["line"],
+                      point["group"], point["tissue"], point["well"], point["site"],
+                      point["image"], point["cell"], point["nucleus"], point["time"],
+                      point["cluster"], point["x"], point["y"], point["cx"], point["cy"]))
+        for channel in CHANNELS:
+            path = unquote(point["images"][channel])
+            relative_crop_path(path.removeprefix("assets/"))
+            asset = by_path.get(path)
+            if (not path.startswith("assets/") or asset is None
+                    or not isinstance(asset["bytes"], int) or asset["bytes"] <= 0
+                    or not re.fullmatch(r"[0-9a-f]{64}", asset["sha256"])):
+                raise ValueError("Catalog asset path, size or checksum mismatch")
+            images.append((point["id"], channel, path, asset["bytes"], asset["sha256"]))
+    if {row[2] for row in images} != set(by_path):
+        raise ValueError("Catalog includes assets outside the plotted cells")
+    metadata = {
+        "schema_version": 1, "scope": "plotted_pilot_cells_only",
+        "plate": payload["plate"], "run_id": payload["run_id"],
+        "summary": payload["summary"], "sources": payload["sources"],
+        "channels": CHANNELS, "images": payload["images"],
+        "path_base": "bundle_root", "duckdb_version": duckdb.__version__,
+    }
+    metadata_rows = [(key, json.dumps(value, sort_keys=True, allow_nan=False))
+                     for key, value in metadata.items()]
+    path = Path(bundle) / "data" / "pilot.duckdb"
+    path.parent.mkdir()
+    # Explicit schemas/constraints, not inferred float32 or blob-backed images.
+    with duckdb.connect(str(path)) as connection:
+        connection.execute("""
+            CREATE TABLE cells (
+                cell_id VARCHAR PRIMARY KEY, plate VARCHAR NOT NULL, run_id VARCHAR NOT NULL,
+                cell_line VARCHAR NOT NULL, cancer_group VARCHAR NOT NULL, tissue_site VARCHAR NOT NULL,
+                well VARCHAR NOT NULL, site BIGINT NOT NULL CHECK (site > 0),
+                image_number BIGINT NOT NULL CHECK (image_number > 0),
+                cell_number BIGINT NOT NULL CHECK (cell_number > 0),
+                nucleus_number BIGINT NOT NULL CHECK (nucleus_number > 0),
+                time_point BIGINT NOT NULL CHECK (time_point > 0),
+                cluster BIGINT NOT NULL CHECK (cluster > 0),
+                umap_1 DOUBLE NOT NULL CHECK (isfinite(umap_1)),
+                umap_2 DOUBLE NOT NULL CHECK (isfinite(umap_2)),
+                center_x DOUBLE NOT NULL CHECK (isfinite(center_x)),
+                center_y DOUBLE NOT NULL CHECK (isfinite(center_y))
+            )
+        """).fetchall()
+        connection.execute("""
+            CREATE TABLE image_assets (
+                cell_id VARCHAR NOT NULL REFERENCES cells(cell_id),
+                channel VARCHAR NOT NULL CHECK (channel IN ('composite', 'DNA', 'ER', 'RNA', 'AGP', 'Mito')),
+                path VARCHAR NOT NULL UNIQUE, bytes BIGINT NOT NULL CHECK (bytes > 0),
+                sha256 VARCHAR NOT NULL CHECK (regexp_full_match(sha256, '[0-9a-f]{64}')),
+                PRIMARY KEY (cell_id, channel)
+            )
+        """).fetchall()
+        connection.execute("CREATE TABLE report_metadata (key VARCHAR PRIMARY KEY, value JSON NOT NULL)").fetchall()
+        for name, columns, rows in [
+            ("cells", cell_columns, cells),
+            ("image_assets", ["cell_id", "channel", "path", "bytes", "sha256"], images),
+            ("report_metadata", ["key", "value"], metadata_rows),
+        ]:
+            connection.register("catalog_input", pd.DataFrame(rows, columns=columns))
+            connection.execute(f"INSERT INTO {name} SELECT * FROM catalog_input").fetchall()
+            connection.unregister("catalog_input")
+        connection.execute("CHECKPOINT").fetchall()
+    # Reopen the persisted artifact read-only, comparing full values as well as
+    # counts and FK coverage. A successful INSERT alone is not verification.
+    with duckdb.connect(str(path), read_only=True) as connection:
+        counts = {name: connection.execute(f"SELECT count(*) FROM {name}").fetchall()[0][0]
+                  for name in ("cells", "image_assets", "report_metadata")}
+        if counts != {"cells": len(cells), "image_assets": len(images), "report_metadata": len(metadata_rows)}:
+            raise ValueError("Catalog read-back row count mismatch")
+        if connection.execute("SELECT * FROM cells ORDER BY cell_id").fetchall() != sorted(cells):
+            raise ValueError("Catalog read-back cell values differ")
+        if connection.execute("SELECT * FROM image_assets ORDER BY cell_id, channel").fetchall() != sorted(images):
+            raise ValueError("Catalog read-back image values differ")
+        actual_metadata = {key: json.loads(value) for key, value in
+                           connection.execute("SELECT * FROM report_metadata").fetchall()}
+        if actual_metadata != metadata:
+            raise ValueError("Catalog read-back provenance differs")
+        orphans = connection.execute("""
+            SELECT count(*) FROM image_assets a LEFT JOIN cells c USING (cell_id)
+            WHERE c.cell_id IS NULL
+        """).fetchall()[0][0]
+        incomplete = connection.execute("""
+            SELECT c.cell_id FROM cells c LEFT JOIN image_assets a USING (cell_id)
+            GROUP BY c.cell_id HAVING count(a.channel) <> ?
+        """, [len(CHANNELS)]).fetchall()
+        if orphans or incomplete:
+            raise ValueError("Catalog read-back referential integrity mismatch")
+    if Path(str(path) + ".wal").exists():
+        raise ValueError("Catalog is not self-contained: unexpected write-ahead log")
+    return {"status": "bundled", "path": path.relative_to(bundle).as_posix(),
+            "bytes": path.stat().st_size, "sha256": sha256(path), "tables": counts,
+            "schema_version": 1, "path_base": "bundle_root"}
 
 
 def build_report(*, umap_path, index_path, warehouse, output, plate, run_id,
@@ -185,6 +305,9 @@ def build_report(*, umap_path, index_path, warehouse, output, plate, run_id,
                 assets.append({"path": f"assets/{relative}", "sha256": digest, "bytes": len(data)})
         payload["images"]["files"] = len(assets)
         payload["images"]["bytes"] = sum(asset["bytes"] for asset in assets)
+        payload["catalog"] = (build_catalog(staging, payload, assets) if available else {
+            "status": "omitted", "reason": "Coordinate-only diagnostic; no complete image-asset catalog."
+        })
         web_dir = Path(web_dir) if web_dir else Path(__file__).parent / "web"
         template = (web_dir / "template.html").read_text()
         # Escape data for an HTML script raw-text element, not merely for JSON.
@@ -200,12 +323,12 @@ def build_report(*, umap_path, index_path, warehouse, output, plate, run_id,
         (staging / ".nojekyll").touch()
         manifest = {"schema_version": 1, "plate": plate, "run_id": run_id,
                     "sources": payload["sources"], "summary": payload["summary"],
-                    "images": payload["images"], "assets": assets,
+                    "images": payload["images"], "catalog": payload["catalog"], "assets": assets,
                     "index_sha256": sha256(staging / "index.html"),
                     "code_sha256": {p.name: sha256(p) for p in [Path(__file__),
                         web_dir / "template.html", web_dir / "style.css", web_dir / "app.js"]}}
         (staging / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
-        total_bytes = payload["images"]["bytes"] + (staging / "index.html").stat().st_size + (staging / "manifest.json").stat().st_size
+        total_bytes = sum(path.stat().st_size for path in staging.rglob("*") if path.is_file())
         if total_bytes > MAX_SITE_BYTES:
             raise ValueError(f"Static site exceeds size budget: {total_bytes} > {MAX_SITE_BYTES} bytes")
         if output.exists():
@@ -235,10 +358,10 @@ def main(argv=None):
                                warehouse=args.warehouse, output=args.output, plate=args.plate,
                                run_id=args.run_id, allow_missing_images=args.allow_missing_images,
                                web_dir=args.web_dir)
-    except (ValueError, OSError, KeyError, TypeError) as error:
+    except (ValueError, OSError, KeyError, TypeError, duckdb.Error) as error:
         parser.exit(1, f"Report build failed: {error}\n")
     print(json.dumps({"output": str(args.output.resolve()), "summary": payload["summary"],
-                      "images": payload["images"]}, indent=2))
+                      "images": payload["images"], "catalog": payload["catalog"]}, indent=2))
     return 0
 
 

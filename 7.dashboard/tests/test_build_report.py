@@ -5,7 +5,9 @@ import hashlib
 import json
 import re
 from pathlib import Path
+from urllib.parse import unquote
 
+import duckdb
 from PIL import Image
 import pandas as pd
 import pytest
@@ -52,6 +54,7 @@ def test_exact_join_scopes_plate_and_preserves_coordinates(tables):
     report = builder().prepare_data(umap, index, plate="P1", run_id="pilot")
     assert report["summary"]["umap_cells"] == 1
     assert report["summary"]["excluded_umap_rows"] == 1
+    assert report["summary"]["timepoints"] == [24]
     point = report["points"][0]
     assert point["cx"] == 12.1234567890123
     assert point["id"] == "P1_C03_f01_nuc0003_cell0002"
@@ -172,6 +175,11 @@ def test_unavailable_warehouse_requires_explicit_diagnostic_opt_in(build_inputs)
     payload = builder().build_report(**build_inputs, allow_missing_images=True)
     assert payload["images"]["status"] == "unavailable"
     assert payload["images"]["files"] == 0
+    assert payload["catalog"]["status"] == "omitted"
+    assert "diagnostic" in payload["catalog"]["reason"]
+    manifest = json.loads((build_inputs["output"] / "manifest.json").read_text())
+    assert manifest["catalog"] == payload["catalog"]
+    assert not (build_inputs["output"] / "data").exists()
     assert all(point["images"] == {} for point in payload["points"])
     assert not (build_inputs["output"] / "assets").exists()
 
@@ -231,5 +239,141 @@ def test_oversized_static_site_fails_before_publication(build_inputs, monkeypatc
     with pytest.raises(ValueError, match="size budget"):
         module.build_report(**build_inputs)
     assert not build_inputs["output"].exists()
+
+
+def test_native_catalog_contains_only_plotted_cells_and_complete_asset_links(build_inputs):
+    module = builder()
+    # A warehouse row with no plotted UMAP point must not be packaged, nor
+    # should its deliberately absent JPEGs be needed to build the pilot.
+    index = pd.read_parquet(build_inputs["index_path"])
+    unplotted = index.copy()
+    unplotted["Metadata_Nuclei_Location_Center_X"] = 900.0
+    unplotted["Metadata_Nuclei_Number_Object_Number"] = 9
+    unplotted["Metadata_Cells_Number_Object_Number"] = 8
+    for column in module.PATH_COLUMNS.values():
+        unplotted[column] = unplotted[column].str.replace("nuc0003_cell0002", "nuc0009_cell0008")
+    pd.concat([index, unplotted], ignore_index=True).to_parquet(build_inputs["index_path"])
+    payload = module.build_report(**build_inputs)
+    site = build_inputs["output"]
+    catalog = site / "data/pilot.duckdb"
+    manifest = json.loads((site / "manifest.json").read_text())
+    entry = manifest["catalog"]
+    assert entry == payload["catalog"]
+    assert entry["path"] == "data/pilot.duckdb"
+    assert entry["bytes"] == catalog.stat().st_size > 0
+    assert entry["sha256"] == hashlib.sha256(catalog.read_bytes()).hexdigest()
+    assert entry["tables"] == {"cells": 1, "image_assets": 6, "report_metadata": 10}
+    assert entry["path_base"] == "bundle_root"
+    assert not catalog.with_suffix(".duckdb.wal").exists()
+    assert str(build_inputs["warehouse"]).encode() not in catalog.read_bytes()
+    assert str(build_inputs["umap_path"].parent).encode() not in catalog.read_bytes()
+    with duckdb.connect(str(catalog), read_only=True) as connection:
+        assert connection.execute("SHOW TABLES").fetchall() == [
+            ("cells",), ("image_assets",), ("report_metadata",)]
+        columns = dict(connection.execute("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'cells'").fetchall())
+        assert columns == {
+            "cell_id": "VARCHAR", "plate": "VARCHAR", "run_id": "VARCHAR", "cell_line": "VARCHAR",
+            "cancer_group": "VARCHAR", "tissue_site": "VARCHAR", "well": "VARCHAR", "site": "BIGINT",
+            "image_number": "BIGINT", "cell_number": "BIGINT", "nucleus_number": "BIGINT",
+            "time_point": "BIGINT", "cluster": "BIGINT", "umap_1": "DOUBLE", "umap_2": "DOUBLE",
+            "center_x": "DOUBLE", "center_y": "DOUBLE",
+        }
+        assert connection.execute("SELECT * FROM cells").fetchall() == [(
+            "P1_C03_f01_nuc0003_cell0002", "P1", "pilot", "DAOY", "Medulloblastoma",
+            "Central nervous system", "C03", 1, 7, 2, 3, 24, 2,
+            1.25, -2.5, 12.1234567890123, 24.5)]
+        rows = connection.execute("SELECT cell_id, channel, path, bytes, sha256 FROM image_assets").fetchall()
+        assert len(rows) == 6
+        assert {row[1] for row in rows} == set(module.CHANNELS)
+        for cell_id, channel, path, size, digest in rows:
+            assert cell_id == payload["points"][0]["id"]
+            assert path == unquote(payload["points"][0]["images"][channel])
+            data = (site / path).read_bytes()
+            assert len(data) == size
+            assert hashlib.sha256(data).hexdigest() == digest
+        assert connection.execute("SELECT count(*) FROM image_assets ANTI JOIN cells USING (cell_id)").fetchall() == [(0,)]
+        metadata = {key: json.loads(value) for key, value in connection.execute("SELECT * FROM report_metadata").fetchall()}
+        assert metadata["scope"] == "plotted_pilot_cells_only"
+        assert metadata["summary"] == payload["summary"]
+        assert metadata["summary"]["warehouse_cells"] == 2
+        assert metadata["summary"]["umap_cells"] == 1
+        assert metadata["sources"] == payload["sources"]
+        assert metadata["path_base"] == "bundle_root"
+        assert metadata["duckdb_version"] == duckdb.__version__ == "1.4.5"
+        assert not connection.execute("SELECT 1 FROM information_schema.columns WHERE data_type = 'BLOB'").fetchall()
+        with pytest.raises(duckdb.InvalidInputException, match="read-only"):
+            connection.execute("DELETE FROM report_metadata").fetchall()
+
+
+def test_catalog_paths_are_bundle_relative_not_url_escaped(build_inputs):
+    index = pd.read_parquet(build_inputs["index_path"])
+    for column in builder().PATH_COLUMNS.values():
+        old = build_inputs["warehouse"] / index.loc[0, column]
+        index.loc[0, column] = index.loc[0, column].replace("DAOY/", "DAOY #µ%/")
+        new = build_inputs["warehouse"] / index.loc[0, column]
+        new.parent.mkdir(parents=True, exist_ok=True)
+        old.rename(new)
+    index.to_parquet(build_inputs["index_path"])
+    payload = builder().build_report(**build_inputs)
+    assert "%20%23%C2%B5%25" in payload["points"][0]["images"]["DNA"]
+    with duckdb.connect(str(build_inputs["output"] / payload["catalog"]["path"]), read_only=True) as connection:
+        paths = connection.execute("SELECT path FROM image_assets").fetchall()
+    assert all("DAOY #µ%/" in path for (path,) in paths)
+    assert all((build_inputs["output"] / path).is_file() for (path,) in paths)
+
+
+@pytest.mark.parametrize("statement", [
+    "INSERT INTO image_assets SELECT 'missing-cell', channel, 'assets/crops/other.jpg', bytes, sha256 FROM image_assets LIMIT 1",
+    "INSERT INTO image_assets SELECT * FROM image_assets LIMIT 1",
+    "UPDATE cells SET umap_1 = 'NaN'::DOUBLE",
+    "UPDATE image_assets SET sha256 = 'not-a-sha256'",
+])
+def test_catalog_native_constraints_are_enforced(build_inputs, statement):
+    payload = builder().build_report(**build_inputs)
+    with duckdb.connect(str(build_inputs["output"] / payload["catalog"]["path"])) as connection:
+        with pytest.raises(duckdb.ConstraintException):
+            connection.execute(statement).fetchall()
+
+
+@pytest.mark.parametrize("corruption", [
+    "UPDATE cells SET umap_1 = 42.0",
+    "DELETE FROM image_assets WHERE channel = 'DNA'",
+    "UPDATE image_assets SET bytes = bytes + 1 WHERE channel = 'DNA'",
+    "UPDATE report_metadata SET value = '\"wrong\"' WHERE key = 'scope'",
+])
+def test_catalog_readonly_readback_rejects_persisted_corruption(build_inputs, monkeypatch, corruption):
+    module = builder()
+    native_connect = duckdb.connect
+    reads = []
+
+    def connect(database, **kwargs):
+        if kwargs.get("read_only"):
+            reads.append(database)
+            with native_connect(database) as connection:
+                connection.execute(corruption).fetchall()
+        return native_connect(database, **kwargs)
+
+    monkeypatch.setattr(module.duckdb, "connect", connect)
+    with pytest.raises(ValueError, match="Catalog read-back"):
+        module.build_report(**build_inputs)
+    assert len(reads) == 1
+    assert not build_inputs["output"].exists()
+    assert not build_inputs["output"].with_name(".site.partial").exists()
+
+
+def test_catalog_bytes_count_toward_entire_site_budget(build_inputs, monkeypatch):
+    module = builder()
+    payload = module.build_report(**build_inputs)
+    site = build_inputs["output"]
+    measured_bytes = sum(path.stat().st_size for path in site.rglob("*") if path.is_file())
+    noncatalog_bytes = measured_bytes - payload["catalog"]["bytes"]
+    assert measured_bytes < module.MAX_SITE_BYTES
+    # This permits every HTML/JPEG/manifest byte, but not the DuckDB file.
+    monkeypatch.setattr(module, "MAX_SITE_BYTES", noncatalog_bytes)
+    build_inputs["output"] = site.with_name("too-large")
+    with pytest.raises(ValueError, match="size budget"):
+        module.build_report(**build_inputs)
+    assert not build_inputs["output"].exists()
+    assert not site.with_name(".too-large.partial").exists()
 
 

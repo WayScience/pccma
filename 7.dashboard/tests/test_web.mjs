@@ -96,6 +96,61 @@ test('image slots clear stale pixels immediately and ignore late completions', (
   update('assets/crops/../../bad.jpg', 'traversal');
   assert.equal(requested.length, 2);
 });
+test('channel mix slot mixes grayscale layers, rejects incomplete selections and ignores stale loads', async () => {
+  assert.equal(typeof app.createChannelMixSlot, 'function');
+  const requested = [];
+  function makeElement(tag) {
+    const element = { tagName: tag, textContent: '', attrs: {} };
+    element.setAttribute = (key, value) => { element.attrs[key] = String(value); };
+    element.getAttribute = key => element.attrs[key];
+    if (tag === 'img') Object.defineProperty(element, 'src', { set(value) { requested.push(element); element.url = value; } });
+    if (tag === 'canvas') element.getContext = () => new Proxy({}, { get: (t, k) => t[k] || (() => {}), set: (t, k, v) => { t[k] = v; return true; } });
+    return element;
+  }
+  const document = { createElement: makeElement };
+  const container = { children: [], replaceChildren(...children) { this.children = children; } };
+  const update = app.createChannelMixSlot(document, container);
+  // No channels selected: a clear placeholder, no network request at all.
+  update({ type: 'none' }, 'nothing');
+  assert.match(container.children[0].textContent, /select at least one channel/i);
+  assert.equal(requested.length, 0);
+  // A subset: live-mixed on a canvas once every selected channel has loaded.
+  update({ type: 'mix', layers: [
+    { path: 'assets/crops/a.DNA.jpg', color: '#4d7cff' },
+    { path: 'assets/crops/a.ER.jpg', color: '#3ad6b0' },
+  ] }, 'DNA + ER mix');
+  assert.equal(requested.length, 2);
+  assert.match(container.children[0].textContent, /Loading/);
+  requested[0].onload();
+  requested[1].onload();
+  await Promise.resolve(); await Promise.resolve();
+  assert.equal(container.children[0].tagName, 'canvas');
+  assert.equal(container.children[0].getAttribute('role'), 'img');
+  assert.equal(container.children[0].getAttribute('aria-label'), 'DNA + ER mix');
+  // A failed selected channel is explicit, never silently omitted from the mix.
+  update({ type: 'mix', layers: [
+    { path: 'assets/crops/a.DNA.jpg', color: '#4d7cff' },
+    { path: 'assets/crops/a.ER.jpg', color: '#3ad6b0' },
+  ] }, 'partial mix');
+  requested[2].onload();
+  requested[3].onerror();
+  await Promise.resolve(); await Promise.resolve();
+  assert.match(container.children[0].textContent, /every selected channel/);
+  // Every selected channel fails: a clear error, not a blank canvas.
+  update({ type: 'mix', layers: [{ path: 'assets/crops/a.DNA.jpg', color: '#4d7cff' }] }, 'all missing');
+  requested[4].onerror();
+  await Promise.resolve(); await Promise.resolve();
+  assert.match(container.children[0].textContent, /could not be loaded/i);
+  // Unsafe paths never reach the network, even inside a mix.
+  update({ type: 'mix', layers: [{ path: 'https://example.invalid/x.jpg', color: '#fff' }] }, 'unsafe');
+  assert.equal(requested.length, 5);
+  assert.match(container.children[0].textContent, /unavailable/i);
+  update({ type: 'mix', layers: [{ path: 'assets/crops/old.DNA.jpg', color: '#4d7cff' }] }, 'old cell');
+  update({ type: 'none' }, 'new selection');
+  requested[5].onload();
+  await Promise.resolve(); await Promise.resolve();
+  assert.match(container.children[0].textContent, /Select at least one/);
+});
 test('static template inlines exactly one of each build placeholder without external dependencies', () => {
   const templatePath = new URL('../web/template.html', import.meta.url);
   assert.ok(existsSync(templatePath), 'template.html must exist');
@@ -131,16 +186,30 @@ function fixture(report) {
   const html = readFileSync(new URL('../web/template.html', import.meta.url), 'utf8');
   const elements = new Map([...html.matchAll(/id="([^"]+)"/g)].map(([, id]) => [id, new Element(id === 'plot' ? 'canvas' : 'div')]));
   elements.get('report-data').textContent = typeof report === 'string' ? report : JSON.stringify(report);
-  elements.get('channel-select').value = 'all';
+  for (const channel of ['DNA', 'ER', 'RNA', 'AGP', 'Mito']) elements.get('channel-toggle-' + channel).checked = true;
   elements.get('image-warning').hidden = true;
   elements.get('error-banner').hidden = true;
-  const document = { getElementById: id => elements.get(id), createElement: tag => new Element(tag) };
+  const document = {
+    getElementById: id => elements.get(id), createElement: tag => new Element(tag),
+    createElementNS: (namespace, tag) => { const node = new Element(tag); node.namespaceURI = namespace; return node; },
+  };
   const window = { devicePixelRatio: 2, addEventListener() {} };
   return { elements, document, window, imageRequests };
 }
+// Sets the final checked state of every channel checkbox, firing one 'change'
+// event — mirrors a user settling on a selection after a few clicks.
+function setChannels(f, names) {
+  let last = null;
+  for (const channel of ['DNA', 'ER', 'RNA', 'AGP', 'Mito']) {
+    const box = f.elements.get('channel-toggle-' + channel);
+    box.checked = names.includes(channel);
+    last = box;
+  }
+  last.emit('change');
+}
 const reportFixture = {
   schema_version: 1, plate: 'BR00150695', run_id: 'test-run',
-  summary: { warehouse_cells: 3, umap_cells: 3, excluded_umap_rows: 0, cell_lines: 3, cancer_groups: 2, crop_size: 224 },
+  summary: { warehouse_cells: 3, umap_cells: 3, excluded_umap_rows: 0, cell_lines: 3, cancer_groups: 2, crop_size: 224, timepoints: [24] },
   sources: { umap: { name: 'umap.parquet', sha256: '123' }, crop_index: { name: 'crops_index.parquet', sha256: '456' }, qc: 'Inherited QC.' },
   images: { status: 'unavailable', message: 'Warehouse unavailable.', channels: ['composite', 'DNA', 'ER', 'RNA', 'AGP', 'Mito'] },
   points: points.map(point => ({ ...point, tissue: 'test tissue', site: 1, cell: 2, nucleus: 3, time: 24, cx: 1.25, cy: 2.5, images: {} })),
@@ -177,6 +246,76 @@ test('mounted dashboard initializes the first group, genuine pointer hover/pin a
   f.elements.get('unpin-cell').emit('click');
   assert.equal(api.selectedPoint, null);
 });
+test('plate header and provenance mention the plate timepoint', () => {
+  const f = fixture(reportFixture);
+  app.mountDashboard(f.document, f.window);
+  assert.match(f.elements.get('plate-label').textContent, /Timepoint 24 h/);
+  const provenance = f.elements.get('provenance-metadata');
+  const labels = provenance.children.filter((_, i) => i % 2 === 0).map(node => node.textContent);
+  const values = provenance.children.filter((_, i) => i % 2 === 1).map(node => node.textContent);
+  assert.equal(values[labels.indexOf('Timepoint(s)')], '24 h');
+  const multi = fixture({ ...reportFixture, summary: { ...reportFixture.summary, timepoints: [24, 48] } });
+  app.mountDashboard(multi.document, multi.window);
+  assert.match(multi.elements.get('plate-label').textContent, /Timepoints 24, 48 h/);
+});
+test('the channel checkboxes drive both hover and pinned mixes', () => {
+  const bundled = structuredClone(reportFixture);
+  bundled.images.status = 'bundled';
+  bundled.points[0].images = Object.fromEntries(['composite', 'DNA', 'ER', 'RNA', 'AGP', 'Mito'].map(channel => [channel, 'assets/crops/a.' + channel + '.jpg']));
+  const f = fixture(bundled);
+  const api = app.mountDashboard(f.document, f.window);
+  const target = api.projection.forward(points[0]);
+  const canvas = f.elements.get('plot');
+  canvas.emit('pointermove', { clientX: target.x, clientY: target.y, pointerType: 'mouse' });
+  assert.equal(api.hoveredPoint.id, 'a');
+  assert.equal(f.elements.get('hover-preview').hidden, false);
+  assert.equal(f.imageRequests.at(-1).url, 'assets/crops/a.Mito.jpg');
+  setChannels(f, ['DNA']);
+  assert.equal(f.imageRequests.at(-1).url, 'assets/crops/a.DNA.jpg');
+  assert.match(f.elements.get('hover-preview-title').textContent, /DNA/);
+  assert.equal(f.elements.get('crop-area').children.length, 2, 'the pinned/hover crop grid follows the same channel choice');
+});
+test('hovering a different cell still floats a comparison preview while one is pinned', () => {
+  const bundled = structuredClone(reportFixture);
+  bundled.images.status = 'bundled';
+  for (const [id, point] of [['a', bundled.points[0]], ['b', bundled.points[1]]]) {
+    point.images = Object.fromEntries(['composite', 'DNA', 'ER', 'RNA', 'AGP', 'Mito'].map(channel => [channel, `assets/crops/${id}.${channel}.jpg`]));
+  }
+  const f = fixture(bundled);
+  const api = app.mountDashboard(f.document, f.window);
+  const canvas = f.elements.get('plot');
+  const atA = api.projection.forward(points[0]);
+  canvas.emit('pointerdown', { clientX: atA.x, clientY: atA.y, pointerId: 1, button: 0 });
+  canvas.emit('pointerup', { clientX: atA.x, clientY: atA.y, pointerId: 1 });
+  assert.equal(api.selectedPoint.id, 'a');
+  // Hovering the pinned cell itself adds nothing new; the floating preview stays hidden.
+  canvas.emit('pointermove', { clientX: atA.x, clientY: atA.y, pointerType: 'mouse' });
+  assert.equal(f.elements.get('hover-preview').hidden, true);
+  // Hovering a different cell while pinned still floats its crop for comparison.
+  const atB = api.projection.forward(points[1]);
+  canvas.emit('pointermove', { clientX: atB.x, clientY: atB.y, pointerType: 'mouse' });
+  assert.equal(f.elements.get('hover-preview').hidden, false);
+  assert.equal(f.imageRequests.at(-1).url, 'assets/crops/b.Mito.jpg');
+  // The pinned inspector below still shows the pinned cell, not the hovered one.
+  assert.equal(f.elements.get('cell-id').textContent, 'a');
+});
+test('any subset including all five mixes live; empty selection has a clear placeholder', () => {
+  const bundled = structuredClone(reportFixture);
+  bundled.images.status = 'bundled';
+  bundled.points[0].images = Object.fromEntries(['composite', 'DNA', 'ER', 'RNA', 'AGP', 'Mito'].map(channel => [channel, 'assets/crops/a.' + channel + '.jpg']));
+  const f = fixture(bundled);
+  const api = app.mountDashboard(f.document, f.window);
+  api.hoverPoint('a');
+  assert.equal(f.elements.get('crop-area').children[0].children[0].textContent, 'Live mix · DNA + ER + RNA + AGP + Mito');
+  assert.equal(f.elements.get('crop-area').children.length, 6, 'main mix figure + all 5 channel thumbnails');
+  setChannels(f, ['DNA', 'Mito']);
+  assert.equal(f.elements.get('crop-area').children[0].children[0].textContent, 'Live mix · DNA + Mito');
+  assert.equal(f.elements.get('crop-area').children.length, 3, 'main mix figure + only the 2 picked channel thumbnails');
+  assert.deepEqual(f.elements.get('crop-area').children.slice(1).map(fig => fig.children[0].textContent), ['DNA', 'Mito']);
+  setChannels(f, []);
+  assert.equal(f.elements.get('crop-area').children[0].children[0].textContent, 'No channels selected');
+  assert.equal(f.elements.get('crop-area').children.length, 1, 'only the main placeholder figure, no channel thumbnails');
+});
 test('mounted dashboard has readable malformed and empty payload states', () => {
   assert.equal(typeof app.mountDashboard, 'function');
   const bad = fixture('{broken');
@@ -201,15 +340,14 @@ test('bundled report requests only real per-cell paths, renders composite plus a
   api.hoverPoint('a');
   assert.equal(f.elements.get('inspector-title').textContent, malicious);
   assert.equal(f.elements.get('crop-area').children.length, 6);
-  assert.equal(f.imageRequests.length, 6);
-  assert.ok(f.imageRequests.every(image => image.url.startsWith('assets/crops/a.')));
-  f.elements.get('channel-select').value = 'DNA';
-  f.elements.get('channel-select').emit('change');
+  assert.equal(f.imageRequests.length, 10);
+  assert.ok(f.imageRequests.every(image => image.url.startsWith('assets/crops/a.') && !image.url.endsWith('composite.jpg')));
+  setChannels(f, ['DNA']);
   assert.equal(f.elements.get('crop-area').children.length, 2);
-  assert.equal(f.imageRequests.length, 8);
-  assert.equal(f.imageRequests[7].url, 'assets/crops/a.DNA.jpg');
+  assert.equal(f.imageRequests.length, 11, 'decoded mix layers are shared across selections');
+  assert.equal(f.imageRequests[10].url, 'assets/crops/a.DNA.jpg');
   api.hoverPoint('b');
-  assert.equal(f.imageRequests.length, 8, 'missing channel paths must not create requests');
+  assert.equal(f.imageRequests.length, 11, 'missing channel paths must not create requests');
   assert.match(f.elements.get('crop-area').children[0].children[1].children[0].textContent, /unavailable/i);
 });
 test('wheel zoom anchors the cursor, drag pans without pinning, reset restores geometry, and keyboard selects', () => {

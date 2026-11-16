@@ -96,7 +96,7 @@ def test_hover_pin_channels_and_prefix_paths(browser, origin, site):
     target = pointer_target(page)
     page.mouse.move(target["x"], target["y"])
     expect(page.locator("#cell-id")).to_have_text(target["id"])
-    expect(page.locator("#crop-area img")).to_have_count(6)
+    expect(page.locator("#crop-area img")).to_have_count(5)
     assert page.locator("#crop-area img").evaluate_all("images=>images.every(img=>img.complete&&img.naturalWidth===224)")
     assert all("/pccma/report/assets/crops/" in url for url in requests if url.endswith(".jpg"))
     page.mouse.click(target["x"], target["y"])
@@ -104,8 +104,32 @@ def test_hover_pin_channels_and_prefix_paths(browser, origin, site):
     another = pointer_target(page, 1)
     page.mouse.move(another["x"], another["y"])
     expect(page.locator("#cell-id")).to_have_text(target["id"])
-    page.locator("#channel-select").select_option("DNA")
-    expect(page.locator("#crop-area img")).to_have_count(2)
+    for channel in ["ER", "RNA", "AGP", "Mito"]:
+        page.locator(f"#channel-toggle-{channel}").uncheck()
+    expect(page.locator("#crop-area img")).to_have_count(1)  # only the DNA thumbnail remains
+    mix_canvas = page.locator("#crop-area canvas")
+    page.wait_for_function("document.querySelectorAll('#crop-area canvas').length===1")
+    # The single-channel mix is still tinted and drawn for real, not a blank canvas.
+    assert mix_canvas.evaluate("""canvas => {
+        const ctx = canvas.getContext('2d');
+        const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        for (let i = 0; i < pixels.length; i += 4) if (pixels[i + 3] > 0 && pixels[i] > 0) return true;
+        return false;
+    }"""), "the DNA-only mix canvas must actually paint tinted pixels"
+    for channel in ["ER", "RNA"]:
+        page.locator(f"#channel-toggle-{channel}").check()
+    expect(page.locator("#crop-area img")).to_have_count(3)  # DNA + ER + RNA thumbnails, live mix stays a canvas
+    page.wait_for_function("document.querySelectorAll('#crop-area canvas').length===1")
+    page.locator("#channel-toggle-DNA").uncheck()
+    page.locator("#channel-toggle-ER").uncheck()
+    page.locator("#channel-toggle-RNA").uncheck()
+    expect(page.locator("#crop-area")).to_contain_text("Select at least one channel")
+    page.locator("#channel-toggle-DNA").check()
+    page.locator("#channel-toggle-ER").check()
+    page.locator("#channel-toggle-RNA").check()
+    page.locator("#channel-toggle-AGP").check()
+    page.locator("#channel-toggle-Mito").check()
+    expect(page.locator("#crop-area img")).to_have_count(5)  # live five-channel mix + all 5 thumbnails
     page.locator("#unpin-cell").click()
     page.locator("#next-cell").click()
     expect(page.locator("#pin-status")).to_have_text("Pinned")
@@ -143,7 +167,7 @@ def test_mobile_touch_filters_zoom_and_file_open(browser, origin, site):
     file_page = browser.new_page()
     file_page.goto((site[0] / "index.html").as_uri(), wait_until="load")
     file_page.locator("#next-cell").click()
-    expect(file_page.locator("#crop-area img")).to_have_count(6)
+    expect(file_page.locator("#crop-area img")).to_have_count(5)
     assert file_page.locator("#crop-area img").evaluate_all("images=>images.every(img=>img.naturalWidth===224)")
     file_page.close()
 
@@ -153,9 +177,26 @@ def test_image_404_is_visible_and_never_shows_stale_pixels(browser, origin, site
     page.route("**/*_DNA.jpg", lambda route: route.fulfill(status=404, body="missing test fixture"))
     page.goto(origin + "/pccma/report/", wait_until="load")
     page.locator("#next-cell").click()
-    expect(page.locator(".image-error")).to_have_count(1)
-    expect(page.locator(".image-error")).to_contain_text("Image could not be loaded")
-    assert page.locator("#crop-area img").count() == 5
+    expect(page.locator(".image-error")).to_have_count(2)
+    expect(page.locator(".image-error").first).to_contain_text("Image could not be loaded")
+    assert page.locator("#crop-area img").count() == 4
+    page.close()
+
+
+@pytest.mark.parametrize("viewport", [{"width": 1280, "height": 577}, {"width": 900, "height": 700}])
+def test_hover_crop_is_fully_visible_without_scrolling(browser, origin, site, viewport):
+    page = browser.new_page(viewport=viewport)
+    page.goto(origin + "/pccma/report/", wait_until="load")
+    target = pointer_target(page, 1)  # The upper fixture point remains in view.
+    page.mouse.move(target["x"], target["y"])
+    expect(page.locator("#cell-id")).to_have_text(target["id"])
+    page.wait_for_function("document.querySelectorAll('#crop-area img').length===5")
+    # A decoded image below the fold does not satisfy a visible hover preview.
+    assert page.locator("#hover-preview canvas").evaluate_all("""images => images.some(image => {
+        const rect=image.getBoundingClientRect();
+        return image.width===224 && rect.width>=100 && rect.height>=100 &&
+            rect.left>=0 && rect.top>=0 && rect.right<=innerWidth && rect.bottom<=innerHeight;
+    })"""), "Hover must display a complete crop inside the current viewport"
     page.close()
 
 

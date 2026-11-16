@@ -1,6 +1,9 @@
 /* PCCMA static dashboard. No network or library dependencies. */
 (function () {
   'use strict';
+  const CHANNELS = ['DNA', 'ER', 'RNA', 'AGP', 'Mito'];
+  // Fixed pseudo-colors for exploration, not quantitative intensity measurements.
+  const CHANNEL_TINT = { DNA: '#4d7cff', ER: '#3ad6b0', RNA: '#ffd166', AGP: '#ff5fa2', Mito: '#ff6b4d' };
   function category(point, colorBy) {
     return String(point[colorBy] ?? 'Unknown');
   }
@@ -89,6 +92,87 @@
       image.src = path;
     };
   }
+  function isSafeCropPath(path) {
+    return typeof path === 'string' && /^assets\/crops\/[A-Za-z0-9_./-]+\.jpg$/.test(path) && !path.split('/').includes('..');
+  }
+  function loadImageElement(document, path) {
+    return new Promise(resolve => {
+      const image = document.createElement('img');
+      image.decoding = 'async';
+      image.onload = () => resolve(image);
+      image.onerror = () => resolve(null);
+      image.src = path;
+    });
+  }
+  // Tint and add grayscale JPEGs without pixel readback, so downloaded reports
+  // also work via file://. All selections use the same display-only colors.
+  function createChannelMixSlot(document, container, loadImage = path => loadImageElement(document, path)) {
+    let revision = 0;
+    return function update(descriptor, description) {
+      const current = ++revision;
+      const status = document.createElement('p');
+      status.className = 'image-status';
+      if (!descriptor || descriptor.type === 'none') {
+        status.textContent = 'Select at least one channel to preview.';
+        container.replaceChildren(status);
+        return;
+      }
+      const layers = descriptor.layers ?? [];
+      if (!layers.length || layers.some(layer => !isSafeCropPath(layer.path))) {
+        status.textContent = 'Image unavailable for this cell.';
+        status.className = 'image-status image-error';
+        container.replaceChildren(status);
+        return;
+      }
+      status.textContent = 'Loading image…';
+      container.replaceChildren(status);
+      Promise.all(layers.map(layer => loadImage(layer.path))).then(images => {
+        if (revision !== current) return;
+        const loaded = images.map((image, index) => image && { image, color: layers[index].color }).filter(Boolean);
+        if (loaded.length !== layers.length) {
+          status.textContent = 'Image could not be loaded for every selected channel. ' + description;
+          status.className = 'image-status image-error';
+          container.replaceChildren(status);
+          return;
+        }
+        const size = loaded[0].image.naturalWidth || 224;
+        const mix = document.createElement('canvas');
+        mix.width = size; mix.height = size;
+        const ctx = mix.getContext('2d');
+        if (!ctx) {
+          status.textContent = 'Channel mixing is unavailable in this browser.';
+          status.className = 'image-status image-error';
+          container.replaceChildren(status);
+          return;
+        }
+        {
+          ctx.fillStyle = '#000'; ctx.fillRect(0, 0, size, size);
+          for (const { image, color } of loaded) {
+            // Multiply tints the grayscale pixels without losing intensity,
+            // then "lighter" (additive) stacks each tinted channel together.
+            const layer = document.createElement('canvas');
+            layer.width = size; layer.height = size;
+            const layerCtx = layer.getContext('2d');
+            if (!layerCtx) {
+              status.textContent = 'Channel mixing is unavailable in this browser.';
+              status.className = 'image-status image-error';
+              container.replaceChildren(status);
+              return;
+            }
+            layerCtx.drawImage(image, 0, 0, size, size);
+            layerCtx.globalCompositeOperation = 'multiply';
+            layerCtx.fillStyle = color;
+            layerCtx.fillRect(0, 0, size, size);
+            ctx.globalCompositeOperation = 'lighter';
+            ctx.drawImage(layer, 0, 0);
+          }
+        }
+        mix.setAttribute('role', 'img');
+        mix.setAttribute('aria-label', description);
+        container.replaceChildren(mix);
+      });
+    };
+  }
   function mountDashboard(document, window) {
     const $ = id => document.getElementById(id);
     const element = (tag, text, className) => {
@@ -118,8 +202,9 @@
     const byId = new Map(points.map(point => [point.id, point]));
     const groups = [...new Set(points.map(point => point.group))];
     const number = value => Number.isFinite(value) ? value.toLocaleString('en-US') : 'Not recorded';
-    const channels = ['DNA', 'ER', 'RNA', 'AGP', 'Mito'];
+    const channels = CHANNELS;
     const bundled = data.images?.status === 'bundled';
+    $('catalog-download').hidden = data.catalog?.path !== 'data/pilot.duckdb';
     const palette = ['#73b9d7', '#eba16d', '#9dc88c', '#c6a0d8', '#e3859d', '#6ec8ba', '#d5c575', '#95a1e1', '#d7ad91', '#88b7a2', '#c2b6e8', '#d7a8bf', '#8cc8d1', '#b6c079'];
     let state = createState(points), visible = [], projection;
     let view = { zoom: 1, panX: 0, panY: 0 };
@@ -129,7 +214,11 @@
     // after viewport changes; the small point clouds do not need GPU backing.
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return fail(new Error('Canvas rendering is not supported by this browser.'));
-    $('plate-label').textContent = 'Plate ' + (data.plate ?? 'not recorded') + ' · exact crop-key joins · published post-QC cells';
+    const timepoints = Array.isArray(data.summary?.timepoints) ? data.summary.timepoints : [];
+    const timepointLabel = timepoints.length === 1 ? `Timepoint ${timepoints[0]} h`
+      : timepoints.length > 1 ? `Timepoints ${timepoints.join(', ')} h` : null;
+    $('plate-label').textContent = 'Plate ' + (data.plate ?? 'not recorded') + ' · exact crop-key joins · published post-QC cells'
+      + (timepointLabel ? ' · ' + timepointLabel : '');
     const summaries = [[points.length, 'plotted cells'], [new Set(points.map(point => point.line)).size, 'cell lines'], [groups.length, 'cancer groups'], [data.summary?.warehouse_cells, 'warehouse cells']];
     for (const [count, label] of summaries) {
       const item = element('div', undefined, 'summary-item');
@@ -153,6 +242,7 @@
     for (const [key, value] of [
       ['Plate', data.plate], ['Extraction run', data.run_id], ['Warehouse cells', number(data.summary?.warehouse_cells)],
       ['Displayed cells', number(points.length)], ['Excluded UMAP rows', number(data.summary?.excluded_umap_rows)],
+      ['Timepoint(s)', timepoints.length ? timepoints.join(', ') + ' h' : null],
       ['UMAP source', data.sources?.umap?.name], ['UMAP SHA-256', data.sources?.umap?.sha256],
       ['Crop index', data.sources?.crop_index?.name], ['Crop-index SHA-256', data.sources?.crop_index?.sha256],
       ['QC membership', data.sources?.qc], ['Images', data.images?.status], ['Image details', data.images?.message],
@@ -211,18 +301,70 @@
       $('zoom-in').disabled = view.zoom >= 20;
       $('zoom-out').disabled = view.zoom <= 0.5;
     }
+    const hoverPreview = $('hover-preview');
+    const channelCheckbox = name => $('channel-toggle-' + name);
+    function selectedChannels() { return channels.filter(name => channelCheckbox(name).checked); }
+    // Bound decoded-image memory while reusing layers between hover and pin.
+    const imageCache = new Map();
+    function loadChannelImage(path) {
+      if (imageCache.has(path)) return imageCache.get(path);
+      const pending = loadImageElement(document, path).then(image => {
+        if (!image && imageCache.get(path) === pending) imageCache.delete(path);
+        return image;
+      });
+      imageCache.set(path, pending);
+      if (imageCache.size > 50) imageCache.delete(imageCache.keys().next().value);
+      return pending;
+    }
+    function mixDescriptor(point, chosen) {
+      if (!chosen.length) return { type: 'none' };
+      return { type: 'mix', layers: chosen.map(name => ({ path: point.images?.[name], color: CHANNEL_TINT[name] })) };
+    }
+    function channelLabel(chosen) {
+      return chosen.length ? chosen.join(' + ') : 'No channel selected';
+    }
+    const updateHoverImage = createChannelMixSlot(document, $('hover-preview-image'), loadChannelImage);
+    let hoverPreviewKey = null;
+    function hideHoverPreview() {
+      hoverPreview.hidden = true;
+      hoverPreviewKey = null;
+    }
+    function updateHoverContent(point) {
+      const chosen = selectedChannels();
+      const key = point.id + ':' + chosen.join(',');
+      if (key === hoverPreviewKey) return;
+      hoverPreviewKey = key;
+      const label = channelLabel(chosen);
+      $('hover-preview-title').textContent = point.line + ' · ' + point.well + ' / ' + point.site + ' · ' + label;
+      updateHoverImage(mixDescriptor(point, chosen), label + ' crop · ' + point.id);
+    }
+    function showHoverPreview(point, event) {
+      if (!point || !bundled || point.id === state.selectedId) { hideHoverPreview(); return; }
+      updateHoverContent(point);
+      hoverPreview.hidden = false;
+      const rect = hoverPreview.getBoundingClientRect();
+      const margin = 8, gap = 14;
+      const left = event.clientX + gap + rect.width <= window.innerWidth - margin
+        ? event.clientX + gap : event.clientX - rect.width - gap;
+      const top = event.clientY + gap + rect.height <= window.innerHeight - margin
+        ? event.clientY + gap : event.clientY - rect.height - gap;
+      hoverPreview.style.left = Math.max(margin, Math.min(left, window.innerWidth - rect.width - margin)) + 'px';
+      hoverPreview.style.top = Math.max(margin, Math.min(top, window.innerHeight - rect.height - margin)) + 'px';
+    }
     function renderInspector(force = false) {
+      if (!state.hoveredId || state.hoveredId === state.selectedId) hideHoverPreview();
       const point = byId.get(state.selectedId ?? state.hoveredId);
-      const key = (point?.id ?? '') + ':' + $('channel-select').value + ':' + Boolean(state.selectedId);
+      const chosen = selectedChannels();
+      const key = (point?.id ?? '') + ':' + chosen.join(',') + ':' + Boolean(state.selectedId);
       if (!force && key === lastInspectorKey) return;
       lastInspectorKey = key;
       $('pin-status').textContent = state.selectedId ? 'Pinned' : 'Unpinned';
       $('pin-status').className = state.selectedId ? 'badge pinned' : 'badge';
       $('unpin-cell').disabled = !state.selectedId;
       $('previous-cell').disabled = !visible.length; $('next-cell').disabled = !visible.length;
-      $('channel-select').disabled = !bundled || !point;
+      for (const name of channels) channelCheckbox(name).disabled = !bundled;
       $('inspector-title').textContent = point ? point.line ?? 'Cell preview' : 'Point preview';
-      $('inspector-hint').textContent = state.selectedId ? 'Pinned cell. Unpin to resume hover previews; use Previous / Next to browse visible cells.' : 'Hover a point to inspect its extracted cell crop. Click or tap to keep it here.';
+      $('inspector-hint').textContent = state.selectedId ? 'Pinned cell. Hover another point to compare it in the floating preview; use Previous / Next to browse visible cells.' : 'Hover a point to inspect its extracted cell crop. Click or tap to keep it here.';
       $('cell-id').textContent = point?.id ?? 'No cell selected';
       $('cell-metadata').replaceChildren();
       $('crop-area').replaceChildren();
@@ -240,10 +382,15 @@
         $('crop-area').append(element('p', 'Crops unavailable. This diagnostic report contains cell coordinates and metadata only; no real images have been loaded.', 'crop-placeholder'));
         return;
       }
-      const chosen = $('channel-select').value;
-      for (const channel of ['composite', ...(chosen === 'all' ? channels : channels.filter(channel => channel === chosen))]) {
-        const figure = element('figure', undefined, 'crop-figure' + (channel === 'composite' ? ' composite' : ''));
-        const caption = element('figcaption', channel === 'composite' ? 'Composite · five-channel overlay' : channel);
+      const label = channelLabel(chosen);
+      const mainFigure = element('figure', undefined, 'crop-figure composite');
+      const mainCaption = element('figcaption', chosen.length ? 'Live mix · ' + label : 'No channels selected');
+      const mainFrame = element('div', undefined, 'image-frame');
+      mainFigure.append(mainCaption, mainFrame); $('crop-area').append(mainFigure);
+      createChannelMixSlot(document, mainFrame, loadChannelImage)(mixDescriptor(point, chosen), label + ' crop · ' + point.id);
+      for (const channel of chosen) {
+        const figure = element('figure', undefined, 'crop-figure');
+        const caption = element('figcaption', channel);
         const frame = element('div', undefined, 'image-frame');
         figure.append(caption, frame); $('crop-area').append(figure);
         createImageSlot(document, frame)(point.images?.[channel], channel + ' crop · ' + point.id);
@@ -284,7 +431,12 @@
     function reset() { view = { zoom: 1, panX: 0, panY: 0 }; draw(); }
     groupSelect.addEventListener('change', () => { reset(); dispatch({ type: 'group', value: groupSelect.value }); });
     $('color-select').addEventListener('change', () => dispatch({ type: 'color', value: $('color-select').value }));
-    $('channel-select').addEventListener('change', () => renderInspector(true));
+    for (const name of channels) {
+      channelCheckbox(name).addEventListener('change', () => {
+        renderInspector(true);
+        if (hoverPreviewKey !== null) updateHoverContent(byId.get(state.hoveredId));
+      });
+    }
     $('previous-cell').addEventListener('click', () => dispatch({ type: 'step', direction: -1 }));
     $('next-cell').addEventListener('click', () => dispatch({ type: 'step', direction: 1 }));
     $('unpin-cell').addEventListener('click', () => dispatch({ type: 'unpin' }));
@@ -307,6 +459,7 @@
         const point = nearestPoint(visible, at, projection, 10);
         if ((point?.id ?? null) !== state.hoveredId) dispatch({ type: 'hover', id: point?.id });
         canvas.style.cursor = point ? 'pointer' : 'crosshair';
+        showHoverPreview(point, event);
       }
     });
     canvas.addEventListener('pointerup', event => {
@@ -340,7 +493,7 @@
     refreshFilters(); resize();
     return api;
   }
-  const helpers = { category, filterPoints, groupBounds, createProjection, nearestPoint, createState, reduceState, createImageSlot, mountDashboard };
+  const helpers = { category, filterPoints, groupBounds, createProjection, nearestPoint, createState, reduceState, createImageSlot, createChannelMixSlot, mountDashboard, CHANNELS, CHANNEL_TINT };
   if (typeof module !== 'undefined' && module.exports) module.exports = helpers;
   if (typeof document !== 'undefined' && typeof window !== 'undefined') mountDashboard(document, window);
 })();

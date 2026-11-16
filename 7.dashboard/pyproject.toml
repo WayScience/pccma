@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Static single-cell UMAP and crop report; independent of the compute environments"
 requires-python = ">=3.11,<3.13"
 dependencies = [
+    "duckdb==1.4.5",
     "pandas==2.2.3",
     "pyarrow==22.0.0",
     "pillow==12.3.0",
