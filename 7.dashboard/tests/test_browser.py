@@ -143,14 +143,19 @@ def test_hover_pin_channels_and_prefix_paths(browser, origin, site):
     page.close()
 
 
-def test_mobile_touch_filters_zoom_and_file_open(browser, origin, site):
-    context = browser.new_context(viewport={"width": 390, "height": 844}, is_mobile=True, has_touch=True)
+@pytest.mark.parametrize("height", [600, 844])
+def test_mobile_touch_filters_zoom_and_file_open(browser, origin, site, height):
+    context = browser.new_context(viewport={"width": 390, "height": height}, is_mobile=True, has_touch=True)
     page = context.new_page()
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
     page.goto(origin + "/pccma/report/", wait_until="load")
     assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+    # Native coordinate taps do not auto-scroll like locator.tap(). Header/font
+    # differences can put the lower fixture point below the mobile viewport.
+    page.locator("#plot").scroll_into_view_if_needed()
     point = pointer_target(page)
+    assert page.evaluate("p => p.x > 0 && p.x < innerWidth && p.y > 0 && p.y < innerHeight", point)
     page.touchscreen.tap(point["x"], point["y"])
     expect(page.locator("#pin-status")).to_have_text("Pinned")
     page.locator("#zoom-in").click()
