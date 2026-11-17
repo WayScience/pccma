@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "plate": "BR00150695",
+  "run_id": "BR00150695-20261113T155150Z-g790ecb4",
+  "archive": {
+    "bytes": 415035598,
+    "sha256": "d83004f32ea67010f1528c44aaf699741d9d01308040abc4e941a29e76c763ad",
+    "url": "https://github.com/WayScience/pccma/releases/download/dashboard-pilot-BR00150695-v1/pilot-inputs.tar.gz"
+  },
+  "inputs": {
+    "crop_index": "inputs/crops_index.parquet",
+    "source_hashes": "warehouse/jpg-sha256.txt.gz",
+    "umap": "inputs/single_cell_umap_coordinates_by_cancer_group.parquet",
+    "warehouse": "warehouse"
+  },
+  "expected": {
+    "assets": 39000,
+    "cells": 6500
+  }
+}

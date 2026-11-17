@@ -19,8 +19,10 @@ build-backend = "setuptools.build_meta"
 py-modules = [
     "bandicoot_utils",
     "cp_parallel",
+    "crop_warehouse",
     "loaddata_utils",
     "morphem_utils",
+    "nucleocentric_crops",
     "path_utils",
     "preprocess_utils",
 ]
