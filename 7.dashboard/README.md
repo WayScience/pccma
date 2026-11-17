@@ -236,8 +236,20 @@ python3 -m zipfile -t "$BUNDLE.zip"
 ```
 
 Unzip it, then use the extracted directory **containing `index.html`** as the
-Pages artifact root. Do not upload the ZIP itself as a site asset. No deployment
-workflow or Pages settings are changed automatically by this module.
+Pages artifact root for a manual deployment. Do not upload the ZIP itself as a
+site asset.
+
+For automatic deployment on merge, use
+[the one-time setup and deployment guide](DEPLOYMENT.md). The
+`Dashboard Pages` workflow tests pull requests and rebuilds/deploys changes to
+`main` from the immutable public input archive pinned in `pilot-source.json`.
+It consumes public report-input tables and original JPEGs, not a stale prebuilt
+report, and does not
+need a local warehouse cache or SSH credentials. A maintainer must first upload
+`dist/pilot-inputs.tar.gz` to the documented GitHub Release and set
+**Settings → Pages → Source → GitHub Actions**. Neither the public upload nor
+repository settings are changed by running the local exporter.
+
 Do not upload the full warehouse or commit the ignored generated bundle just
 to preview the source changes. Publishing the report also publishes its
 selected cell images; obtain the normal dataset/publication approval first.

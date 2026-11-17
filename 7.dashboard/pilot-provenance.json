@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "plate": "BR00150695",
+  "run_id": "BR00150695-20261113T155150Z-g790ecb4",
+  "original_sources": {
+    "inputs/crops_index.parquet": {
+      "bytes": 7171328,
+      "sha256": "945cf7b64cb86f3d5b2d70402fb244813d3e89ac97dd00cd3371bd1a818b6c11"
+    },
+    "inputs/single_cell_umap_coordinates_by_cancer_group.parquet": {
+      "bytes": 2808145,
+      "sha256": "ffc1d53501cf3b4551840dd4c919d58360c2c3219e97a53c6379d7ccfaf92c2d"
+    },
+    "warehouse/jpg-sha256.txt.gz": {
+      "bytes": 23624030,
+      "sha256": "4ebdb9cd027e3e0af4b83c2fc6f56ec0b8491c4f895037fc33f87fc456e478ad"
+    }
+  },
+  "public_sources": {
+    "inputs/crops_index.parquet": {
+      "bytes": 6603597,
+      "sha256": "0d437a8c56b759e42a2611481f90faec98aaa3068a6ca0aba4ebe44f6d431403"
+    },
+    "inputs/single_cell_umap_coordinates_by_cancer_group.parquet": {
+      "bytes": 2808145,
+      "sha256": "ffc1d53501cf3b4551840dd4c919d58360c2c3219e97a53c6379d7ccfaf92c2d"
+    },
+    "warehouse/jpg-sha256.txt.gz": {
+      "bytes": 23624030,
+      "sha256": "4ebdb9cd027e3e0af4b83c2fc6f56ec0b8491c4f895037fc33f87fc456e478ad"
+    }
+  },
+  "omitted_columns": {
+    "crop_index": [
+      "Image_FileName_OrigAGP",
+      "Image_FileName_OrigDNA",
+      "Image_FileName_OrigER",
+      "Image_FileName_OrigMito",
+      "Image_FileName_OrigRNA",
+      "Image_Metadata_Plate",
+      "Image_Metadata_Site",
+      "Image_Metadata_Well",
+      "Image_PathName_OrigAGP",
+      "Image_PathName_OrigDNA",
+      "Image_PathName_OrigER",
+      "Image_PathName_OrigMito",
+      "Image_PathName_OrigRNA",
+      "Metadata_Crop_Format",
+      "Metadata_Crop_Generator",
+      "Metadata_Crop_Rescaling",
+      "Metadata_JPEG_Quality",
+      "Metadata_JPEG_Subsampling",
+      "Metadata_Nucleocentric_Crop_Maximum_X",
+      "Metadata_Nucleocentric_Crop_Maximum_Y",
+      "Metadata_Nucleocentric_Crop_Minimum_X",
+      "Metadata_Nucleocentric_Crop_Minimum_Y",
+      "Metadata_Nucleocentric_Pad_Fraction",
+      "Metadata_NumPy_Version",
+      "Metadata_Pillow_Version"
+    ],
+    "umap": []
+  },
+  "summary": {
+    "cancer_groups": 7,
+    "cell_lines": 13,
+    "crop_size": 224,
+    "excluded_umap_rows": 75252,
+    "timepoints": [
+      24
+    ],
+    "umap_cells": 6500,
+    "warehouse_cells": 80493
+  },
+  "note": "Public tables retain all original rows and exact report-needed values. Unused columns and table attrs are omitted to avoid publishing private source directories. Source JPEGs and original compressed JPEG hashes are byte-identical. Original source hashes document the input projections; public input hashes describe the actual archive tables."
+}

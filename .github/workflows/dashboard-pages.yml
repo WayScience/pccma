@@ -1,0 +1,119 @@
+name: Dashboard Pages
+
+"on":
+  pull_request:
+    branches: [main]
+    paths:
+      - "7.dashboard/**"
+      - ".github/workflows/dashboard-pages.yml"
+  push:
+    branches: [main]
+    paths:
+      - "7.dashboard/**"
+      - ".github/workflows/dashboard-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dashboard-pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Dashboard tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.11.19"
+          python-version: "3.12"
+          enable-cache: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+      - name: Install locked dependencies and Chromium
+        run: |
+          uv sync --project 7.dashboard --locked
+          uv run --project 7.dashboard --locked playwright install --with-deps chromium
+      - name: Test exporter, input packaging and browser channel mixing
+        run: |
+          uv run --project 7.dashboard --locked python -m pytest 7.dashboard/tests -q
+          node --test 7.dashboard/tests/test_web.mjs
+
+  build:
+    name: Build verified pilot
+    needs: test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.11.19"
+          python-version: "3.12"
+          enable-cache: false
+      - name: Install locked dependencies and Chromium
+        run: |
+          uv sync --project 7.dashboard --locked
+          uv run --project 7.dashboard --locked playwright install --with-deps chromium
+      - name: Download and verify pinned public pilot inputs
+        run: |
+          uv run --project 7.dashboard --locked python 7.dashboard/pages.py stage \
+            --config 7.dashboard/pilot-source.json \
+            --output "$RUNNER_TEMP/pccma-pilot-inputs"
+      - name: Build from checked-out code and immutable inputs
+        run: |
+          uv run --project 7.dashboard --locked python 7.dashboard/pages.py build \
+            --config 7.dashboard/pilot-source.json \
+            --inputs "$RUNNER_TEMP/pccma-pilot-inputs" \
+            --output 7.dashboard/dist/pages
+      - name: Verify every original image and real pilot browser interactions
+        env:
+          PCCMA_DASHBOARD_BUNDLE: ${{ github.workspace }}/7.dashboard/dist/pages
+          PCCMA_DASHBOARD_SOURCE_HASHES: ${{ runner.temp }}/pccma-pilot-inputs/warehouse/jpg-sha256.txt.gz
+        run: |
+          uv run --project 7.dashboard --locked python -m pytest \
+            7.dashboard/tests/test_real_bundle.py -q
+      - name: Upload complete Pages site
+        if: >-
+          github.repository == 'WayScience/pccma' &&
+          github.ref == 'refs/heads/main' &&
+          github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: 7.dashboard/dist/pages
+          include-hidden-files: true
+          retention-days: 1
+
+  deploy:
+    name: Deploy dashboard
+    if: >-
+      github.repository == 'WayScience/pccma' &&
+      github.ref == 'refs/heads/main' &&
+      github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check Pages configuration
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+        with:
+          enablement: false
+      - name: Deploy tested site
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

@@ -38,7 +38,9 @@ def real_pilot():
 def test_real_pilot_all_assets_match_original_warehouse_hashes(real_pilot):
     bundle, payload, manifest = real_pilot
     root = Path(__file__).resolve().parents[2]
-    hashes = root / "7.dashboard/previews" / (payload["run_id"] + "-warehouse") / "jpg-sha256.txt.gz"
+    configured_hashes = os.environ.get("PCCMA_DASHBOARD_SOURCE_HASHES")
+    hashes = (Path(configured_hashes).expanduser().resolve() if configured_hashes else
+              root / "7.dashboard/previews" / (payload["run_id"] + "-warehouse") / "jpg-sha256.txt.gz")
     assert hashes.is_file(), "Real source hashes are required, not only self-generated bundle hashes"
     assets = {asset["path"]: asset for asset in manifest["assets"]}
     referenced = {unquote(path) for point in payload["points"] for path in point["images"].values()}
@@ -255,6 +257,7 @@ def test_real_pilot_mixes_grayscale_for_hover_and_pin_and_serves_catalog(
     for channel in ["ER", "RNA", "AGP"]:
         page.locator(f"#channel-toggle-{channel}").uncheck()
     page.mouse.move(other["x"], other["y"])
+    expect(page.locator("#hover-preview")).to_be_visible()
     chosen = ["DNA", "Mito"]
     for selector, point in [("#crop-area canvas", points[target["id"]]),
                             ("#hover-preview canvas", points[other["id"]])]:
@@ -277,9 +280,13 @@ def test_real_pilot_mixes_grayscale_for_hover_and_pin_and_serves_catalog(
         directory = Path(os.environ["PCCMA_DASHBOARD_EVIDENCE"])
         directory.mkdir(parents=True, exist_ok=True)
         page.locator("details.provenance summary").click()
+        page.evaluate("window.scrollTo(0, 0)")
+        other = isolated_target(page, lines[1])
+        page.mouse.move(0, 0)
         page.mouse.move(other["x"], other["y"])
+        expect(page.locator("#hover-preview")).to_be_visible()
         expect(page.locator("#hover-preview canvas")).to_have_count(1)
-        page.screenshot(path=str(directory / "live-mix-comparison.png"), full_page=True)
+        page.screenshot(path=str(directory / "live-mix-comparison.png"), full_page=False)
     assert not errors
     page.close()
 
